@@ -15,6 +15,7 @@ public class MainActivity extends Activity {
         setContentView(R.layout.activity_main);
         setupAddStoryButton();
         setupHearStoryButton();
+        OutputFileGenerator.clearDirectory();
     }
 
     private void setupHearStoryButton() {
