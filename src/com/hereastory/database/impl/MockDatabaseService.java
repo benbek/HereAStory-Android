@@ -16,23 +16,11 @@ public class MockDatabaseService implements DatabaseService {
 	}
 
 	@Override
-	public PointOfInterest ready(Long id) {
+	public PointOfInterest read(Long id) {
 		PointOfInterest story = new PointOfInterest();
 		story.setId(1l);
 		story.setDescription("description");
 		return story ;
-	}
-
-	@Override
-	public Long add(PointOfInterest story) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public PointOfInterest read(Long id) {
-		// TODO Auto-generated method stub
-		return null;
 	}
 
 	@Override
