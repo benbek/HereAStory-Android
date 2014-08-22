@@ -13,8 +13,10 @@ import android.widget.Button;
 import com.hereastory.service.api.OutputFileService;
 import com.hereastory.service.api.OutputFileService.FileType;
 import com.hereastory.service.api.PointOfInterestService;
+import com.hereastory.service.impl.AudioPlayer;
 import com.hereastory.service.impl.OutputFileServiceImpl;
 import com.hereastory.service.impl.PointOfInterestServiceImpl;
+import com.hereastory.shared.IntentConsts;
 import com.hereastory.shared.PointOfInterest;
 
 public class RecordAudioActivity extends Activity {

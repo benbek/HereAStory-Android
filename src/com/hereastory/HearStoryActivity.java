@@ -7,6 +7,8 @@ import android.os.Bundle;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.hereastory.service.impl.AudioPlayer;
+import com.hereastory.shared.IntentConsts;
 import com.hereastory.shared.PointOfInterest;
 
 public class HearStoryActivity extends Activity {

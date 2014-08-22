@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.Button;
 
 import com.hereastory.service.impl.OutputFileServiceImpl;
+import com.hereastory.shared.IntentConsts;
 
 public class MainActivity extends Activity {
 	
