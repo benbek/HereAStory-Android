@@ -26,6 +26,7 @@ public class MockDatabaseService implements DatabaseService {
 	@Override
 	public LimitedPointOfInterest readLimited(Long id) {
 		// TODO Auto-generated method stub
+		// test
 		return null;
 	}
 
