@@ -11,6 +11,7 @@ import android.widget.Button;
 import com.hereastory.service.api.OutputFileService;
 import com.hereastory.service.api.OutputFileService.FileType;
 import com.hereastory.service.impl.OutputFileServiceImpl;
+import com.hereastory.shared.IntentConsts;
 import com.hereastory.shared.PointOfInterest;
 
 public class CapturePictureActivity extends Activity {

@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
+import com.hereastory.shared.IntentConsts;
 import com.hereastory.shared.PointLocation;
 import com.hereastory.shared.PointOfInterest;
 

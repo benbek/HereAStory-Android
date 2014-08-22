@@ -1,4 +1,4 @@
-package com.hereastory;
+package com.hereastory.service.impl;
 
 import java.io.IOException;
 

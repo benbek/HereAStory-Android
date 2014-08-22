@@ -1,4 +1,4 @@
-package com.hereastory;
+package com.hereastory.shared;
 
 public class IntentConsts {
 	public static final String STORY_ID = "STORY_ID";
