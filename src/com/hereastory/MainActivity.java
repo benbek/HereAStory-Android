@@ -7,6 +7,8 @@ import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
 
+import com.hereastory.service.impl.OutputFileServiceImpl;
+
 public class MainActivity extends Activity {
 	
     @Override
@@ -15,7 +17,7 @@ public class MainActivity extends Activity {
         setContentView(R.layout.activity_main);
         setupAddStoryButton();
         setupHearStoryButton();
-        OutputFileGenerator.clearDirectory();
+        new OutputFileServiceImpl().clearDirectory();
     }
 
     private void setupHearStoryButton() {

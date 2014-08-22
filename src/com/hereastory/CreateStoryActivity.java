@@ -7,8 +7,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
-import com.hereastory.shared.Location;
-import com.hereastory.shared.Story;
+import com.hereastory.shared.PointLocation;
+import com.hereastory.shared.PointOfInterest;
 
 public class CreateStoryActivity extends Activity {
 
@@ -25,7 +25,7 @@ public class CreateStoryActivity extends Activity {
     	final Button button = (Button) findViewById(R.id.buttonNewStoryDescriptionNext);
         button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-            	Story story = new Story();	
+            	PointOfInterest story = new PointOfInterest();	
             	story.setDescription(getDescription());
             	story.setLocation(getLocation());
 				Intent intent = new Intent(getApplicationContext(), CapturePictureActivity.class);
@@ -41,8 +41,8 @@ public class CreateStoryActivity extends Activity {
 		return description;
 	}
 	
-	private Location getLocation() {
-		return new Location(1l, 2l); // TODO
+	private PointLocation getLocation() {
+		return new PointLocation(1l, 2l); // TODO
 	}
 
 }
