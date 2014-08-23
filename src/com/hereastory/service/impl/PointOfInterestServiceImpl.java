@@ -8,6 +8,7 @@ import com.hereastory.service.api.PointOfInterestService;
 import com.hereastory.shared.LimitedPointOfInterest;
 import com.hereastory.shared.PointLocation;
 import com.hereastory.shared.PointOfInterest;
+import com.parse.ParseException;
 
 public class PointOfInterestServiceImpl implements PointOfInterestService {
 	
@@ -18,9 +19,8 @@ public class PointOfInterestServiceImpl implements PointOfInterestService {
 	}
 	
 	@Override
-	public List<PointLocation> readAllInArea(PointLocation location) {
-		// TODO group points together
-		return databaseService.readAllInArea();
+	public List<PointLocation> readAllInArea(PointLocation location, double maxDistance) throws ParseException {
+		return databaseService.readAllInArea(location, maxDistance);
 	}
 
 	@Override

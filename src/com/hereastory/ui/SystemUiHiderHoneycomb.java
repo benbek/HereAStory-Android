@@ -112,7 +112,7 @@ public class SystemUiHiderHoneycomb extends SystemUiHiderBase {
                             // action bar and use the old window flags API.
                             try {
                                 mActivity.getActionBar().hide();
-                            } catch (NullPointerException) {
+                            } catch (NullPointerException ex) {
                                 // Swallow, nothing to do really...
                             }
                             mActivity
@@ -137,7 +137,7 @@ public class SystemUiHiderHoneycomb extends SystemUiHiderBase {
                             try {
                                 mActivity.getActionBar().show();
                             }
-                            catch (NullPointerException) {
+                            catch (NullPointerException ex) {
                                 // Swallow, nothing to do really...
                             }
                             mActivity

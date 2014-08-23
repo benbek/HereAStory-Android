@@ -1,7 +1,7 @@
 package com.hereastory.database;
 
 import com.hereastory.database.api.DatabaseService;
-import com.hereastory.database.impl.MockDatabaseService;
+import com.hereastory.database.impl.ParseDatabaseServiceImpl;
 
 
 public class DatabaseServiceFactory {
@@ -10,7 +10,7 @@ public class DatabaseServiceFactory {
 	
 	public static DatabaseService getDatabaseService() {
 		if (databaseService == null) {
-			databaseService = new MockDatabaseService();
+			databaseService = new ParseDatabaseServiceImpl();
 		}
 		return databaseService;
 	}

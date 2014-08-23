@@ -1,14 +1,25 @@
 package com.hereastory.database.impl;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
+
+import android.util.Log;
 
 import com.hereastory.database.api.DatabaseService;
 import com.hereastory.shared.LimitedPointOfInterest;
 import com.hereastory.shared.PointLocation;
 import com.hereastory.shared.PointOfInterest;
+import com.parse.ParseException;
+import com.parse.ParseGeoPoint;
+import com.parse.ParseObject;
+import com.parse.ParseQuery;
 
 
 public class ParseDatabaseServiceImpl implements DatabaseService {
+
+	private static final int POINTS_AMOUNT_LOMIT = 1000;
+	private static final String LOG_TAG = "ParseDatabaseServiceImpl";
 
 	@Override
 	public void add(PointOfInterest story) {
@@ -29,9 +40,26 @@ public class ParseDatabaseServiceImpl implements DatabaseService {
 	}
 
 	@Override
-	public List<PointLocation> readAllInArea() {
-		// TODO Auto-generated method stub
-		return null;
+	public List<PointLocation> readAllInArea(final PointLocation location, final double maxDistance) throws ParseException {
+		ParseGeoPoint userLocation = new ParseGeoPoint(location.getLatitude(), location.getLatitude());
+		ParseQuery<ParseObject> query = ParseQuery.getQuery(PointOfInterestParseConsts.TABLE_NAME); 
+		query.whereWithinKilometers(PointOfInterestParseConsts.LOCATION, userLocation, maxDistance);
+		query.setLimit(POINTS_AMOUNT_LOMIT);
+		List<ParseObject> queryResult;
+		try {
+			queryResult = query.find();
+		} catch (ParseException e) {
+			String errorMessage = String.format(Locale.US, "readAllInArea failed with parameters: (latitude=%d, longitude=%d, maxDistance=%d)", 
+					location.getLatitude(), location.getLatitude(), maxDistance);
+			Log.e(LOG_TAG, errorMessage, e);
+			throw e;
+		}
+		List<PointLocation> points = new ArrayList<PointLocation>();
+		for (ParseObject parseObject : queryResult) {
+			ParseGeoPoint point = (ParseGeoPoint)parseObject.get(PointOfInterestParseConsts.LOCATION);
+			points.add(new PointLocation(point.getLatitude(), point.getLongitude()));
+		}
+		return points;
 	}
 /*
 	public void addTask(Long id, String title, Long dueDate, String androidId) {

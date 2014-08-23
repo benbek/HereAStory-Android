@@ -5,6 +5,7 @@ import java.util.List;
 import com.hereastory.shared.LimitedPointOfInterest;
 import com.hereastory.shared.PointLocation;
 import com.hereastory.shared.PointOfInterest;
+import com.parse.ParseException;
 
 public interface DatabaseService {
 	
@@ -14,5 +15,6 @@ public interface DatabaseService {
 
 	public LimitedPointOfInterest readLimited(Long id);
 
-	public List<PointLocation> readAllInArea();
+	public List<PointLocation> readAllInArea(PointLocation location, double maxDistance) throws ParseException;
+
 }
