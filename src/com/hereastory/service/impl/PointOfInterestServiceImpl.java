@@ -24,12 +24,12 @@ public class PointOfInterestServiceImpl implements PointOfInterestService {
 	}
 
 	@Override
-	public LimitedPointOfInterest readLimited(Long id) {
+	public LimitedPointOfInterest readLimited(String id) {
 		return databaseService.readLimited(id);
 	}
 
 	@Override
-	public PointOfInterest read(Long id) {
+	public PointOfInterest read(String id) {
 		return databaseService.read(id);
 	}
 

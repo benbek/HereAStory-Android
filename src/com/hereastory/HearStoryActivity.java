@@ -24,7 +24,7 @@ public class HearStoryActivity extends Activity {
 		story = (PointOfInterest) intent.getSerializableExtra(IntentConsts.STORY_OBJECT);
 
 		TextView description = (TextView) findViewById(R.id.textHearStoryDescription);
-		description.setText(story.getDescription());
+		description.setText(story.getTitle());
 		
 		ImageView image = (ImageView) findViewById(R.id.imageHearStoryImage);
 		image.setImageBitmap(BitmapFactory.decodeFile(story.getPictureFilePath()));

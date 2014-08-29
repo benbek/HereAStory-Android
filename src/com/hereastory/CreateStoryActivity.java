@@ -27,7 +27,7 @@ public class CreateStoryActivity extends Activity {
         button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
             	PointOfInterest story = new PointOfInterest();	
-            	story.setDescription(getDescription());
+            	story.setTitle(getDescription());
             	story.setLocation(getLocation());
 				Intent intent = new Intent(getApplicationContext(), CapturePictureActivity.class);
     			intent.putExtra(IntentConsts.STORY_OBJECT, story);

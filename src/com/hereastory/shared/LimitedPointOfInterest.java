@@ -6,41 +6,50 @@ import java.util.Date;
 public class LimitedPointOfInterest  implements Serializable {
 
 	private static final long serialVersionUID = -4574620519127749204L;
-	private Long id;
-	private User user;
+	private String id;
+	private User author;
 	private Date creationDate;
-	private Long likes;
-	private Double length;
+	private Number likeCount;
+	private Number duration;
 	
-	public Long getId() {
+	public String getId() {
 		return id;
 	}
-	public void setId(Long id) {
+	
+	public void setId(String id) {
 		this.id = id;
 	}
-	public User getUser() {
-		return user;
+	
+	public User getAuthor() {
+		return author;
 	}
-	public void setUser(User user) {
-		this.user = user;
+	
+	public void setAuthor(User author) {
+		this.author = author;
 	}
+	
 	public Date getCreationDate() {
 		return creationDate;
 	}
+	
 	public void setCreationDate(Date creationDate) {
 		this.creationDate = creationDate;
 	}
-	public Long getLikes() {
-		return likes;
+	
+	public Number getLikeCount() {
+		return likeCount;
 	}
-	public void setLikes(Long likes) {
-		this.likes = likes;
+
+	public void setLikeCount(Number likeCount) {
+		this.likeCount = likeCount;
 	}
-	public Double getLength() {
-		return length;
+	
+	public Number getDuration() {
+		return duration;
 	}
-	public void setLength(Double length) {
-		this.length = length;
+	
+	public void setDuration(Number duration) {
+		this.duration = duration;
 	}
 
 }
