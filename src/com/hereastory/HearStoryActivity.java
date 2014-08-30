@@ -1,5 +1,7 @@
 package com.hereastory;
 
+import java.io.IOException;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
@@ -26,8 +28,15 @@ public class HearStoryActivity extends Activity {
 		TextView description = (TextView) findViewById(R.id.textHearStoryDescription);
 		description.setText(story.getTitle());
 		
-		ImageView image = (ImageView) findViewById(R.id.imageHearStoryImage);
+		ImageView image = (ImageView) findViewById(R.id.imageHearStoryImage); // TODO
 		image.setImageBitmap(BitmapFactory.decodeFile(story.getImageFilePath()));
-		new AudioPlayer().startPlaying(story.getAudioFilePath());
+		
+		
+		try {
+			new AudioPlayer().startPlaying(story.getAudioFilePath());
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 }

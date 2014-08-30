@@ -12,7 +12,8 @@ import org.apache.commons.io.IOUtils;
 import android.util.Log;
 
 import com.hereastory.database.api.DatabaseService;
-import com.hereastory.service.api.PointOfInterestResponseHandler;
+import com.hereastory.service.api.PointOfInterestAddHandler;
+import com.hereastory.service.api.PointOfInterestReadHandler;
 import com.hereastory.shared.LimitedPointOfInterest;
 import com.hereastory.shared.PointLocation;
 import com.hereastory.shared.PointOfInterest;
@@ -49,9 +50,10 @@ public class ParseDatabaseServiceImpl implements DatabaseService {
 	public static final String LIKE_COUNT = "likeCount";
 	public static final String AUDIO = "audio";
 	public static final String IMAGE = "image";
+	public static final String THUMBNAIL = "thumbnail";
 
 	@Override
-	public void add(final PointOfInterest pointOfInterest, final PointOfInterestResponseHandler handler) {	
+	public void add(final PointOfInterest pointOfInterest, byte[] image, byte[] thumbnail, final PointOfInterestAddHandler handler) {	
 		ParseObject object = new ParseObject(POI_TABLE);		
 		object.setACL(getPublicACL());
 		object.put(DELETED, false);
@@ -61,10 +63,11 @@ public class ParseDatabaseServiceImpl implements DatabaseService {
 		object.put(LIKE_COUNT, pointOfInterest.getLikeCount());
 		object.put(LOCATION, getParseGeoPoint(pointOfInterest.getLocation()));
 		object.put(AUTHOR, getParseUser(pointOfInterest.getAuthor()));
+		object.put(IMAGE, new ParseFile(image));
+		object.put(THUMBNAIL, new ParseFile(thumbnail));
 		
 		try {
 			object.put(AUDIO, getParseFile(pointOfInterest.getAudioFilePath()));
-			object.put(IMAGE, getParseFile(pointOfInterest.getImageFilePath()));
 		} catch (Exception e) {
 			Log.e(LOG_TAG, "Failed saving point", e);
 			handler.addFailed(pointOfInterest, e);
@@ -85,16 +88,16 @@ public class ParseDatabaseServiceImpl implements DatabaseService {
 	}
 
 	@Override
-	public void readLimited(String id, PointOfInterestResponseHandler handler){
+	public void readLimited(String id, PointOfInterestReadHandler handler){
 		read(id, true, handler);
 	}
 	
 	@Override
-	public void read(String id, PointOfInterestResponseHandler handler) {
+	public void read(String id, PointOfInterestReadHandler handler) {
 		read(id, false, handler);
 	}
 	
-	private void read(final String id, final boolean limited, final PointOfInterestResponseHandler handler) {
+	private void read(final String id, final boolean limited, final PointOfInterestReadHandler handler) {
 		final LimitedPointOfInterest pointOfInterest = getPointOfInterestObject(limited);
 		pointOfInterest.setId(id);
 		
@@ -150,7 +153,7 @@ public class ParseDatabaseServiceImpl implements DatabaseService {
 	}
 
 	@Override
-	public void readAllInArea(final PointLocation location, final double maxDistance, final PointOfInterestResponseHandler handler) {
+	public void readAllInArea(final PointLocation location, final double maxDistance, final PointOfInterestReadHandler handler) {
 		ParseGeoPoint userLocation = new ParseGeoPoint(location.getLatitude(), location.getLatitude());
 		ParseQuery<ParseObject> query = ParseQuery.getQuery(POI_TABLE); 
 		query.whereEqualTo(DELETED, false);
@@ -178,8 +181,8 @@ public class ParseDatabaseServiceImpl implements DatabaseService {
 	}
 	
 	private PointLocation getLocation(ParseObject object) {
-		ParseGeoPoint point = (ParseGeoPoint)object.get(LOCATION);
-		return new PointLocation(point.getLatitude(), point.getLongitude());
+		ParseGeoPoint point = object.getParseGeoPoint(LOCATION);
+		return new PointLocation(point.getLatitude(), point.getLongitude(), object.getString(OBJECT_ID));
 	}
 	
 	private ParseGeoPoint getParseGeoPoint(PointLocation location) {
@@ -211,4 +214,5 @@ public class ParseDatabaseServiceImpl implements DatabaseService {
 		acl.setPublicReadAccess(true);
 		return acl;
 	}
+
 }

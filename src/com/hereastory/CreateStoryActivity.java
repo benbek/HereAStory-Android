@@ -43,7 +43,7 @@ public class CreateStoryActivity extends Activity {
 	}
 	
 	private PointLocation getLocation() {
-		return new PointLocation(1.0, 2.0); // TODO
+		return new PointLocation(1.0, 2.0, "1"); // TODO
 	}
 
 }
