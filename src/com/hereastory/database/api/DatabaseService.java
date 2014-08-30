@@ -1,19 +1,18 @@
 package com.hereastory.database.api;
 
-import java.util.List;
-
-import com.hereastory.shared.LimitedPointOfInterest;
+import com.hereastory.service.api.PointOfInterestAddHandler;
+import com.hereastory.service.api.PointOfInterestReadHandler;
 import com.hereastory.shared.PointLocation;
 import com.hereastory.shared.PointOfInterest;
 
 public interface DatabaseService {
 	
-	public void add(PointOfInterest story);
+	public void read(String id, PointOfInterestReadHandler handler);
 
-	public PointOfInterest read(String id);
+	public void readLimited(String id, PointOfInterestReadHandler handler);
 
-	public LimitedPointOfInterest readLimited(String id);
+	public void readAllInArea(PointLocation location, double maxDistance, PointOfInterestReadHandler handler);
 
-	public List<PointLocation> readAllInArea(PointLocation location, double maxDistance);
+	public void add(PointOfInterest pointOfInterest, byte[] image, byte[] thumbnail, PointOfInterestAddHandler handler);
 
 }

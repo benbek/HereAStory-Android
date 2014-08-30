@@ -10,7 +10,7 @@
     tools:context=".HearStoryActivity" >
 
     <TextView
-        android:id="@+id/textHearStoryDescription"
+        android:id="@+id/textHearStoryTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
      

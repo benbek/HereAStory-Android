@@ -4,49 +4,53 @@ import java.io.IOException;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.media.MediaRecorder;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
 import com.hereastory.service.api.OutputFileService;
 import com.hereastory.service.api.OutputFileService.FileType;
+import com.hereastory.service.api.PointOfInterestAddHandler;
 import com.hereastory.service.api.PointOfInterestService;
 import com.hereastory.service.impl.AudioPlayer;
+import com.hereastory.service.impl.AudioRecorder;
 import com.hereastory.service.impl.OutputFileServiceImpl;
 import com.hereastory.service.impl.PointOfInterestServiceImpl;
 import com.hereastory.shared.IntentConsts;
 import com.hereastory.shared.PointOfInterest;
 
 public class RecordAudioActivity extends Activity {
+	private static final String LOG_TAG = "RecordAudioActivity";
+	
+	private static String filePath; // TODO why static?
+	private static PointOfInterest story; // TODO why static?
 
-    private static final String LOG_TAG = "RecordAudioActivity";
-
-    private MediaRecorder audioRecorder;
-    private AudioPlayer audioPlayer;
-    private OutputFileService outputFileService;
-    private PointOfInterestService pointOfInterestService;
-    private boolean startPlaying = true;
+    private AudioRecorder audioRecorder;
     private boolean startRecording = true;
-    private static String filePath;
-	private PointOfInterest story;
+    private AudioPlayer audioPlayer;
+    private boolean startPlaying = true;
+    
+    private OutputFileService outputFileService;
+	private PointOfInterestService pointOfInterestService;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_record_audio);
-		pointOfInterestService = new PointOfInterestServiceImpl();
+
 		outputFileService = new OutputFileServiceImpl();
-		filePath = outputFileService.getOutputMediaFile(FileType.AUDIO).getAbsolutePath();
-		Intent intent = getIntent();
-		story = (PointOfInterest) intent.getSerializableExtra(IntentConsts.STORY_OBJECT);
-		// TODO: verify can't press next without recording
-		// TODO: verify can't play audio before recording
+		pointOfInterestService = new PointOfInterestServiceImpl();
 		audioPlayer = new AudioPlayer();
+		audioRecorder = new AudioRecorder();
+		
+		filePath = outputFileService.getOutputMediaFile(FileType.AUDIO).getAbsolutePath();
+		story = (PointOfInterest) getIntent().getSerializableExtra(IntentConsts.STORY_OBJECT);
+
 		setupRecordButton();
 		setupPlayButton();
 		setupNextButton();
+		// TODO: verify can't press next without recording
+		// TODO: verify can't play audio before recording
 	}
 
 	private void setupNextButton() {
@@ -54,10 +58,21 @@ public class RecordAudioActivity extends Activity {
         button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
             	story.setAudioFilePath(filePath);
-            	pointOfInterestService.add(story);
-				Intent intent = new Intent(getApplicationContext(), HearStoryActivity.class);
-    			intent.putExtra(IntentConsts.STORY_OBJECT, story);
-    			startActivity(intent);
+            	pointOfInterestService.add(story, new PointOfInterestAddHandler() {
+					
+					@Override
+					public void addFailed(PointOfInterest pointOfInterest, Exception e) {
+						// TODO Auto-generated method stub
+						
+					}
+					
+					@Override
+					public void addCompleted(PointOfInterest pointOfInterest) {
+						Intent intent = new Intent(getApplicationContext(), HearStoryActivity.class);
+		    			intent.putExtra(IntentConsts.STORY_OBJECT, story);
+		    			startActivity(intent);
+					}
+				});
             }
         });
 	}
@@ -97,16 +112,17 @@ public class RecordAudioActivity extends Activity {
     @Override
     public void onPause() {
         super.onPause();
-        if (audioRecorder != null) {
-            audioRecorder.release();
-            audioRecorder = null;
-        }
-
+        audioRecorder.stopRecording();
         audioPlayer.stopPlaying();
     }
     
     private void startPlaying() {
-    	audioPlayer.startPlaying(filePath);
+    	try {
+			audioPlayer.startPlaying(filePath);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
     }
 
     private void stopPlaying() {
@@ -114,30 +130,16 @@ public class RecordAudioActivity extends Activity {
     }
 
     private void startRecording() {
-        audioRecorder = new MediaRecorder();
-        audioRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
-        audioRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
-        audioRecorder.setOutputFile(filePath);
-        audioRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
-
         try {
-            audioRecorder.prepare();
-            audioRecorder.start();
-        } catch (IOException e) {
-            Log.e(LOG_TAG, "prepare() failed"); 
-            Log.e(LOG_TAG, e.getMessage());
-            for (StackTraceElement s : e.getStackTrace()) {
-            	Log.e(LOG_TAG, s.toString());
-            }
-        }
-
-       
+			audioRecorder.startRecording(filePath);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
     }
 
     private void stopRecording() {
-        audioRecorder.stop();
-        audioRecorder.release();
-        audioRecorder = null;
+        audioRecorder.stopRecording();
     }
 
 }

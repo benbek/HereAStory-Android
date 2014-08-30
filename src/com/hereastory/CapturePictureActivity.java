@@ -72,7 +72,7 @@ public class CapturePictureActivity extends Activity {
 		if (requestCode == CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE) {
 			if (resultCode == RESULT_OK) {
 				// Image captured and saved to fileUri specified in the Intent
-            	story.setPictureFilePath(fileUri.getPath());
+            	story.setImageFilePath(fileUri.getPath());
 				// TODO:
 			} else if (resultCode == RESULT_CANCELED) {
 				// User cancelled the image capture

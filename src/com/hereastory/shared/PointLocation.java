@@ -5,27 +5,27 @@ import java.io.Serializable;
 public class PointLocation implements Serializable {
 	
 	private static final long serialVersionUID = -5114185597366461526L;
+	
 	private Double latitude;
-	private Double Doubletitude;
+	private Double longitude;
+	private String pointOfInterestId;
 
-	public PointLocation(Double latitude, Double Doubletitude) {
+	public PointLocation(Double latitude, Double longitude, String pointOfInterestId) {
 		this.latitude = latitude;
-		this.Doubletitude = Doubletitude;
+		this.longitude = longitude;
+		this.pointOfInterestId = pointOfInterestId;
 	}
 
 	public Double getLatitude() {
 		return latitude;
 	}
 
-	public void setLatitude(Double latitude) {
-		this.latitude = latitude;
+	public Double getLongitude() {
+		return longitude;
 	}
 
-	public Double getDoubletitude() {
-		return Doubletitude;
+	public String getPointOfInterestId() {
+		return pointOfInterestId;
 	}
 
-	public void setDoubletitude(Double Doubletitude) {
-		this.Doubletitude = Doubletitude;
-	}
 }
