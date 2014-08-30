@@ -3,7 +3,6 @@ package com.hereastory;
 import java.io.IOException;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.widget.ImageView;
@@ -15,6 +14,7 @@ import com.hereastory.shared.PointOfInterest;
 
 public class HearStoryActivity extends Activity {
 
+    private AudioPlayer audioPlayer;
 	private PointOfInterest story;
 
 	@Override
@@ -22,21 +22,26 @@ public class HearStoryActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_hear_story);
 		
-		Intent intent = getIntent();
-		story = (PointOfInterest) intent.getSerializableExtra(IntentConsts.STORY_OBJECT);
-
-		TextView description = (TextView) findViewById(R.id.textHearStoryDescription);
-		description.setText(story.getTitle());
+		story = (PointOfInterest) getIntent().getSerializableExtra(IntentConsts.STORY_OBJECT);
+		audioPlayer = new AudioPlayer();
+		
+		TextView title = (TextView) findViewById(R.id.textHearStoryTitle);
+		title.setText(story.getTitle());
 		
 		ImageView image = (ImageView) findViewById(R.id.imageHearStoryImage); // TODO
 		image.setImageBitmap(BitmapFactory.decodeFile(story.getImageFilePath()));
 		
-		
 		try {
-			new AudioPlayer().startPlaying(story.getAudioFilePath());
+			audioPlayer.startPlaying(story.getAudioFilePath());
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
+	
+    @Override
+    public void onPause() {
+        super.onPause();
+        audioPlayer.stopPlaying();
+    }
 }

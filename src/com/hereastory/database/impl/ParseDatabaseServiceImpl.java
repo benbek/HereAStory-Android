@@ -9,6 +9,8 @@ import java.util.Locale;
 
 import org.apache.commons.io.IOUtils;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.util.Log;
 
 import com.hereastory.database.api.DatabaseService;
@@ -108,26 +110,42 @@ public class ParseDatabaseServiceImpl implements DatabaseService {
 		query.getFirstInBackground(new GetCallback<ParseObject>() {
 			@Override
 			public void done(ParseObject object, ParseException e) {
-				if (e == null) {
-					fillLimitedFields(pointOfInterest, object);
-					if (limited) {
-						handler.readLimitedCompleted(pointOfInterest);
+				try {
+					if (e == null) {
+						handleReadCompleted(limited, handler, pointOfInterest, object);
 					} else {
-						fillNonLimitedFields(object, (PointOfInterest)pointOfInterest);
-						handler.readCompleted((PointOfInterest)pointOfInterest);
+						handleReadFailed(id, limited, handler, e);
 					}
-				} else {
-					Log.e(LOG_TAG, "Failed reading point " + id, e);
-					if (limited) {
-						handler.readLimitedFailed(id, e);
-					} else {
-						handler.readFailed(id, e);
-					}
+				} catch (Exception ex) {
+					handleReadFailed(id, limited, handler, ex);
 				}
 			}
+
+
 		});
 	}
 
+	private void handleReadCompleted(final boolean limited, final PointOfInterestReadHandler handler,
+			final LimitedPointOfInterest pointOfInterest, ParseObject object) throws ParseException {
+		fillLimitedFields(pointOfInterest, object);
+		if (limited) {
+			handler.readLimitedCompleted(pointOfInterest);
+		} else {
+			fillNonLimitedFields(object, (PointOfInterest)pointOfInterest);
+			handler.readCompleted((PointOfInterest)pointOfInterest);
+		}
+	}
+
+	private void handleReadFailed(final String id, final boolean limited, final PointOfInterestReadHandler handler,
+			Exception ex) {
+		Log.e(LOG_TAG, "Failed reading point " + id, ex);
+		if (limited) {
+			handler.readLimitedFailed(id, ex);
+		} else {
+			handler.readFailed(id, ex);
+		}
+	}
+	
 	private LimitedPointOfInterest getPointOfInterestObject(final boolean limited) {
 		final LimitedPointOfInterest pointOfInterest;
 		if (limited) {
@@ -138,7 +156,7 @@ public class ParseDatabaseServiceImpl implements DatabaseService {
 		return pointOfInterest;
 	}
 
-	private void fillLimitedFields(final LimitedPointOfInterest pointOfInterest, ParseObject object) {
+	private void fillLimitedFields(final LimitedPointOfInterest pointOfInterest, ParseObject object) throws ParseException {
 		pointOfInterest.setCreationDate(object.getDate(PUBLISHED_DATE));
 		pointOfInterest.setDuration(object.getNumber(DURATION));
 		pointOfInterest.setLikeCount(object.getNumber(LIKE_COUNT));
@@ -189,13 +207,17 @@ public class ParseDatabaseServiceImpl implements DatabaseService {
 		return new ParseGeoPoint(location.getLatitude(), location.getLongitude());
 	}
 	
-	private User getUser(ParseObject object, String nameField, String pictureField) {
+	private User getUser(ParseObject object, String nameField, String pictureField) throws ParseException {
 		User user = new User();
 		user.setName(object.getString(nameField));
 		user.setId(object.getString(OBJECT_ID));
-
-		// user.setPictureFilePath(pictureFilePath); // TODO
+		user.setProfilePictureSmall(getBitmap(object.getParseFile(PROFILE_PICTURE_SMALL)));
 		return user;
+	}
+	
+	private Bitmap getBitmap(ParseFile file) throws ParseException {
+		byte[] bytes = file.getData();
+        return BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
 	}
 	
 	private ParseUser getParseUser(User user) {
