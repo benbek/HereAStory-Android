@@ -1,5 +1,7 @@
 package com.hereastory.service.impl;
 
+import java.nio.ByteBuffer;
+
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.ThumbnailUtils;
@@ -8,18 +10,52 @@ import com.hereastory.service.api.BitmapService;
 
 public class BitmapServiceImpl implements BitmapService {
 
+	private static final int IMAGE_WIDTH = 852;
+	private static final int IMAGE_HEIGHT = 1136;
+	private static final int THUMB_IMAGE_WIDTH = 192;
+	private static final int THUMB_IMAGE_HEIGHT = 256;
+	
+	@Override
+	public byte[] readAndResize(String filePath) {
+		// First decode with inJustDecodeBounds=true to check dimensions
+		final BitmapFactory.Options options = new BitmapFactory.Options();
+		options.inJustDecodeBounds = true;
+		BitmapFactory.decodeFile(filePath, options);
+
+		// Calculate inSampleSize
+		options.inSampleSize = calculateInSampleSize(options, IMAGE_WIDTH, IMAGE_HEIGHT);
+
+		// Decode bitmap with inSampleSize set
+		options.inJustDecodeBounds = false;
+		Bitmap bitmap = BitmapFactory.decodeFile(filePath, options);
+		bitmap = ThumbnailUtils.extractThumbnail(bitmap, IMAGE_WIDTH, IMAGE_HEIGHT);
+		return toByteArray(bitmap);
+	}
+	
+	@Override
+	public byte[] getThumbnail(byte[] orig) {
+		Bitmap bitmap = BitmapFactory.decodeByteArray(orig, 0, orig.length);
+		Bitmap thumbnail = ThumbnailUtils.extractThumbnail(bitmap , THUMB_IMAGE_WIDTH, THUMB_IMAGE_HEIGHT);
+		return toByteArray(thumbnail);
+	}
+	
+	private byte[] toByteArray(Bitmap bitmap) {
+        ByteBuffer buffer = ByteBuffer.allocate(bitmap.getByteCount());
+        bitmap.copyPixelsToBuffer(buffer);
+        return buffer.array();
+	}
+	
 	private int calculateInSampleSize(BitmapFactory.Options options, int reqWidth, int reqHeight) {
-		
 		// Raw height and width of image
 		final int height = options.outHeight;
 		final int width = options.outWidth;
 		int inSampleSize = 1;
-
+		
 		if (height > reqHeight || width > reqWidth) {
-
+			
 			final int halfHeight = height / 2;
 			final int halfWidth = width / 2;
-
+			
 			// Calculate the largest inSampleSize value that is a power of 2 and
 			// keeps both
 			// height and width larger than the requested height and width.
@@ -27,29 +63,7 @@ public class BitmapServiceImpl implements BitmapService {
 				inSampleSize *= 2;
 			}
 		}
-
+		
 		return inSampleSize;
-	}
-
-	@Override
-	public Bitmap readThumbnail(String filePath, int reqWidth, int reqHeight) {
-
-		// First decode with inJustDecodeBounds=true to check dimensions
-		final BitmapFactory.Options options = new BitmapFactory.Options();
-		options.inJustDecodeBounds = true;
-		BitmapFactory.decodeFile(filePath, options);
-
-		// Calculate inSampleSize
-		options.inSampleSize = calculateInSampleSize(options, reqWidth, reqHeight);
-
-		// Decode bitmap with inSampleSize set
-		options.inJustDecodeBounds = false;
-		Bitmap bitmap = BitmapFactory.decodeFile(filePath, options);
-		return ThumbnailUtils.extractThumbnail(bitmap, reqWidth, reqHeight);
-	}
-	
-	@Override
-	public Bitmap resizeThumbnail(Bitmap bitmap, int reqWidth, int reqHeight) {
-		return ThumbnailUtils.extractThumbnail(bitmap, reqWidth, reqHeight);
 	}
 }

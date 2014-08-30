@@ -6,6 +6,7 @@ import java.util.Date;
 public class LimitedPointOfInterest  implements Serializable {
 
 	private static final long serialVersionUID = -4574620519127749204L;
+	
 	private String id;
 	private User author;
 	private Date creationDate;

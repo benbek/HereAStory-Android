@@ -10,7 +10,7 @@ public class User implements Serializable {
 	
 	private String id;
 	private String name;
-	private Bitmap profilePictureSmall;
+	private Bitmap profilePictureSmall; // TODO change to byte[]?
 	
 	public String getName() {
 		return name;

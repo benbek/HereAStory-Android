@@ -13,6 +13,6 @@ public interface DatabaseService {
 
 	public void readAllInArea(PointLocation location, double maxDistance, PointOfInterestReadHandler handler);
 
-	public void add(PointOfInterest pointOfInterest, byte[] image, byte[] thumbnail, PointOfInterestAddHandler handler);
+	public void add(PointOfInterest pointOfInterest, byte[] thumbnail, PointOfInterestAddHandler handler);
 
 }

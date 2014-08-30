@@ -8,8 +8,10 @@ import android.provider.MediaStore;
 import android.view.View;
 import android.widget.Button;
 
+import com.hereastory.service.api.BitmapService;
 import com.hereastory.service.api.OutputFileService;
 import com.hereastory.service.api.OutputFileService.FileType;
+import com.hereastory.service.impl.BitmapServiceImpl;
 import com.hereastory.service.impl.OutputFileServiceImpl;
 import com.hereastory.shared.IntentConsts;
 import com.hereastory.shared.PointOfInterest;
@@ -19,6 +21,7 @@ public class CapturePictureActivity extends Activity {
 	private static Uri fileUri;
 	
     private OutputFileService outputFileService;
+    private BitmapService bitmapService;
 	private PointOfInterest story;
 	
 	@Override
@@ -26,7 +29,8 @@ public class CapturePictureActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_capture_picture);
 		outputFileService = new OutputFileServiceImpl();
-
+		bitmapService = new BitmapServiceImpl();
+		
 		Intent intent = getIntent();
 		story = (PointOfInterest) intent.getSerializableExtra(IntentConsts.STORY_OBJECT);
 		// TODO: verify can't press next without picture
@@ -72,7 +76,8 @@ public class CapturePictureActivity extends Activity {
 		if (requestCode == CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE) {
 			if (resultCode == RESULT_OK) {
 				// Image captured and saved to fileUri specified in the Intent
-            	story.setImageFilePath(fileUri.getPath());
+            	byte[] bytes = bitmapService.readAndResize(fileUri.getPath());
+				story.setImage(bytes);
 				// TODO:
 			} else if (resultCode == RESULT_CANCELED) {
 				// User cancelled the image capture

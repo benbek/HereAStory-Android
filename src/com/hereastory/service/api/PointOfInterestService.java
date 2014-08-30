@@ -14,5 +14,4 @@ public interface PointOfInterestService {
 
 	void add(PointOfInterest pointOfInterest, PointOfInterestAddHandler handler);
 	
-
 }

@@ -1,13 +1,8 @@
 package com.hereastory.database.impl;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-
-import org.apache.commons.io.IOUtils;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -55,7 +50,7 @@ public class ParseDatabaseServiceImpl implements DatabaseService {
 	public static final String THUMBNAIL = "thumbnail";
 
 	@Override
-	public void add(final PointOfInterest pointOfInterest, byte[] image, byte[] thumbnail, final PointOfInterestAddHandler handler) {	
+	public void add(final PointOfInterest pointOfInterest, byte[] thumbnail, final PointOfInterestAddHandler handler) {	
 		ParseObject object = new ParseObject(POI_TABLE);		
 		object.setACL(getPublicACL());
 		object.put(DELETED, false);
@@ -65,16 +60,9 @@ public class ParseDatabaseServiceImpl implements DatabaseService {
 		object.put(LIKE_COUNT, pointOfInterest.getLikeCount());
 		object.put(LOCATION, getParseGeoPoint(pointOfInterest.getLocation()));
 		object.put(AUTHOR, getParseUser(pointOfInterest.getAuthor()));
-		object.put(IMAGE, new ParseFile(image));
+		object.put(AUDIO, new ParseFile(pointOfInterest.getAudio()));
+		object.put(IMAGE, new ParseFile(pointOfInterest.getImage()));
 		object.put(THUMBNAIL, new ParseFile(thumbnail));
-		
-		try {
-			object.put(AUDIO, getParseFile(pointOfInterest.getAudioFilePath()));
-		} catch (Exception e) {
-			Log.e(LOG_TAG, "Failed saving point", e);
-			handler.addFailed(pointOfInterest, e);
-			return;
-		}
 		
 		object.saveInBackground(new SaveCallback() {
 			@Override
@@ -120,8 +108,6 @@ public class ParseDatabaseServiceImpl implements DatabaseService {
 					handleReadFailed(id, limited, handler, ex);
 				}
 			}
-
-
 		});
 	}
 
@@ -163,11 +149,11 @@ public class ParseDatabaseServiceImpl implements DatabaseService {
 		pointOfInterest.setAuthor(getUser(object.getParseObject(AUTHOR), NAME, PROFILE_PICTURE_SMALL));
 	}
 	
-	private void fillNonLimitedFields(ParseObject object, PointOfInterest pointOfInterest) {
+	private void fillNonLimitedFields(ParseObject object, PointOfInterest pointOfInterest) throws ParseException {
 		pointOfInterest.setLocation(getLocation(object));
 		pointOfInterest.setTitle(object.getString(TITLE));
-		//pointOfInterest.setAudioFilePath(audioFilePath); // TODO save file to disk
-		//pointOfInterest.setPictureFilePath(pictureFilePath);// TODO
+		pointOfInterest.setImage(object.getParseFile(IMAGE).getData());
+		pointOfInterest.setAudio(object.getParseFile(AUDIO).getData());
 	}
 
 	@Override
@@ -219,16 +205,11 @@ public class ParseDatabaseServiceImpl implements DatabaseService {
 		byte[] bytes = file.getData();
         return BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
 	}
-	
+
 	private ParseUser getParseUser(User user) {
 		ParseUser parseUser = new ParseUser();
 		parseUser.setObjectId(user.getId());
 		return parseUser;
-	}
-	
-	private ParseFile getParseFile(String filePath) throws FileNotFoundException, IOException {
-		byte[] fileBytes = IOUtils.toByteArray(new FileInputStream(filePath));
-		return new ParseFile(fileBytes);
 	}
 	
 	private ParseACL getPublicACL() {

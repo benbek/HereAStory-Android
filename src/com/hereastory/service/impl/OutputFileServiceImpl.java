@@ -14,6 +14,11 @@ public class OutputFileServiceImpl implements OutputFileService {
 	
 	@Override
 	public File getOutputMediaFile(FileType fileType) {
+		return getOutputMediaFile(fileType, null);
+	}
+
+	@Override
+	public File getOutputMediaFile(FileType fileType, String pointOfInterestId) {
 		// TODO: To be safe, you should check that the SDCard is mounted
 		// using Environment.getExternalStorageState() before doing this.
 
@@ -30,8 +35,11 @@ public class OutputFileServiceImpl implements OutputFileService {
 		}
 
 		// Create a media file name
-		String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.US).format(new Date());
-		File mediaFile = new File(mediaStorageDir.getPath() + File.separator + timeStamp + "." + fileType.getSuffix());
+		String fileName = pointOfInterestId;
+		if (fileName == null) {
+			fileName = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.US).format(new Date());
+		}
+		File mediaFile = new File(mediaStorageDir.getPath() + File.separator + fileName + "." + fileType.getSuffix());
 		return mediaFile;
 	}
 
