@@ -5,12 +5,13 @@ import java.io.Serializable;
 public class PointLocation implements Serializable {
 	
 	private static final long serialVersionUID = -5114185597366461526L;
+	
 	private Double latitude;
-	private Double Doubletitude;
+	private Double longitude;
 
-	public PointLocation(Double latitude, Double Doubletitude) {
+	public PointLocation(Double latitude, Double longitude) {
 		this.latitude = latitude;
-		this.Doubletitude = Doubletitude;
+		this.longitude = longitude;
 	}
 
 	public Double getLatitude() {
@@ -21,11 +22,11 @@ public class PointLocation implements Serializable {
 		this.latitude = latitude;
 	}
 
-	public Double getDoubletitude() {
-		return Doubletitude;
+	public Double getLongitude() {
+		return longitude;
 	}
 
-	public void setDoubletitude(Double Doubletitude) {
-		this.Doubletitude = Doubletitude;
+	public void setLongitude(Double longitude) {
+		this.longitude = longitude;
 	}
 }

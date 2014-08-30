@@ -54,7 +54,7 @@ public class RecordAudioActivity extends Activity {
         button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
             	story.setAudioFilePath(filePath);
-            	pointOfInterestService.add(story);
+            	//TODO pointOfInterestService.add(story);
 				Intent intent = new Intent(getApplicationContext(), HearStoryActivity.class);
     			intent.putExtra(IntentConsts.STORY_OBJECT, story);
     			startActivity(intent);

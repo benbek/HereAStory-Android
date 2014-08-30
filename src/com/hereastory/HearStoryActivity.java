@@ -27,7 +27,7 @@ public class HearStoryActivity extends Activity {
 		description.setText(story.getTitle());
 		
 		ImageView image = (ImageView) findViewById(R.id.imageHearStoryImage);
-		image.setImageBitmap(BitmapFactory.decodeFile(story.getPictureFilePath()));
+		image.setImageBitmap(BitmapFactory.decodeFile(story.getImageFilePath()));
 		new AudioPlayer().startPlaying(story.getAudioFilePath());
 	}
 }

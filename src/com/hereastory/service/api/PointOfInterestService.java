@@ -1,20 +1,18 @@
 package com.hereastory.service.api;
 
-import java.util.List;
-
-import com.hereastory.shared.LimitedPointOfInterest;
 import com.hereastory.shared.PointLocation;
 import com.hereastory.shared.PointOfInterest;
-import com.parse.ParseException;
+
 
 public interface PointOfInterestService {
+
+	void readAllInArea(PointLocation location, double maxDistance, PointOfInterestResponseHandler handler);
+
+	void readLimited(String id, PointOfInterestResponseHandler handler);
+
+	void read(String id, PointOfInterestResponseHandler handler);
+
+	void add(PointOfInterest pointOfInterest, PointOfInterestResponseHandler handler);
 	
-	List<PointLocation> readAllInArea(PointLocation location, double maxDistance) throws ParseException;
-	
-	LimitedPointOfInterest readLimited(String id);
-	
-	PointOfInterest read(String id);
-	
-	void add(PointOfInterest pointOfInterest);
-	
+
 }

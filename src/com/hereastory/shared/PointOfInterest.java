@@ -7,7 +7,7 @@ public class PointOfInterest extends LimitedPointOfInterest {
 	
 	private String title;
 	private PointLocation location;
-	private String pictureFilePath;
+	private String imageFilePath;
 	private String audioFilePath;
 
 	public String getTitle() {
@@ -18,12 +18,12 @@ public class PointOfInterest extends LimitedPointOfInterest {
 		this.title = title;
 	}
 
-	public String getPictureFilePath() {
-		return pictureFilePath;
+	public String getImageFilePath() {
+		return imageFilePath;
 	}
 
-	public void setPictureFilePath(String pictureFilePath) {
-		this.pictureFilePath = pictureFilePath;
+	public void setImageFilePath(String imageFilePath) {
+		this.imageFilePath = imageFilePath;
 	}
 
 	public String getAudioFilePath() {

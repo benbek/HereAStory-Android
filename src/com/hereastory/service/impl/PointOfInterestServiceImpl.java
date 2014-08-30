@@ -1,14 +1,11 @@
 package com.hereastory.service.impl;
 
-import java.util.List;
-
 import com.hereastory.database.DatabaseServiceFactory;
 import com.hereastory.database.api.DatabaseService;
+import com.hereastory.service.api.PointOfInterestResponseHandler;
 import com.hereastory.service.api.PointOfInterestService;
-import com.hereastory.shared.LimitedPointOfInterest;
 import com.hereastory.shared.PointLocation;
 import com.hereastory.shared.PointOfInterest;
-import com.parse.ParseException;
 
 public class PointOfInterestServiceImpl implements PointOfInterestService {
 	
@@ -19,23 +16,23 @@ public class PointOfInterestServiceImpl implements PointOfInterestService {
 	}
 	
 	@Override
-	public List<PointLocation> readAllInArea(PointLocation location, double maxDistance) throws ParseException {
-		return databaseService.readAllInArea(location, maxDistance);
+	public void readAllInArea(PointLocation location, double maxDistance, PointOfInterestResponseHandler handler) {
+		databaseService.readAllInArea(location, maxDistance, handler);
 	}
 
 	@Override
-	public LimitedPointOfInterest readLimited(String id) {
-		return databaseService.readLimited(id);
+	public void readLimited(String id, PointOfInterestResponseHandler handler) {
+		databaseService.readLimited(id, handler);
 	}
 
 	@Override
-	public PointOfInterest read(String id) {
-		return databaseService.read(id);
+	public void read(String id, PointOfInterestResponseHandler handler) {
+		databaseService.read(id, handler);
 	}
 
 	@Override
-	public void add(PointOfInterest pointOfInterest) {
-		databaseService.add(pointOfInterest);
+	public void add(PointOfInterest pointOfInterest, PointOfInterestResponseHandler handler) {
+		databaseService.add(pointOfInterest, handler);
 	}
 
 }
