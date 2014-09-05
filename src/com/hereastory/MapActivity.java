@@ -4,6 +4,7 @@ import com.hereastory.ui.SystemUiHiderActivity;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.maps.*;
+import com.google.android.gms.maps.GoogleMap.OnMarkerClickListener;
 import com.google.android.gms.maps.model.*;
 
 import android.os.Bundle;
@@ -11,7 +12,7 @@ import android.os.Bundle;
 /**
  * The main map activity.
  */
-public class MapActivity extends SystemUiHiderActivity {
+public class MapActivity extends SystemUiHiderActivity implements OnMarkerClickListener {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -36,6 +37,8 @@ public class MapActivity extends SystemUiHiderActivity {
         
         map.moveCamera(CameraUpdateFactory.newLatLngZoom(jerusalem, 13));
 
+        map.setOnMarkerClickListener(this);
+        
         map.addMarker(new MarkerOptions()
                 .title("Givat Ram")
                 .snippet("Where geeks prosper.")
@@ -55,4 +58,10 @@ public class MapActivity extends SystemUiHiderActivity {
         	GooglePlayServicesUtil.getErrorDialog(gPlayResult, this, 0).show();
         }
     }
+
+	@Override
+	public boolean onMarkerClick(final Marker clickedMarker) {
+		// TODO Auto-generated method stub
+		return false;
+	}
 }
