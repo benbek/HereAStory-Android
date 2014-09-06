@@ -1,11 +1,12 @@
 package com.hereastory;
 
 import com.hereastory.ui.SystemUiHiderActivity;
+import com.androidmapsextensions.GoogleMap.OnMarkerClickListener;
+import com.androidmapsextensions.*;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
-import com.google.android.gms.maps.*;
-import com.google.android.gms.maps.GoogleMap.OnMarkerClickListener;
-import com.google.android.gms.maps.model.*;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.model.LatLng;
 
 import android.os.Bundle;
 
@@ -16,7 +17,7 @@ public class MapActivity extends SystemUiHiderActivity implements OnMarkerClickL
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-
+    	
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map);
 
@@ -25,14 +26,14 @@ public class MapActivity extends SystemUiHiderActivity implements OnMarkerClickL
         	GooglePlayServicesUtil.getErrorDialog(gPlayResult, this, 0).show();
         	finish();
         }
-        
+                
         // Get a handle to the Map Fragment
         GoogleMap map = ((MapFragment) getFragmentManager()
-                .findFragmentById(R.id.map)).getMap();
+                .findFragmentById(R.id.map)).getExtendedMap();
 
         // Set location to Safra Campus, Jerusalem: (31.774476,35.203543)
         LatLng jerusalem = new LatLng(31.774476, 35.203543);
-
+        
         map.setMyLocationEnabled(true);
         
         map.moveCamera(CameraUpdateFactory.newLatLngZoom(jerusalem, 13));
@@ -43,7 +44,7 @@ public class MapActivity extends SystemUiHiderActivity implements OnMarkerClickL
                 .title("Givat Ram")
                 .snippet("Where geeks prosper.")
                 .flat(true)
-                .rotation(245)
+                .rotation(20)
                 .position(jerusalem));
 
         super.setupUiHide(findViewById(R.id.map), findViewById(R.id.fullscreen_content_controls), R.id.dummy_button);
