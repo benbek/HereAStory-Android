@@ -215,7 +215,7 @@ public class ParseDatabaseServiceImpl implements DatabaseService {
 	
 	private PointLocation getLocation(ParseObject object) {
 		ParseGeoPoint point = object.getParseGeoPoint(LOCATION);
-		return new PointLocation(point.getLatitude(), point.getLongitude(), object.getString(OBJECT_ID));
+		return new PointLocation(point.getLatitude(), point.getLongitude(), object.getObjectId());
 	}
 	
 	private ParseGeoPoint getParseGeoPoint(PointLocation location) {

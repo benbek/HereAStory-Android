@@ -1,19 +1,84 @@
 package com.hereastory;
 
-import com.hereastory.ui.SystemUiHiderActivity;
+import java.util.List;
+
+import android.os.Bundle;
+import android.util.Log;
+
+import com.androidmapsextensions.GoogleMap;
 import com.androidmapsextensions.GoogleMap.OnMarkerClickListener;
-import com.androidmapsextensions.*;
+import com.androidmapsextensions.MapFragment;
+import com.androidmapsextensions.Marker;
+import com.androidmapsextensions.MarkerOptions;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.model.LatLng;
-
-import android.os.Bundle;
+import com.hereastory.service.api.PointOfInterestReadHandler;
+import com.hereastory.service.api.PointOfInterestService;
+import com.hereastory.service.impl.PointOfInterestServiceImpl;
+import com.hereastory.shared.LimitedPointOfInterest;
+import com.hereastory.shared.PointLocation;
+import com.hereastory.shared.PointOfInterest;
+import com.hereastory.ui.SystemUiHiderActivity;
+import com.parse.ParseException;
 
 /**
  * The main map activity.
  */
 public class MapActivity extends SystemUiHiderActivity implements OnMarkerClickListener {
+	
+	private static final String LOG_TAG = MapActivity.class.getSimpleName();
+	
+	private final class POIReader implements PointOfInterestReadHandler {
+		@Override
+		public void readLimitedFailed(String id, Exception e) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void readLimitedCompleted(LimitedPointOfInterest pointOfInterest) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void readFailed(String id, Exception e) {
+			Marker clickedMarker = map.getMarkerShowingInfoWindow();
+			clickedMarker.hideInfoWindow();
+			Log.w(LOG_TAG, "readError when trying to get POI with id \"".concat(id).concat("\""), e);
+		}
+
+		@Override
+		public void readCompleted(PointOfInterest poi) {
+			// Locate the marker of interest
+			Marker clickedMarker = map.getMarkerShowingInfoWindow();
+			clickedMarker.setTitle(poi.getTitle());
+			clickedMarker.setSnippet(poi.getAuthor().getName());
+		}
+
+		@Override
+		public void readAllInAreaFailed(double latitude, double longitude,
+				double maxDistance, ParseException e) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void readAllInAreaCompleted(List<PointLocation> points) {
+			for (PointLocation loc : points) {
+				addMarker(new MarkerOptions()
+					.position(new LatLng(loc.getLatitude(), loc.getLongitude()))
+					.data(loc));
+			}
+		}
+	}
+
+	private GoogleMap map;
+	
+	final PointOfInterestReadHandler markerReader = new POIReader();
+	private PointOfInterestService poiService;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -28,7 +93,7 @@ public class MapActivity extends SystemUiHiderActivity implements OnMarkerClickL
         }
                 
         // Get a handle to the Map Fragment
-        GoogleMap map = ((MapFragment) getFragmentManager()
+        map = ((MapFragment) getFragmentManager()
                 .findFragmentById(R.id.map)).getExtendedMap();
 
         // Set location to Safra Campus, Jerusalem: (31.774476,35.203543)
@@ -40,16 +105,28 @@ public class MapActivity extends SystemUiHiderActivity implements OnMarkerClickL
 
         map.setOnMarkerClickListener(this);
         
-        map.addMarker(new MarkerOptions()
+        addMarker(new MarkerOptions()
                 .title("Givat Ram")
                 .snippet("Where geeks prosper.")
-                .flat(true)
-                .rotation(20)
                 .position(jerusalem));
 
         super.setupUiHide(findViewById(R.id.map), findViewById(R.id.fullscreen_content_controls), R.id.dummy_button);
+        
+        // Here-a-Story services and interfaces
+        poiService = new PointOfInterestServiceImpl();
+        
+        addMarkersAtLocation(jerusalem);
     }
 
+    protected void addMarker(MarkerOptions marker) {
+    	map.addMarker(marker.flat(true)
+    			.rotation(340));
+    }
+    
+    protected void addMarkersAtLocation(LatLng location) {
+		poiService.readAllInArea(location.latitude, location.longitude, 1000, markerReader);
+    }
+    
     @Override
     public void onResume() {
     	super.onResume();
@@ -62,7 +139,17 @@ public class MapActivity extends SystemUiHiderActivity implements OnMarkerClickL
 
 	@Override
 	public boolean onMarkerClick(final Marker clickedMarker) {
-		// TODO Auto-generated method stub
-		return false;
+		PointLocation loc = clickedMarker.getData();
+		if (loc != null) {
+			clickedMarker.setSnippet("Loading...");
+			clickedMarker.showInfoWindow();
+			poiService.read(loc.getPointOfInterestId(), markerReader);
+		}
+		
+		return true;
+	}
+	
+	protected void showExceptionDialog(Exception e) {
+		
 	}
 }
