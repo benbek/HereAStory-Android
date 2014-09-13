@@ -161,6 +161,10 @@ public class MapActivity extends SystemUiHiderActivity implements OnMarkerClickL
 		return false;
 	}
 	
+	private void recordStoryClick() {
+		
+	}
+	
 	protected void showExceptionDialog(Exception e) {
 		
 	}

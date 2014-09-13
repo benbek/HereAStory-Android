@@ -38,22 +38,38 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.hereastory.CreateStoryActivity"
+            android:name=".CreateStoryActivity"
             android:label="@string/title_activity_create_story" >
         </activity>
         <activity
-            android:name="com.hereastory.CapturePictureActivity"
+            android:excludeFromRecents="true"
+            android:parentActivityName="com.hereastory.CreateStoryActivity"
+            android:name=".CapturePictureActivity"
             android:label="@string/title_activity_capture_picture" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.hereastory.CreateStoryActivity" />
         </activity>
         <activity
-            android:name="com.hereastory.RecordAudioActivity"
+            android:excludeFromRecents="true"
+            android:name=".RecordAudioActivity"
+            android:parentActivityName="com.hereastory.CreateStoryActivity"
+            android:immersive="true"
             android:label="@string/title_activity_record_audio" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.hereastory.CreateStoryActivity" />
         </activity>
         <activity
+            android:parentActivityName="com.hereastory.MapActivity"
             android:name="com.hereastory.HearStoryActivity"
             android:label="@string/title_activity_hear_story" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.hereastory.MapActivity" />
         </activity>
         <activity android:name=".MapActivity"
+                  android:label=""
                   android:configChanges="orientation|keyboardHidden|screenSize"
                   android:theme="@style/FullscreenTheme">
             <intent-filter>
