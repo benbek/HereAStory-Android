@@ -4,22 +4,35 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import android.app.Activity;
+import android.app.Dialog;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentSender;
+import android.location.Location;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 
 import com.androidmapsextensions.GoogleMap;
+import com.androidmapsextensions.GoogleMap.OnInfoWindowClickListener;
 import com.androidmapsextensions.GoogleMap.OnMarkerClickListener;
 import com.androidmapsextensions.MapFragment;
 import com.androidmapsextensions.Marker;
 import com.androidmapsextensions.MarkerOptions;
 import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GooglePlayServicesClient;
 import com.google.android.gms.common.GooglePlayServicesUtil;
+import com.google.android.gms.location.LocationClient;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.hereastory.service.api.PointOfInterestReadHandler;
 import com.hereastory.service.api.PointOfInterestService;
 import com.hereastory.service.impl.PointOfInterestServiceImpl;
+import com.hereastory.shared.IntentConsts;
 import com.hereastory.shared.LimitedPointOfInterest;
+import com.hereastory.shared.LocationUnavailableException;
 import com.hereastory.shared.PointLocation;
 import com.hereastory.shared.PointOfInterest;
 import com.hereastory.ui.SystemUiHiderActivity;
@@ -28,7 +41,7 @@ import com.parse.ParseException;
 /**
  * The main map activity.
  */
-public class MapActivity extends SystemUiHiderActivity implements OnMarkerClickListener {
+public class MapActivity extends SystemUiHiderActivity implements GooglePlayServicesClient.ConnectionCallbacks, OnMarkerClickListener, OnInfoWindowClickListener {
 	
 	private static final String LOG_TAG = MapActivity.class.getSimpleName();
 	
@@ -87,6 +100,9 @@ public class MapActivity extends SystemUiHiderActivity implements OnMarkerClickL
 
 	private GoogleMap map;
 	
+	LocationFailureHandler failureHandler = new LocationFailureHandler(this);
+    LocationClient locationClient;
+	
 	final PointOfInterestReadHandler markerReader = new POIReader();
 	private PointOfInterestService poiService;
 	
@@ -103,6 +119,8 @@ public class MapActivity extends SystemUiHiderActivity implements OnMarkerClickL
         	GooglePlayServicesUtil.getErrorDialog(gPlayResult, this, 0).show();
         	finish();
         }
+        
+        locationClient = new LocationClient(this, this, failureHandler);
                 
         // Get a handle to the Map Fragment
         map = ((MapFragment) getFragmentManager()
@@ -161,11 +179,114 @@ public class MapActivity extends SystemUiHiderActivity implements OnMarkerClickL
 		return false;
 	}
 	
-	private void recordStoryClick() {
+	protected void showExceptionDialog(Exception e) {
 		
 	}
+
+	private static class LocationFailureHandler implements GooglePlayServicesClient.OnConnectionFailedListener {
+	    public final static int CONNECTION_FAILURE_RESOLUTION_REQUEST = 9000;
+
+		private Activity activity;
+		
+		private LocationFailureHandler(Activity activity) {
+			this.activity = activity;
+		}
+
+		@Override
+		public void onConnectionFailed(ConnectionResult connectionResult) {
+			/*
+	         * Google Play services can resolve some errors it detects.
+	         * If the error has a resolution, try sending an Intent to
+	         * start a Google Play services activity that can resolve
+	         * error.
+	         */
+	        if (connectionResult.hasResolution()) {
+	            try {
+	                // Start an Activity that tries to resolve the error
+	                connectionResult.startResolutionForResult(activity, CONNECTION_FAILURE_RESOLUTION_REQUEST);
+	            } catch (IntentSender.SendIntentException e) {
+	                // Log the error
+	                e.printStackTrace();
+	            }
+	        } else {
+	            /*
+	             * If no resolution is available, display a dialog to the
+	             * user with the error.
+	             */
+	            //TODO showErrorDialog(connectionResult.getErrorCode());
+	        }
+			
+		}
+	}
+
+	private boolean servicesConnected(Activity activity) {
+        // Check that Google Play services is available
+        int resultCode = GooglePlayServicesUtil.isGooglePlayServicesAvailable(activity);
+        // If Google Play services is available
+        if (ConnectionResult.SUCCESS == resultCode) {
+            return true;
+        // Google Play services was not available for some reason.
+        // resultCode holds the error code.
+        } else {
+            // Get the error dialog from Google Play services
+            Dialog errorDialog = GooglePlayServicesUtil.getErrorDialog(resultCode, activity, LocationFailureHandler.CONNECTION_FAILURE_RESOLUTION_REQUEST);
+
+            // If Google Play services can provide an error dialog
+            if (errorDialog != null) {
+            	errorDialog.show();
+            } else {
+            	// TODO
+            }
+            return false;
+        }
+    }
 	
-	protected void showExceptionDialog(Exception e) {
+	public void recordStoryClick(View view) {
+        locationClient.connect();
+        view.setEnabled(false);
+	}
+	
+	@Override
+	public void onConnected(Bundle connectionHint) {
+		if (!servicesConnected(this)) {
+			locationClient.disconnect();
+			return;
+		}
+		
+		// Location is now available
+		Location location;
+    	LocationManager locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
+		try {
+			if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+				showExceptionDialog(new LocationUnavailableException(this.getString(R.string.gps_unavailable_exception)));
+				return;
+	        }
+	    	location = locationClient.getLastLocation();
+	    	if (location == null) {
+	    		Log.w(LOG_TAG, "Unable to acquire location after connected to GooglePlayServices");
+	    		showExceptionDialog(new LocationUnavailableException(this.getString(R.string.location_unavailable_exception)));
+	    		return;
+	    	}
+		} finally {
+			locationClient.disconnect();
+		}
+		
+		Intent createStoryIntent = new Intent(this, CreateStoryActivity.class);
+		Bundle createStoryBundle = new Bundle();
+		createStoryBundle.putDouble(IntentConsts.CURRENT_LAT, location.getLatitude());
+		createStoryBundle.putDouble(IntentConsts.CURRENT_LONG, location.getLongitude());
+		startActivityForResult(createStoryIntent, IntentConsts.CREATE_STORY_CODE, createStoryBundle);
+	}
+
+	@Override
+	public void onDisconnected() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onInfoWindowClick(Marker origin) {
+		// TODO Auto-generated method stub
 		
 	}
 }
