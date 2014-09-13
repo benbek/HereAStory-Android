@@ -161,12 +161,12 @@ public class ParseDatabaseServiceImpl implements DatabaseService {
 		pointOfInterest.setCreationDate(object.getDate(PUBLISHED_DATE));
 		pointOfInterest.setDuration(object.getNumber(DURATION));
 		pointOfInterest.setLikeCount(object.getNumber(LIKE_COUNT));
+		pointOfInterest.setTitle(object.getString(TITLE));
 		pointOfInterest.setAuthor(getUser(object.getParseObject(AUTHOR), NAME, PROFILE_PICTURE_SMALL));
 	}
 	
 	private void fillNonLimitedFields(ParseObject object, PointOfInterest pointOfInterest) throws ParseException, IOException {
 		pointOfInterest.setLocation(getLocation(object));
-		pointOfInterest.setTitle(object.getString(TITLE));
 		
 		String imageFilePath = saveFile(object, IMAGE, FileType.IMAGE);
 		pointOfInterest.setImage(imageFilePath);

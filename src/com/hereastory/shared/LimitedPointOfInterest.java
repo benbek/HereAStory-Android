@@ -12,7 +12,16 @@ public class LimitedPointOfInterest  implements Serializable {
 	private Date creationDate;
 	private Number likeCount;
 	private Number duration;
-	
+	private String title;
+
+	public String getTitle() {
+		return title;
+	}
+
+	public void setTitle(String title) {
+		this.title = title;
+	}
+
 	public String getId() {
 		return id;
 	}
@@ -51,11 +60,6 @@ public class LimitedPointOfInterest  implements Serializable {
 	
 	public void setDuration(Number duration) {
 		this.duration = duration;
-	}
-
-	public String getTitle() {
-		// TODO Auto-generated method stub
-		return "getTitle STUB";
 	}
 
 }
