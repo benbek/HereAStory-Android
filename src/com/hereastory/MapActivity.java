@@ -5,8 +5,10 @@ import java.util.List;
 import java.util.Map;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.location.Location;
@@ -180,7 +182,20 @@ public class MapActivity extends SystemUiHiderActivity implements GooglePlayServ
 	}
 	
 	protected void showExceptionDialog(Exception e) {
-		
+	     AlertDialog.Builder builder = new AlertDialog.Builder(this);
+	     builder.setMessage(e.getMessage())
+	            .setCancelable(false)
+	            .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+	                public void onClick(DialogInterface dialog, int id) {
+	                }
+	            })
+	            .setNegativeButton("No", new DialogInterface.OnClickListener() {
+	                public void onClick(DialogInterface dialog, int id) {
+	                     dialog.cancel();
+	                }
+	            });
+	     AlertDialog alert = builder.create();
+         alert.show();
 	}
 
 	private static class LocationFailureHandler implements GooglePlayServicesClient.OnConnectionFailedListener {
