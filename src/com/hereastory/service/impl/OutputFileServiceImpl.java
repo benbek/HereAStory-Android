@@ -38,7 +38,7 @@ public class OutputFileServiceImpl implements OutputFileService {
 	}
 
 	private File getDirectory() {
-		File baseDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
+		File baseDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES); // TODO not pictures
 		File mediaStorageDir = new File(baseDir, "HereAStory");
 		// TODO: To be safe, you should check that the SDCard is mounted
 		// using Environment.getExternalStorageState() before doing this.

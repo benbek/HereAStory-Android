@@ -20,7 +20,7 @@ public class AudioRecorder {
         recorder.setAudioChannels(NUM_CHANNELS);
         recorder.setAudioEncodingBitRate(BIT_RATE);
         recorder.setAudioSamplingRate(SAMPLING_RATE);
-        recorder.setMaxDuration((int)Math.max(MAX_DURATION, Integer.MAX_VALUE));
+        recorder.setMaxDuration((int)Math.min(MAX_DURATION, Integer.MAX_VALUE)); // TODO use onInfoListner
         recorder.setOutputFile(filePath);
         recorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
         recorder.prepare();

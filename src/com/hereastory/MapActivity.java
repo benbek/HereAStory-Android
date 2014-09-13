@@ -129,7 +129,7 @@ public class MapActivity extends SystemUiHiderActivity implements GooglePlayServ
         // Set location to Safra Campus, Jerusalem: (31.774476,35.203543)
         LatLng jerusalem = new LatLng(31.774476, 35.203543);
         
-        map.setMyLocationEnabled(true);
+        //map.setMyLocationEnabled(true);
         
         map.moveCamera(CameraUpdateFactory.newLatLngZoom(jerusalem, 13));
 
@@ -272,10 +272,10 @@ public class MapActivity extends SystemUiHiderActivity implements GooglePlayServ
 		}
 		
 		Intent createStoryIntent = new Intent(this, CreateStoryActivity.class);
-		Bundle createStoryBundle = new Bundle();
-		createStoryBundle.putDouble(IntentConsts.CURRENT_LAT, location.getLatitude());
-		createStoryBundle.putDouble(IntentConsts.CURRENT_LONG, location.getLongitude());
-		startActivityForResult(createStoryIntent, IntentConsts.CREATE_STORY_CODE, createStoryBundle);
+		createStoryIntent.putExtra(IntentConsts.CURRENT_LAT, location.getLatitude());
+		createStoryIntent.putExtra(IntentConsts.CURRENT_LONG, location.getLongitude());
+
+		startActivityForResult(createStoryIntent, IntentConsts.CREATE_STORY_CODE);
 	}
 
 	@Override

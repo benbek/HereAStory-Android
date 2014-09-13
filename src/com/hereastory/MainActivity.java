@@ -38,6 +38,8 @@ public class MainActivity extends Activity {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
+        
+        startActivity(new Intent(this, MapActivity.class));
     }
 
     private void setupHearStoryButton() {
