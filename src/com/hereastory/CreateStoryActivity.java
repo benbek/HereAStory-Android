@@ -7,8 +7,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
-import com.hereastory.service.api.CurrentUserLocationService;
-import com.hereastory.service.impl.CurrentUserLocationServiceImpl;
 import com.hereastory.shared.IntentConsts;
 import com.hereastory.shared.PointLocation;
 import com.hereastory.shared.PointOfInterest;
@@ -17,14 +15,11 @@ public class CreateStoryActivity extends Activity {
 	
 	private static final String LOG_TAG = "CreateStoryActivity";
 	private static PointOfInterest story;	
-	private CurrentUserLocationService locationService;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_create_story);
-		locationService = new CurrentUserLocationServiceImpl();
-		
 		
 		double latitude = (Double) getIntent().getSerializableExtra(IntentConsts.CURRENT_LAT);
 		double longitude = (Double) getIntent().getSerializableExtra(IntentConsts.CURRENT_LONG);
@@ -41,6 +36,7 @@ public class CreateStoryActivity extends Activity {
         button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
             	story.setTitle(getDescription());
+            	
 				Intent intent = new Intent(getApplicationContext(), CapturePictureActivity.class);
     			intent.putExtra(IntentConsts.STORY_OBJECT, story);
     			startActivity(intent);
