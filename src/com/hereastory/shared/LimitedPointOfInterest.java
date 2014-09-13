@@ -53,4 +53,9 @@ public class LimitedPointOfInterest  implements Serializable {
 		this.duration = duration;
 	}
 
+	public String getTitle() {
+		// TODO Auto-generated method stub
+		return "getTitle STUB";
+	}
+
 }

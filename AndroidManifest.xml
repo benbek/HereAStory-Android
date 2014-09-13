@@ -54,7 +54,6 @@
             android:label="@string/title_activity_hear_story" >
         </activity>
         <activity android:name=".MapActivity"
-                  android:label="Map"
                   android:configChanges="orientation|keyboardHidden|screenSize"
                   android:theme="@style/FullscreenTheme">
             <intent-filter>

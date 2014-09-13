@@ -1,6 +1,8 @@
 package com.hereastory;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import android.os.Bundle;
 import android.util.Log;
@@ -33,36 +35,44 @@ public class MapActivity extends SystemUiHiderActivity implements OnMarkerClickL
 	private final class POIReader implements PointOfInterestReadHandler {
 		@Override
 		public void readLimitedFailed(String id, Exception e) {
-			// TODO Auto-generated method stub
-			
+			displayErrorPopup();
+			Log.w(LOG_TAG, "ReadLimited failed when trying to get POI with id \"".concat(id).concat("\""), e);
 		}
 
 		@Override
-		public void readLimitedCompleted(LimitedPointOfInterest pointOfInterest) {
-			// TODO Auto-generated method stub
+		public void readLimitedCompleted(LimitedPointOfInterest poi) {
+			Marker clickedMarker = map.getMarkerShowingInfoWindow();
+			clickedMarker.setTitle(poi.getTitle());
+			clickedMarker.setSnippet(poi.getAuthor().getName());
 			
+			cachedMarkers.put((PointLocation) clickedMarker.getData(), poi);
 		}
 
 		@Override
 		public void readFailed(String id, Exception e) {
+			displayErrorPopup();
+			Log.w(LOG_TAG, "Read failed when trying to get POI with id \"".concat(id).concat("\""), e);
+		}
+
+		private void displayErrorPopup() {
 			Marker clickedMarker = map.getMarkerShowingInfoWindow();
-			clickedMarker.hideInfoWindow();
-			Log.w(LOG_TAG, "readError when trying to get POI with id \"".concat(id).concat("\""), e);
+			if (clickedMarker != null) {
+				clickedMarker.hideInfoWindow();
+				clickedMarker.setTitle(MapActivity.this.getString(R.string.marker_failed_title));
+				clickedMarker.setSnippet(MapActivity.this.getString(R.string.marker_failed_snippet));
+				clickedMarker.showInfoWindow();
+			}
 		}
 
 		@Override
 		public void readCompleted(PointOfInterest poi) {
-			// Locate the marker of interest
-			Marker clickedMarker = map.getMarkerShowingInfoWindow();
-			clickedMarker.setTitle(poi.getTitle());
-			clickedMarker.setSnippet(poi.getAuthor().getName());
 		}
 
 		@Override
 		public void readAllInAreaFailed(double latitude, double longitude,
 				double maxDistance, ParseException e) {
-			// TODO Auto-generated method stub
-			
+			MapActivity.this.showExceptionDialog(e);
+			Log.e(LOG_TAG, "ReadAllInArea failed", e);
 		}
 
 		@Override
@@ -79,6 +89,8 @@ public class MapActivity extends SystemUiHiderActivity implements OnMarkerClickL
 	
 	final PointOfInterestReadHandler markerReader = new POIReader();
 	private PointOfInterestService poiService;
+	
+	protected Map<PointLocation, LimitedPointOfInterest> cachedMarkers = new HashMap<PointLocation, LimitedPointOfInterest>();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -110,7 +122,7 @@ public class MapActivity extends SystemUiHiderActivity implements OnMarkerClickL
                 .snippet("Where geeks prosper.")
                 .position(jerusalem));
 
-        super.setupUiHide(findViewById(R.id.map), findViewById(R.id.fullscreen_content_controls), R.id.dummy_button);
+        super.setupUiHide(findViewById(R.id.map), findViewById(R.id.fullscreen_content_controls), R.id.record_story_button);
         
         // Here-a-Story services and interfaces
         poiService = new PointOfInterestServiceImpl();
@@ -141,12 +153,12 @@ public class MapActivity extends SystemUiHiderActivity implements OnMarkerClickL
 	public boolean onMarkerClick(final Marker clickedMarker) {
 		PointLocation loc = clickedMarker.getData();
 		if (loc != null) {
-			clickedMarker.setSnippet("Loading...");
-			clickedMarker.showInfoWindow();
-			poiService.read(loc.getPointOfInterestId(), markerReader);
+			clickedMarker.setTitle(this.getString(R.string.marker_loading_title));
+			clickedMarker.setSnippet(""); // Clear out old values
+			poiService.readLimited(loc.getPointOfInterestId(), markerReader);
 		}
 		
-		return true;
+		return false;
 	}
 	
 	protected void showExceptionDialog(Exception e) {
