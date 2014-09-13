@@ -6,18 +6,9 @@ public class PointOfInterest extends LimitedPointOfInterest {
 
 	private static final long serialVersionUID = -6765657242190983678L;
 	
-	private String title;
 	private PointLocation location;
 	private String image;
 	private String audio;
-
-	public String getTitle() {
-		return title;
-	}
-
-	public void setTitle(String title) {
-		this.title = title;
-	}
 
 	public PointLocation getLocation() {
 		return location;
