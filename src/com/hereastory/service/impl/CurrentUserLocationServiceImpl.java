@@ -2,8 +2,10 @@ package com.hereastory.service.impl;
 
 import android.app.Activity;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.IntentSender;
 import android.location.Location;
+import android.location.LocationManager;
 import android.os.Bundle;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -13,14 +15,14 @@ import com.google.android.gms.location.LocationClient;
 import com.hereastory.service.api.CurrentUserLocationService;
 import com.hereastory.shared.LocationUnavailableException;
 
-public class CurrentUserLocationServiceImpl implements CurrentUserLocationService {
+public class CurrentUserLocationServiceImpl implements CurrentUserLocationService, GooglePlayServicesClient.ConnectionCallbacks {
 	
     private final static int CONNECTION_FAILURE_RESOLUTION_REQUEST = 9000;
 	
     @Override
     public Location getLocation(Activity activity) throws LocationUnavailableException {
     	LocationClientHandler handler = new LocationClientHandler(activity);
-        LocationClient locationClient = new LocationClient(activity, handler, handler);
+        LocationClient locationClient = new LocationClient(activity, this, handler);
         locationClient.connect();
         Location location;
 		try {
@@ -36,7 +38,15 @@ public class CurrentUserLocationServiceImpl implements CurrentUserLocationServic
     	if (!servicesConnected(activity)) {
     		throw new LocationUnavailableException();
     	}
-		return locationClient.getLastLocation();
+    	LocationManager locationManager = (LocationManager) activity.getSystemService(Context.LOCATION_SERVICE);
+    	if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)){
+            //Do what you need if enabled...
+    		// TODO
+        } else{
+            //Do what you need if not enabled...
+        	// TODO
+        }
+		return locationClient.getLastLocation(); //TODO could be null
 	}
 
 	private boolean servicesConnected(Activity activity) {
@@ -61,7 +71,7 @@ public class CurrentUserLocationServiceImpl implements CurrentUserLocationServic
         }
     }
 	
-	private static class LocationClientHandler implements GooglePlayServicesClient.ConnectionCallbacks, GooglePlayServicesClient.OnConnectionFailedListener {
+	private static class LocationClientHandler implements GooglePlayServicesClient.OnConnectionFailedListener {
 		
 		private Activity activity;
 		
@@ -94,17 +104,17 @@ public class CurrentUserLocationServiceImpl implements CurrentUserLocationServic
 	        }
 			
 		}
+	}
 
-		@Override
-		public void onConnected(Bundle connectionHint) {
-			// TODO Auto-generated method stub
-			
-		}
+	@Override
+	public void onConnected(Bundle connectionHint) {
+		// TODO Auto-generated method stub
+		
+	}
 
-		@Override
-		public void onDisconnected() {
-			// TODO Auto-generated method stub
-			
-		}
+	@Override
+	public void onDisconnected() {
+		// TODO Auto-generated method stub
+		
 	}
 }
