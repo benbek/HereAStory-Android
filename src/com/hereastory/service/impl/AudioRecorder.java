@@ -11,7 +11,7 @@ public class AudioRecorder {
 	private static final int NUM_CHANNELS = 1;
     private static final long MAX_DURATION = TimeUnit.MINUTES.toMillis(5);
     
-    private MediaRecorder recorder;
+    private static MediaRecorder recorder;
     
     public void startRecording(String filePath) throws IOException {
         recorder = new MediaRecorder();

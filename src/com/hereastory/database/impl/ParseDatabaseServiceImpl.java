@@ -1,5 +1,6 @@
 package com.hereastory.database.impl;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -36,6 +37,9 @@ import com.parse.SaveCallback;
 
 public class ParseDatabaseServiceImpl implements DatabaseService {
 
+	private static final String THUMBNAIL2_FILENAME = "thumbnail.";
+	private static final String IMAGE_FILENAME = "image.";
+	private static final String AUDIO_FILENAME = "audio.";
 	private static final int POINTS_AMOUNT_LOMIT = 1000;
 	private static final String LOG_TAG = "ParseDatabaseServiceImpl";
 	
@@ -71,11 +75,11 @@ public class ParseDatabaseServiceImpl implements DatabaseService {
 		object.put(PUBLISHED_DATE, pointOfInterest.getCreationDate());
 		object.put(LIKE_COUNT, pointOfInterest.getLikeCount());
 		object.put(LOCATION, getParseGeoPoint(pointOfInterest.getLocation()));
-		object.put(AUTHOR, getParseUser(pointOfInterest.getAuthor()));
-		object.put(THUMBNAIL, new ParseFile(thumbnail));
+		object.put(THUMBNAIL, new ParseFile(THUMBNAIL2_FILENAME+FileType.IMAGE.getSuffix(), thumbnail));
+		object.put(AUTHOR, ParseUser.getCurrentUser());
 		try {
-			object.put(AUDIO, getParseFile(pointOfInterest.getAudio()));
-			object.put(IMAGE, getParseFile(pointOfInterest.getImage()));
+			object.put(AUDIO, getParseFile(AUDIO_FILENAME+FileType.AUDIO.getSuffix(), pointOfInterest.getAudio()));
+			object.put(IMAGE, getParseFile(IMAGE_FILENAME+FileType.IMAGE.getSuffix(), pointOfInterest.getImage()));
 		} catch (IOException e) {
 			Log.e(LOG_TAG, "Failed saving point", e);
 			handler.addFailed(pointOfInterest, e);
@@ -226,22 +230,18 @@ public class ParseDatabaseServiceImpl implements DatabaseService {
 		user.setId(userId);
 		byte[] bytes = object.getParseFile(PROFILE_PICTURE_SMALL).getData();
 		String filePath = outputFileService.getProfilePictureFile(userId).getAbsolutePath();
-		IOUtils.write(bytes, new FileOutputStream(filePath));
+		if (!new File(filePath).exists()) {
+			IOUtils.write(bytes, new FileOutputStream(filePath));
+		}
 		user.setProfilePictureSmall(filePath);
 		return user;
 	}
 
-	private ParseFile getParseFile(String filePath) throws FileNotFoundException, IOException {
+	private ParseFile getParseFile(String filePath, String name) throws FileNotFoundException, IOException {
 		byte[] bytes = IOUtils.toByteArray(new FileInputStream(filePath));
-		return new ParseFile(bytes);
+		return new ParseFile(name, bytes);
 	}
 
-	private ParseUser getParseUser(User user) {
-		ParseUser parseUser = new ParseUser();
-		parseUser.setObjectId(user.getId());
-		return parseUser;
-	}
-	
 	private ParseACL getPublicACL() {
 		ParseACL acl = new ParseACL();
 		acl.setPublicReadAccess(true);

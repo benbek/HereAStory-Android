@@ -9,7 +9,6 @@ import com.hereastory.service.api.PointOfInterestAddHandler;
 import com.hereastory.service.api.PointOfInterestReadHandler;
 import com.hereastory.service.api.PointOfInterestService;
 import com.hereastory.shared.PointOfInterest;
-import com.hereastory.shared.User;
 
 public class PointOfInterestServiceImpl implements PointOfInterestService {
 
@@ -40,7 +39,6 @@ public class PointOfInterestServiceImpl implements PointOfInterestService {
 	@Override
 	public void add(PointOfInterest pointOfInterest, PointOfInterestAddHandler handler) {
 		byte[] thumbnail = bitmapService.getThumbnail(pointOfInterest.getImage());
-		pointOfInterest.setAuthor(new User()); // TODO
 		pointOfInterest.setCreationDate(new Date());
 		pointOfInterest.setLikeCount(0);
 		databaseService.add(pointOfInterest, thumbnail , handler);

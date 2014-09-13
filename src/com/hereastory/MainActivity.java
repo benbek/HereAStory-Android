@@ -9,6 +9,8 @@ import android.widget.Button;
 
 import com.hereastory.service.impl.OutputFileServiceImpl;
 import com.hereastory.shared.IntentConsts;
+import com.parse.ParseException;
+import com.parse.ParseUser;
 
 public class MainActivity extends Activity {
 	
@@ -19,6 +21,23 @@ public class MainActivity extends Activity {
         setupAddStoryButton();
         setupHearStoryButton();
         new OutputFileServiceImpl().clearDirectory();
+        
+        ParseUser user = new ParseUser();
+        user.setUsername("my name");
+        user.setPassword("my pass");
+        user.setEmail("email@example.com");
+        /*try {
+			user.signUp();
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}*/
+        try {
+			ParseUser.logIn(user.getUsername(), "my pass");
+		} catch (ParseException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
     }
 
     private void setupHearStoryButton() {
@@ -26,7 +45,7 @@ public class MainActivity extends Activity {
         button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
     			Intent intent = new Intent(getApplicationContext(), HearStoryActivity.class);
-    			intent.putExtra(IntentConsts.STORY_ID, 1); // TODO: real id
+    			intent.putExtra(IntentConsts.STORY_ID, "m2dCb1QhAC");
     			startActivityForResult(intent, IntentConsts.HEAR_STORY_CODE);            
             }
         });
@@ -38,6 +57,8 @@ public class MainActivity extends Activity {
         button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
     			Intent intent = new Intent(getApplicationContext(), CreateStoryActivity.class);
+    			intent.putExtra(IntentConsts.CURRENT_LAT, 1.2); 
+    			intent.putExtra(IntentConsts.CURRENT_LONG, 4.5); 
     			startActivityForResult(intent, IntentConsts.CREATE_STORY_CODE);
             }
         });

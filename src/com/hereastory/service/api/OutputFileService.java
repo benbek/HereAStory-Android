@@ -15,7 +15,7 @@ public interface OutputFileService {
 	
 	public enum FileType {
 		
-		IMAGE("jpg"), AUDIO("aac");
+		IMAGE("jpg"), AUDIO("m4a");
 		
 		private String suffix;
 		

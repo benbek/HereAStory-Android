@@ -45,6 +45,7 @@ public class RecordAudioActivity extends Activity {
 		audioRecorder = new AudioRecorder();
 		
 		filePath = outputFileService.getOutputMediaFile(FileType.AUDIO).getAbsolutePath();
+
 		story = (PointOfInterest) getIntent().getSerializableExtra(IntentConsts.STORY_OBJECT);
 
 		setupRecordButton();
@@ -84,8 +85,8 @@ public class RecordAudioActivity extends Activity {
         button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 if (startRecording) {
-                	button.setText(getResources().getString(R.string.stop_recording_audio));
                 	startRecording();
+                	button.setText(getResources().getString(R.string.stop_recording_audio));
                 } else {
                 	button.setText(getResources().getString(R.string.start_recording_audio));
                 	stopRecording();

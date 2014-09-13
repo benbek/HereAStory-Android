@@ -7,7 +7,7 @@ import android.media.MediaPlayer;
 
 public class AudioPlayer {
 	
-    private MediaPlayer player;
+    private static MediaPlayer player;
     
     public void startPlaying(String filePath) throws IOException {
         player = new MediaPlayer();
