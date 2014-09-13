@@ -8,8 +8,8 @@ public class PointOfInterest extends LimitedPointOfInterest {
 	
 	private String title;
 	private PointLocation location;
-	private byte[] image;
-	private byte[] audio;
+	private String image;
+	private String audio;
 
 	public String getTitle() {
 		return title;
@@ -27,19 +27,19 @@ public class PointOfInterest extends LimitedPointOfInterest {
 		this.location = location;
 	}
 
-	public byte[] getImage() {
+	public String getImage() {
 		return image;
 	}
 
-	public void setImage(byte[] image) {
+	public void setImage(String image) {
 		this.image = image;
 	}
 
-	public byte[] getAudio() {
+	public String getAudio() {
 		return audio;
 	}
 
-	public void setAudio(byte[] audio) {
+	public void setAudio(String audio) {
 		this.audio = audio;
 	}
 

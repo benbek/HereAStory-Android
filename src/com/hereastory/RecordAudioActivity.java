@@ -1,9 +1,6 @@
 package com.hereastory;
 
-import java.io.FileInputStream;
 import java.io.IOException;
-
-import org.apache.commons.io.IOUtils;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -60,14 +57,7 @@ public class RecordAudioActivity extends Activity {
     	final Button button = (Button) findViewById(R.id.buttonRecordAudioNext);
         button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-				byte[] bytes = null;
-				try {
-					bytes = IOUtils.toByteArray(new FileInputStream(filePath));
-				} catch (IOException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace(); // TODO return or something
-				}
-            	story.setAudio(bytes);
+            	story.setAudio(filePath);
             	pointOfInterestService.add(story, new PointOfInterestAddHandler() {
 					
 					@Override

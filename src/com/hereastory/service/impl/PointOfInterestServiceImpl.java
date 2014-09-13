@@ -6,7 +6,6 @@ import com.hereastory.service.api.BitmapService;
 import com.hereastory.service.api.PointOfInterestAddHandler;
 import com.hereastory.service.api.PointOfInterestReadHandler;
 import com.hereastory.service.api.PointOfInterestService;
-import com.hereastory.shared.PointLocation;
 import com.hereastory.shared.PointOfInterest;
 
 public class PointOfInterestServiceImpl implements PointOfInterestService {
@@ -21,8 +20,8 @@ public class PointOfInterestServiceImpl implements PointOfInterestService {
 	}
 	
 	@Override
-	public void readAllInArea(PointLocation location, double maxDistance, PointOfInterestReadHandler handler) {
-		databaseService.readAllInArea(location, maxDistance, handler);
+	public void readAllInArea(double latitude, double longitude, double maxDistance, PointOfInterestReadHandler handler) {
+		databaseService.readAllInArea(latitude, longitude, maxDistance, handler);
 	}
 
 	@Override

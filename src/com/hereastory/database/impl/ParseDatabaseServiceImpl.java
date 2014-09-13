@@ -1,16 +1,23 @@
 package com.hereastory.database.impl;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
+import org.apache.commons.io.IOUtils;
+
 import android.util.Log;
 
 import com.hereastory.database.api.DatabaseService;
+import com.hereastory.service.api.OutputFileService;
+import com.hereastory.service.api.OutputFileService.FileType;
 import com.hereastory.service.api.PointOfInterestAddHandler;
 import com.hereastory.service.api.PointOfInterestReadHandler;
+import com.hereastory.service.impl.OutputFileServiceImpl;
 import com.hereastory.shared.LimitedPointOfInterest;
 import com.hereastory.shared.PointLocation;
 import com.hereastory.shared.PointOfInterest;
@@ -49,6 +56,12 @@ public class ParseDatabaseServiceImpl implements DatabaseService {
 	public static final String IMAGE = "image";
 	public static final String THUMBNAIL = "thumbnail";
 
+	private final OutputFileService outputFileService;
+	
+	public ParseDatabaseServiceImpl() {
+		outputFileService = new OutputFileServiceImpl();
+	}
+	
 	@Override
 	public void add(final PointOfInterest pointOfInterest, byte[] thumbnail, final PointOfInterestAddHandler handler) {	
 		ParseObject object = new ParseObject(POI_TABLE);		
@@ -60,9 +73,14 @@ public class ParseDatabaseServiceImpl implements DatabaseService {
 		object.put(LIKE_COUNT, pointOfInterest.getLikeCount());
 		object.put(LOCATION, getParseGeoPoint(pointOfInterest.getLocation()));
 		object.put(AUTHOR, getParseUser(pointOfInterest.getAuthor()));
-		object.put(AUDIO, new ParseFile(pointOfInterest.getAudio()));
-		object.put(IMAGE, new ParseFile(pointOfInterest.getImage()));
 		object.put(THUMBNAIL, new ParseFile(thumbnail));
+		try {
+			object.put(AUDIO, getParseFile(pointOfInterest.getAudio()));
+			object.put(IMAGE, getParseFile(pointOfInterest.getImage()));
+		} catch (IOException e) {
+			Log.e(LOG_TAG, "Failed saving point", e);
+			handler.addFailed(pointOfInterest, e);
+		}
 		
 		object.saveInBackground(new SaveCallback() {
 			@Override
@@ -112,7 +130,7 @@ public class ParseDatabaseServiceImpl implements DatabaseService {
 	}
 
 	private void handleReadCompleted(final boolean limited, final PointOfInterestReadHandler handler,
-			final LimitedPointOfInterest pointOfInterest, ParseObject object) throws ParseException {
+			final LimitedPointOfInterest pointOfInterest, ParseObject object) throws ParseException, IOException {
 		fillLimitedFields(pointOfInterest, object);
 		if (limited) {
 			handler.readLimitedCompleted(pointOfInterest);
@@ -142,23 +160,34 @@ public class ParseDatabaseServiceImpl implements DatabaseService {
 		return pointOfInterest;
 	}
 
-	private void fillLimitedFields(final LimitedPointOfInterest pointOfInterest, ParseObject object) throws ParseException {
+	private void fillLimitedFields(final LimitedPointOfInterest pointOfInterest, ParseObject object) throws ParseException, IOException {
 		pointOfInterest.setCreationDate(object.getDate(PUBLISHED_DATE));
 		pointOfInterest.setDuration(object.getNumber(DURATION));
 		pointOfInterest.setLikeCount(object.getNumber(LIKE_COUNT));
 		pointOfInterest.setAuthor(getUser(object.getParseObject(AUTHOR), NAME, PROFILE_PICTURE_SMALL));
 	}
 	
-	private void fillNonLimitedFields(ParseObject object, PointOfInterest pointOfInterest) throws ParseException {
+	private void fillNonLimitedFields(ParseObject object, PointOfInterest pointOfInterest) throws ParseException, IOException {
 		pointOfInterest.setLocation(getLocation(object));
 		pointOfInterest.setTitle(object.getString(TITLE));
-		pointOfInterest.setImage(object.getParseFile(IMAGE).getData());
-		pointOfInterest.setAudio(object.getParseFile(AUDIO).getData());
+		
+		String imageFilePath = saveFile(object, IMAGE, FileType.IMAGE);
+		pointOfInterest.setImage(imageFilePath);
+		
+		String audioFilePath = saveFile(object, AUDIO, FileType.AUDIO);
+		pointOfInterest.setAudio(audioFilePath);
+	}
+
+	private String saveFile(ParseObject object, String field, FileType fileType) throws ParseException, IOException {
+		byte[] bytes = object.getParseFile(field).getData();
+		String filePath = outputFileService.getOutputMediaFile(fileType, object.getString(OBJECT_ID)).getAbsolutePath();
+		IOUtils.write(bytes, new FileOutputStream(filePath));
+		return filePath;
 	}
 
 	@Override
-	public void readAllInArea(final PointLocation location, final double maxDistance, final PointOfInterestReadHandler handler) {
-		ParseGeoPoint userLocation = new ParseGeoPoint(location.getLatitude(), location.getLatitude());
+	public void readAllInArea(final double latitude, final double longitude, final double maxDistance, final PointOfInterestReadHandler handler) {
+		ParseGeoPoint userLocation = new ParseGeoPoint(latitude, longitude);
 		ParseQuery<ParseObject> query = ParseQuery.getQuery(POI_TABLE); 
 		query.whereEqualTo(DELETED, false);
 		query.whereWithinKilometers(LOCATION, userLocation, maxDistance);
@@ -176,9 +205,9 @@ public class ParseDatabaseServiceImpl implements DatabaseService {
 					handler.readAllInAreaCompleted(points);
 				} else {
 					String errorMessage = String.format(Locale.US, "readAllInArea failed with parameters: (latitude=%d, longitude=%d, maxDistance=%d)", 
-							location.getLatitude(), location.getLatitude(), maxDistance);
+							latitude, longitude, maxDistance);
 					Log.e(LOG_TAG, errorMessage, e);
-					handler.readAllInAreaFailed(location, maxDistance, e);
+					handler.readAllInAreaFailed(latitude, longitude, maxDistance, e);
 				}
 			}
 		});
@@ -193,17 +222,21 @@ public class ParseDatabaseServiceImpl implements DatabaseService {
 		return new ParseGeoPoint(location.getLatitude(), location.getLongitude());
 	}
 	
-	private User getUser(ParseObject object, String nameField, String pictureField) throws ParseException {
+	private User getUser(ParseObject object, String nameField, String pictureField) throws ParseException, IOException {
+		String userId = object.getString(OBJECT_ID);
 		User user = new User();
 		user.setName(object.getString(nameField));
-		user.setId(object.getString(OBJECT_ID));
-		user.setProfilePictureSmall(getBitmap(object.getParseFile(PROFILE_PICTURE_SMALL)));
+		user.setId(userId);
+		byte[] bytes = object.getParseFile(PROFILE_PICTURE_SMALL).getData();
+		String filePath = outputFileService.getProfilePictureFile(userId).getAbsolutePath();
+		IOUtils.write(bytes, new FileOutputStream(filePath));
+		user.setProfilePictureSmall(filePath);
 		return user;
 	}
-	
-	private Bitmap getBitmap(ParseFile file) throws ParseException {
-		byte[] bytes = file.getData();
-        return BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+
+	private ParseFile getParseFile(String filePath) throws FileNotFoundException, IOException {
+		byte[] bytes = IOUtils.toByteArray(new FileInputStream(filePath));
+		return new ParseFile(bytes);
 	}
 
 	private ParseUser getParseUser(User user) {

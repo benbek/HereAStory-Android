@@ -9,11 +9,13 @@ public interface OutputFileService {
 	
 	File getOutputMediaFile(FileType fileType, String pointOfInterestId);
 
+	File getProfilePictureFile(String userId);
+
 	void clearDirectory();
 	
 	public enum FileType {
 		
-		PICTURE("jpg"), AUDIO("aac");
+		IMAGE("jpg"), AUDIO("aac");
 		
 		private String suffix;
 		
@@ -25,6 +27,5 @@ public interface OutputFileService {
 			return suffix;
 		}
 	}
-
 
 }

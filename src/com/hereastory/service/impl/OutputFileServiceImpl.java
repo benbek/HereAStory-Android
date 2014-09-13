@@ -13,26 +13,20 @@ import com.hereastory.service.api.OutputFileService;
 public class OutputFileServiceImpl implements OutputFileService {
 	
 	@Override
+	public File getProfilePictureFile(String userId) {
+		File mediaStorageDir = getDirectory();
+		File mediaFile = new File(mediaStorageDir.getPath() + File.separator + "profile_" + userId + "." + FileType.IMAGE.getSuffix());
+		return mediaFile;
+	}
+	
+	@Override
 	public File getOutputMediaFile(FileType fileType) {
 		return getOutputMediaFile(fileType, null);
 	}
 
 	@Override
 	public File getOutputMediaFile(FileType fileType, String pointOfInterestId) {
-		// TODO: To be safe, you should check that the SDCard is mounted
-		// using Environment.getExternalStorageState() before doing this.
-
 		File mediaStorageDir = getDirectory();
-		// This location works best if you want the created images to be shared
-		// between applications and persist after your app has been uninstalled.
-
-		// Create the storage directory if it does not exist
-		if (!mediaStorageDir.exists()) {
-			if (!mediaStorageDir.mkdirs()) {
-				Log.e("OutputFileGenerator", "failed to create directory");
-				return null;
-			}
-		}
 
 		// Create a media file name
 		String fileName = pointOfInterestId;
@@ -46,6 +40,17 @@ public class OutputFileServiceImpl implements OutputFileService {
 	private File getDirectory() {
 		File baseDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
 		File mediaStorageDir = new File(baseDir, "HereAStory");
+		// TODO: To be safe, you should check that the SDCard is mounted
+		// using Environment.getExternalStorageState() before doing this.
+
+		// Create the storage directory if it does not exist
+		if (!mediaStorageDir.exists()) {
+			if (!mediaStorageDir.mkdirs()) {
+				Log.e("OutputFileGenerator", "failed to create directory");
+				return null;
+			}
+		}
+
 		return mediaStorageDir;
 	}
 	
@@ -59,5 +64,4 @@ public class OutputFileServiceImpl implements OutputFileService {
 			}
 		}
 	}
-
 }

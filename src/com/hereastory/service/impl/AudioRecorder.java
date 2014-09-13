@@ -28,8 +28,10 @@ public class AudioRecorder {
     }
 
 	public void stopRecording() {
-        recorder.stop();
-        recorder.release();
-        recorder = null;		
+		if (recorder != null) {
+	        recorder.stop();
+	        recorder.release();
+	        recorder = null;		
+		}
 	}
 }

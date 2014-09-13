@@ -2,15 +2,13 @@ package com.hereastory.shared;
 
 import java.io.Serializable;
 
-import android.graphics.Bitmap;
-
 public class User implements Serializable {
 
 	private static final long serialVersionUID = 1836635286032448494L;
 	
 	private String id;
 	private String name;
-	private Bitmap profilePictureSmall; // TODO change to byte[]?
+	private String profilePictureSmall; 
 	
 	public String getName() {
 		return name;
@@ -28,11 +26,11 @@ public class User implements Serializable {
 		this.id = id;
 	}
 
-	public Bitmap getProfilePictureSmall() {
+	public String getProfilePictureSmall() {
 		return profilePictureSmall;
 	}
 
-	public void setProfilePictureSmall(Bitmap profilePictureSmall) {
+	public void setProfilePictureSmall(String profilePictureSmall) {
 		this.profilePictureSmall = profilePictureSmall;
 	}
 

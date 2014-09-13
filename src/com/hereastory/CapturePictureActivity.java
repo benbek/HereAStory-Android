@@ -68,7 +68,7 @@ public class CapturePictureActivity extends Activity {
 
 	/** Create a file Uri for saving an image or video */
 	private Uri getOutputMediaFileUri() {
-		return Uri.fromFile(outputFileService.getOutputMediaFile(FileType.PICTURE));
+		return Uri.fromFile(outputFileService.getOutputMediaFile(FileType.IMAGE));
 	}
 
 	@Override
@@ -76,8 +76,7 @@ public class CapturePictureActivity extends Activity {
 		if (requestCode == CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE) {
 			if (resultCode == RESULT_OK) {
 				// Image captured and saved to fileUri specified in the Intent
-            	byte[] bytes = bitmapService.readAndResize(fileUri.getPath());
-				story.setImage(bytes);
+				story.setImage(fileUri.getPath());
 				// TODO:
 			} else if (resultCode == RESULT_CANCELED) {
 				// User cancelled the image capture

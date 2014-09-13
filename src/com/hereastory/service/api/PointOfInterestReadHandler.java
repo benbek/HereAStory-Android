@@ -5,6 +5,7 @@ import java.util.List;
 import com.hereastory.shared.LimitedPointOfInterest;
 import com.hereastory.shared.PointLocation;
 import com.hereastory.shared.PointOfInterest;
+import com.parse.ParseException;
 
 public interface PointOfInterestReadHandler {
 
@@ -18,5 +19,5 @@ public interface PointOfInterestReadHandler {
 
 	void readAllInAreaCompleted(List<PointLocation> points);
 
-	void readAllInAreaFailed(PointLocation location, double maxDistance, Exception e);
+	void readAllInAreaFailed(double latitude, double longitude, double maxDistance, ParseException e);
 }

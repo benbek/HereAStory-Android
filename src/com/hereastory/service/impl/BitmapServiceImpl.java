@@ -1,8 +1,10 @@
 package com.hereastory.service.impl;
 
+import java.io.ByteArrayOutputStream;
 import java.nio.ByteBuffer;
 
 import android.graphics.Bitmap;
+import android.graphics.Bitmap.CompressFormat;
 import android.graphics.BitmapFactory;
 import android.media.ThumbnailUtils;
 
@@ -28,15 +30,21 @@ public class BitmapServiceImpl implements BitmapService {
 		// Decode bitmap with inSampleSize set
 		options.inJustDecodeBounds = false;
 		Bitmap bitmap = BitmapFactory.decodeFile(filePath, options);
-		bitmap = ThumbnailUtils.extractThumbnail(bitmap, IMAGE_WIDTH, IMAGE_HEIGHT);
-		return toByteArray(bitmap);
+		bitmap = Bitmap.createScaledBitmap(bitmap, IMAGE_WIDTH, IMAGE_HEIGHT, true);
+		return compress(bitmap);
 	}
 	
 	@Override
-	public byte[] getThumbnail(byte[] orig) {
-		Bitmap bitmap = BitmapFactory.decodeByteArray(orig, 0, orig.length);
+	public byte[] getThumbnail(String origFilePath) {
+		Bitmap bitmap = BitmapFactory.decodeFile(origFilePath);
 		Bitmap thumbnail = ThumbnailUtils.extractThumbnail(bitmap , THUMB_IMAGE_WIDTH, THUMB_IMAGE_HEIGHT);
 		return toByteArray(thumbnail);
+	}
+	
+	private byte[] compress(Bitmap bitmap) {
+		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+		bitmap.compress(CompressFormat.PNG, 0, outputStream);
+		return outputStream.toByteArray();
 	}
 	
 	private byte[] toByteArray(Bitmap bitmap) {
