@@ -22,6 +22,7 @@ import com.hereastory.shared.PointOfInterest;
 public class RecordAudioActivity extends Activity {
 	private static final String LOG_TAG = "RecordAudioActivity";
 	
+	private static Number duration;
 	private static String filePath; // TODO why static?
 	private static PointOfInterest story; // TODO why static?
 
@@ -57,6 +58,7 @@ public class RecordAudioActivity extends Activity {
     	final Button button = (Button) findViewById(R.id.buttonRecordAudioNext);
         button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
+            	story.setDuration(audioPlayer.getDuration(filePath));
             	story.setAudio(filePath);
             	pointOfInterestService.add(story, new PointOfInterestAddHandler() {
 					

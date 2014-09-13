@@ -1,6 +1,7 @@
 package com.hereastory.service.impl;
 
 import java.io.IOException;
+import java.util.concurrent.TimeUnit;
 
 import android.media.MediaPlayer;
 
@@ -21,5 +22,15 @@ public class AudioPlayer {
     		player = null;
     	}
     }
+
+	public Number getDuration(String filePath) {
+		MediaPlayer player = new MediaPlayer();
+        try {
+			player.setDataSource(filePath);
+		} catch (IOException e) {
+			return 0;
+		}
+		return TimeUnit.MILLISECONDS.toSeconds(player.getDuration());
+	}
 
 }

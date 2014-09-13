@@ -39,22 +39,21 @@ public class ParseDatabaseServiceImpl implements DatabaseService {
 	private static final int POINTS_AMOUNT_LOMIT = 1000;
 	private static final String LOG_TAG = "ParseDatabaseServiceImpl";
 	
-	public static final String USER_TABLE = "User";
-	public static final String NAME = "name";
-	public static final String PROFILE_PICTURE_SMALL = "profilePictureSmall";
+	private static final String USER_TABLE = "User";
+	private static final String NAME = "name";
+	private static final String PROFILE_PICTURE_SMALL = "profilePictureSmall";
 
-	public static final String POI_TABLE = "PointOfInterest";
-	public static final String LOCATION = "location";
-	public static final String OBJECT_ID = "objectId";
-	public static final String AUTHOR = "author";
-	public static final String DELETED = "deleted";
-	public static final String DURATION = "duration";
-	public static final String TITLE = "title";
-	public static final String PUBLISHED_DATE = "publishedDate";
+	private static final String POI_TABLE = "PointOfInterest";
+	private static final String LOCATION = "location";
+	private static final String AUTHOR = "author";
+	private static final String DELETED = "deleted";
+	private static final String DURATION = "duration";
+	private static final String TITLE = "title";
+	private static final String PUBLISHED_DATE = "publishedDate";
 	public static final String LIKE_COUNT = "likeCount";
-	public static final String AUDIO = "audio";
-	public static final String IMAGE = "image";
-	public static final String THUMBNAIL = "thumbnail";
+	private static final String AUDIO = "audio";
+	private static final String IMAGE = "image";
+	private static final String THUMBNAIL = "thumbnail";
 
 	private final OutputFileService outputFileService;
 	
@@ -110,10 +109,8 @@ public class ParseDatabaseServiceImpl implements DatabaseService {
 		pointOfInterest.setId(id);
 		
 		ParseQuery<ParseObject> query = ParseQuery.getQuery(POI_TABLE);
-		query.whereEqualTo(OBJECT_ID, id);
 		query.include(USER_TABLE);
-		
-		query.getFirstInBackground(new GetCallback<ParseObject>() {
+		query.getInBackground(id, new GetCallback<ParseObject>() {
 			@Override
 			public void done(ParseObject object, ParseException e) {
 				try {
@@ -180,7 +177,7 @@ public class ParseDatabaseServiceImpl implements DatabaseService {
 
 	private String saveFile(ParseObject object, String field, FileType fileType) throws ParseException, IOException {
 		byte[] bytes = object.getParseFile(field).getData();
-		String filePath = outputFileService.getOutputMediaFile(fileType, object.getString(OBJECT_ID)).getAbsolutePath();
+		String filePath = outputFileService.getOutputMediaFile(fileType, object.getObjectId()).getAbsolutePath();
 		IOUtils.write(bytes, new FileOutputStream(filePath));
 		return filePath;
 	}
@@ -223,7 +220,7 @@ public class ParseDatabaseServiceImpl implements DatabaseService {
 	}
 	
 	private User getUser(ParseObject object, String nameField, String pictureField) throws ParseException, IOException {
-		String userId = object.getString(OBJECT_ID);
+		String userId = object.getObjectId();
 		User user = new User();
 		user.setName(object.getString(nameField));
 		user.setId(userId);
