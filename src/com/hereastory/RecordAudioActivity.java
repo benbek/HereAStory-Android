@@ -6,6 +6,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 
 import com.hereastory.service.api.OutputFileService;
@@ -14,6 +15,7 @@ import com.hereastory.service.api.PointOfInterestAddHandler;
 import com.hereastory.service.api.PointOfInterestService;
 import com.hereastory.service.impl.AudioPlayer;
 import com.hereastory.service.impl.AudioRecorder;
+import com.hereastory.service.impl.ErrorDialogService;
 import com.hereastory.service.impl.OutputFileServiceImpl;
 import com.hereastory.service.impl.PointOfInterestServiceImpl;
 import com.hereastory.shared.IntentConsts;
@@ -22,9 +24,8 @@ import com.hereastory.shared.PointOfInterest;
 public class RecordAudioActivity extends Activity {
 	private static final String LOG_TAG = "RecordAudioActivity";
 	
-	private static Number duration;
-	private static String filePath; // TODO why static?
-	private static PointOfInterest story; // TODO why static?
+	private static String filePath;
+	private static PointOfInterest story;
 
     private AudioRecorder audioRecorder;
     private boolean startRecording = true;
@@ -38,35 +39,32 @@ public class RecordAudioActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_record_audio);
+	    getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
-		outputFileService = new OutputFileServiceImpl();
-		pointOfInterestService = new PointOfInterestServiceImpl();
+		outputFileService = new OutputFileServiceImpl(this);
+		pointOfInterestService = new PointOfInterestServiceImpl(new OutputFileServiceImpl(this));
 		audioPlayer = new AudioPlayer();
 		audioRecorder = new AudioRecorder();
 		
 		filePath = outputFileService.getOutputMediaFile(FileType.AUDIO).getAbsolutePath();
-
 		story = (PointOfInterest) getIntent().getSerializableExtra(IntentConsts.STORY_OBJECT);
 
 		setupRecordButton();
 		setupPlayButton();
 		setupNextButton();
-		// TODO: verify can't press next without recording
-		// TODO: verify can't play audio before recording
 	}
 
 	private void setupNextButton() {
-    	final Button button = (Button) findViewById(R.id.buttonRecordAudioNext);
+    	final Button button = getNextButton();
+    	button.setEnabled(false);
         button.setOnClickListener(new View.OnClickListener() {
+        	
             public void onClick(View v) {
-            	story.setDuration(audioPlayer.getDuration(filePath));
-            	story.setAudio(filePath);
             	pointOfInterestService.add(story, new PointOfInterestAddHandler() {
 					
 					@Override
 					public void addFailed(PointOfInterest pointOfInterest, Exception e) {
-						// TODO Auto-generated method stub
-						
+						ErrorDialogService.showGeneralError(LOG_TAG, R.string.failed_stop_recording, e, getApplicationContext());
 					}
 					
 					@Override
@@ -80,16 +78,24 @@ public class RecordAudioActivity extends Activity {
         });
 	}
 
+	private Button getNextButton() {
+		return (Button) findViewById(R.id.buttonRecordAudioNext);
+	}
+
 	private void setupRecordButton() {
 		final Button button = (Button) findViewById(R.id.buttonRecordAudio);
         button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 if (startRecording) {
+                	getNextButton().setEnabled(false);
+                	getPlayButton().setEnabled(false);
                 	startRecording();
                 	button.setText(getResources().getString(R.string.stop_recording_audio));
                 } else {
                 	button.setText(getResources().getString(R.string.start_recording_audio));
                 	stopRecording();
+                	getPlayButton().setEnabled(true);
+                	getNextButton().setEnabled(true);
                 }
                 startRecording = !startRecording;
             }
@@ -97,7 +103,8 @@ public class RecordAudioActivity extends Activity {
 	}
 	
 	private void setupPlayButton() {
-		final Button button = (Button) findViewById(R.id.buttonPlayAudio);
+		final Button button = getPlayButton();
+		button.setEnabled(false);
         button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 if (startPlaying) {
@@ -112,19 +119,22 @@ public class RecordAudioActivity extends Activity {
         });
 	}
 
+	private Button getPlayButton() {
+		return (Button) findViewById(R.id.buttonPlayAudio);
+	}
+
     @Override
     public void onPause() {
         super.onPause();
-        audioRecorder.stopRecording();
-        audioPlayer.stopPlaying();
+		stopRecording();
+        stopPlaying();
     }
     
     private void startPlaying() {
     	try {
 			audioPlayer.startPlaying(filePath);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			ErrorDialogService.showGeneralError(LOG_TAG, R.string.failed_start_playing, e, getApplicationContext());
 		}
     }
 
@@ -136,13 +146,18 @@ public class RecordAudioActivity extends Activity {
         try {
 			audioRecorder.startRecording(filePath);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			ErrorDialogService.showGeneralError(LOG_TAG, R.string.failed_start_recording, e, getApplicationContext());
 		}
     }
 
     private void stopRecording() {
-        audioRecorder.stopRecording();
+        try {
+			audioRecorder.stopRecording();
+			story.setDuration(audioPlayer.getDuration(filePath));
+			story.setAudio(filePath);
+		} catch (IOException e) {
+			ErrorDialogService.showGeneralError(LOG_TAG, R.string.failed_stop_recording, e, getApplicationContext());
+		}
     }
 
 }

@@ -20,7 +20,7 @@ public class MainActivity extends Activity {
         setContentView(R.layout.activity_main);
         setupAddStoryButton();
         setupHearStoryButton();
-        new OutputFileServiceImpl().clearDirectory();
+        new OutputFileServiceImpl(this).clearDirectory();
         
         ParseUser user = new ParseUser();
         user.setUsername("my name");
@@ -87,5 +87,5 @@ public class MainActivity extends Activity {
         getMenuInflater().inflate(R.menu.main, menu);
         return true;
     }
-    
+
 }

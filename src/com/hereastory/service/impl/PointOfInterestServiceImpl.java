@@ -5,6 +5,7 @@ import java.util.Date;
 import com.hereastory.database.DatabaseServiceFactory;
 import com.hereastory.database.api.DatabaseService;
 import com.hereastory.service.api.BitmapService;
+import com.hereastory.service.api.OutputFileService;
 import com.hereastory.service.api.PointOfInterestAddHandler;
 import com.hereastory.service.api.PointOfInterestReadHandler;
 import com.hereastory.service.api.PointOfInterestService;
@@ -16,8 +17,8 @@ public class PointOfInterestServiceImpl implements PointOfInterestService {
 	private DatabaseService databaseService;
 	private BitmapService bitmapService;
 	
-	public PointOfInterestServiceImpl() {
-		databaseService = DatabaseServiceFactory.getDatabaseService();
+	public PointOfInterestServiceImpl(OutputFileService outputFileService) {
+		databaseService = DatabaseServiceFactory.getDatabaseService(outputFileService);
 		bitmapService = new BitmapServiceImpl();
 	}
 	
@@ -38,10 +39,10 @@ public class PointOfInterestServiceImpl implements PointOfInterestService {
 
 	@Override
 	public void add(PointOfInterest pointOfInterest, PointOfInterestAddHandler handler) {
-		byte[] thumbnail = bitmapService.getThumbnail(pointOfInterest.getImage());
+		// TODO byte[] thumbnail = bitmapService.getThumbnail(pointOfInterest.getImage());
 		pointOfInterest.setCreationDate(new Date());
 		pointOfInterest.setLikeCount(0);
-		databaseService.add(pointOfInterest, thumbnail , handler);
+		databaseService.add(pointOfInterest, new byte[0] , handler);
 	}
 
 }

@@ -5,13 +5,19 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
-import android.os.Environment;
-import android.util.Log;
+import android.content.Context;
+import android.content.ContextWrapper;
 
 import com.hereastory.service.api.OutputFileService;
 
 public class OutputFileServiceImpl implements OutputFileService {
 	
+	private ContextWrapper contextWrapper;
+	
+	public OutputFileServiceImpl(Context context) {
+		this.contextWrapper = new ContextWrapper(context);
+	}
+
 	@Override
 	public File getProfilePictureFile(String userId) {
 		File mediaStorageDir = getDirectory();
@@ -38,17 +44,10 @@ public class OutputFileServiceImpl implements OutputFileService {
 	}
 
 	private File getDirectory() {
-		File baseDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES); // TODO not pictures
-		File mediaStorageDir = new File(baseDir, "HereAStory");
-		// TODO: To be safe, you should check that the SDCard is mounted
-		// using Environment.getExternalStorageState() before doing this.
-
-		// Create the storage directory if it does not exist
+		File mediaStorageDir = new File(contextWrapper.getFilesDir(), "media");
+		
 		if (!mediaStorageDir.exists()) {
-			if (!mediaStorageDir.mkdirs()) {
-				Log.e("OutputFileGenerator", "failed to create directory");
-				return null;
-			}
+			mediaStorageDir.mkdirs();
 		}
 
 		return mediaStorageDir;

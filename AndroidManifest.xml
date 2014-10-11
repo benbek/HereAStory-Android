@@ -41,15 +41,7 @@
             android:name=".CreateStoryActivity"
             android:label="@string/title_activity_create_story" >
         </activity>
-        <activity
-            android:excludeFromRecents="true"
-            android:parentActivityName="com.hereastory.CreateStoryActivity"
-            android:name=".CapturePictureActivity"
-            android:label="@string/title_activity_capture_picture" >
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.hereastory.CreateStoryActivity" />
-        </activity>
+       
         <activity
             android:excludeFromRecents="true"
             android:name=".RecordAudioActivity"
