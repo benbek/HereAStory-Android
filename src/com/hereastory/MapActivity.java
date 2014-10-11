@@ -98,8 +98,45 @@ public class MapActivity extends SystemUiHiderActivity implements GooglePlayServ
 					.data(loc));
 			}
 		}
-	}
+	} // End of class POIReader
 
+	private static class LocationFailureHandler implements GooglePlayServicesClient.OnConnectionFailedListener {
+	    public final static int CONNECTION_FAILURE_RESOLUTION_REQUEST = 9000;
+
+		private Activity activity;
+		
+		private LocationFailureHandler(Activity activity) {
+			this.activity = activity;
+		}
+
+		@Override
+		public void onConnectionFailed(ConnectionResult connectionResult) {
+			/*
+	         * Google Play services can resolve some errors it detects.
+	         * If the error has a resolution, try sending an Intent to
+	         * start a Google Play services activity that can resolve
+	         * error.
+	         */
+	        if (connectionResult.hasResolution()) {
+	            try {
+	                // Start an Activity that tries to resolve the error
+	                connectionResult.startResolutionForResult(activity, CONNECTION_FAILURE_RESOLUTION_REQUEST);
+	            } catch (IntentSender.SendIntentException e) {
+	                // Log the error
+	                e.printStackTrace();
+	            }
+	        } else {
+	            /*
+	             * If no resolution is available, display a dialog to the
+	             * user with the error.
+	             */
+	            //TODO showErrorDialog(connectionResult.getErrorCode());
+	        }
+			
+		}
+	} // End of class LocationFailureHandler
+	
+	private View recordStoryButton;
 	private GoogleMap map;
 	
 	LocationFailureHandler failureHandler = new LocationFailureHandler(this);
@@ -185,7 +222,7 @@ public class MapActivity extends SystemUiHiderActivity implements GooglePlayServ
 	     AlertDialog.Builder builder = new AlertDialog.Builder(this);
 	     builder.setMessage(e.getMessage())
 	            .setCancelable(false)
-	            .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+	            /*.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
 	                public void onClick(DialogInterface dialog, int id) {
 	                }
 	            })
@@ -193,45 +230,14 @@ public class MapActivity extends SystemUiHiderActivity implements GooglePlayServ
 	                public void onClick(DialogInterface dialog, int id) {
 	                     dialog.cancel();
 	                }
+	            });*/
+	            .setNeutralButton(this.getString(R.string.close_exception_dialog), new DialogInterface.OnClickListener() {
+	                public void onClick(DialogInterface dialog, int id) {
+	                     dialog.cancel();
+	                }
 	            });
 	     AlertDialog alert = builder.create();
          alert.show();
-	}
-
-	private static class LocationFailureHandler implements GooglePlayServicesClient.OnConnectionFailedListener {
-	    public final static int CONNECTION_FAILURE_RESOLUTION_REQUEST = 9000;
-
-		private Activity activity;
-		
-		private LocationFailureHandler(Activity activity) {
-			this.activity = activity;
-		}
-
-		@Override
-		public void onConnectionFailed(ConnectionResult connectionResult) {
-			/*
-	         * Google Play services can resolve some errors it detects.
-	         * If the error has a resolution, try sending an Intent to
-	         * start a Google Play services activity that can resolve
-	         * error.
-	         */
-	        if (connectionResult.hasResolution()) {
-	            try {
-	                // Start an Activity that tries to resolve the error
-	                connectionResult.startResolutionForResult(activity, CONNECTION_FAILURE_RESOLUTION_REQUEST);
-	            } catch (IntentSender.SendIntentException e) {
-	                // Log the error
-	                e.printStackTrace();
-	            }
-	        } else {
-	            /*
-	             * If no resolution is available, display a dialog to the
-	             * user with the error.
-	             */
-	            //TODO showErrorDialog(connectionResult.getErrorCode());
-	        }
-			
-		}
 	}
 
 	private boolean servicesConnected(Activity activity) {
@@ -257,6 +263,7 @@ public class MapActivity extends SystemUiHiderActivity implements GooglePlayServ
     }
 	
 	public void recordStoryClick(View view) {
+		this.recordStoryButton = view;
         locationClient.connect();
         view.setEnabled(false);
 	}
@@ -265,6 +272,7 @@ public class MapActivity extends SystemUiHiderActivity implements GooglePlayServ
 	public void onConnected(Bundle connectionHint) {
 		if (!servicesConnected(this)) {
 			locationClient.disconnect();
+			this.recordStoryButton.setEnabled(true);
 			return;
 		}
 		
@@ -284,6 +292,7 @@ public class MapActivity extends SystemUiHiderActivity implements GooglePlayServ
 	    	}
 		} finally {
 			locationClient.disconnect();
+			this.recordStoryButton.setEnabled(true);
 		}
 		
 		Intent createStoryIntent = new Intent(this, CreateStoryActivity.class);
@@ -291,6 +300,7 @@ public class MapActivity extends SystemUiHiderActivity implements GooglePlayServ
 		createStoryIntent.putExtra(IntentConsts.CURRENT_LONG, location.getLongitude());
 
 		startActivityForResult(createStoryIntent, IntentConsts.CREATE_STORY_CODE);
+		this.recordStoryButton.setEnabled(true);
 	}
 
 	@Override
