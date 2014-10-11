@@ -4,13 +4,12 @@
     <string name="app_name">HereAStory</string>
     <string name="action_settings">Settings</string>
     <string name="title_activity_create_story">CreateStoryActivity</string>
-    <string name="title_activity_capture_picture">CapturePictureActivity</string>
     <string name="title_activity_record_audio">CaptureAudioActivity</string>
     <string name="title_activity_hear_story">HearStoryActivity</string>
     <string name="add_description_for_the_story">Add a description for the story</string>
     <string name="next">Next</string>
     
-    <string name="capture_picture">Capture</string>
+    <string name="capture_picture">Capture picture</string>
     <string name="start_recording_audio">Start Recording Audio</string>
     <string name="stop_recording_audio">Stop Recording Audio</string>
     <string name="start_playing_audio">Start Playing Audio</string>
@@ -27,4 +26,15 @@
     <!-- Error messages -->
     <string name="gps_unavailable_exception">Please turn on your GPS before continuing.</string>
     <string name="location_unavailable_exception">Can\'t acquire location. Please go outdoors.</string>
+    
+    <string name="error_occurred">An error occurred</string>
+    <string name="return_to_map">Return to map</string>
+    <string name="failed_start_recording">Failed start recording</string>
+    <string name="failed_stop_recording">Failed stop recording</string>
+	<string name="failed_start_playing">Failed start playing</string>
+    <string name="failed_showing_image">Failed showing image</string>
+	<string name="failed_compressing_image">Failed compressing image</string>
+    
+	
+	
 </resources>

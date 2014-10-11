@@ -1,7 +1,7 @@
 package com.hereastory.service.impl;
 
+import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.concurrent.TimeUnit;
 
 import android.media.MediaRecorder;
 
@@ -9,29 +9,35 @@ public class AudioRecorder {
     private static final int SAMPLING_RATE = 22050;
 	private static final int BIT_RATE = 64*1024;
 	private static final int NUM_CHANNELS = 1;
-    private static final long MAX_DURATION = TimeUnit.MINUTES.toMillis(5);
+    //TODO private static final long MAX_DURATION = TimeUnit.MINUTES.toMillis(5);
     
     private static MediaRecorder recorder;
+    private static FileOutputStream fileOut;
     
     public void startRecording(String filePath) throws IOException {
         recorder = new MediaRecorder();
         recorder.setAudioSource(MediaRecorder.AudioSource.MIC);
-        recorder.setOutputFormat(MediaRecorder.OutputFormat.AAC_ADTS);        
+        recorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);        
+        recorder.setAudioEncoder(MediaRecorder.AudioEncoder.AAC);
         recorder.setAudioChannels(NUM_CHANNELS);
         recorder.setAudioEncodingBitRate(BIT_RATE);
         recorder.setAudioSamplingRate(SAMPLING_RATE);
-        recorder.setMaxDuration((int)Math.min(MAX_DURATION, Integer.MAX_VALUE)); // TODO use onInfoListner
-        recorder.setOutputFile(filePath);
-        recorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
+        
+        fileOut = new FileOutputStream(filePath);
+        recorder.setOutputFile(fileOut.getFD());
         recorder.prepare();
         recorder.start();
     }
 
-	public void stopRecording() {
+	public void stopRecording() throws IOException {
 		if (recorder != null) {
 	        recorder.stop();
+	        recorder.reset();
 	        recorder.release();
-	        recorder = null;		
+	        fileOut.flush();
+	        fileOut.close();
+	        recorder = null;	
+	        fileOut = null;
 		}
 	}
 }

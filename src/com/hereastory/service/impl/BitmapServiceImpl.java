@@ -1,6 +1,9 @@
 package com.hereastory.service.impl;
 
 import java.io.ByteArrayOutputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.nio.ByteBuffer;
 
 import android.graphics.Bitmap;
@@ -18,7 +21,7 @@ public class BitmapServiceImpl implements BitmapService {
 	private static final int THUMB_IMAGE_HEIGHT = 256;
 	
 	@Override
-	public byte[] readAndResize(String filePath) {
+	public void compress(String filePath) throws FileNotFoundException, IOException {
 		// First decode with inJustDecodeBounds=true to check dimensions
 		final BitmapFactory.Options options = new BitmapFactory.Options();
 		options.inJustDecodeBounds = true;
@@ -31,7 +34,10 @@ public class BitmapServiceImpl implements BitmapService {
 		options.inJustDecodeBounds = false;
 		Bitmap bitmap = BitmapFactory.decodeFile(filePath, options);
 		bitmap = Bitmap.createScaledBitmap(bitmap, IMAGE_WIDTH, IMAGE_HEIGHT, true);
-		return compress(bitmap);
+		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+		bitmap.compress(CompressFormat.JPEG, 30, outputStream);
+		
+		outputStream.writeTo(new FileOutputStream(filePath));
 	}
 	
 	@Override
@@ -39,12 +45,6 @@ public class BitmapServiceImpl implements BitmapService {
 		Bitmap bitmap = BitmapFactory.decodeFile(origFilePath);
 		Bitmap thumbnail = ThumbnailUtils.extractThumbnail(bitmap , THUMB_IMAGE_WIDTH, THUMB_IMAGE_HEIGHT);
 		return toByteArray(thumbnail);
-	}
-	
-	private byte[] compress(Bitmap bitmap) {
-		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-		bitmap.compress(CompressFormat.PNG, 0, outputStream);
-		return outputStream.toByteArray();
 	}
 	
 	private byte[] toByteArray(Bitmap bitmap) {

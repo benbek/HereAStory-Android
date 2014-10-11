@@ -18,7 +18,6 @@ import com.hereastory.service.api.OutputFileService;
 import com.hereastory.service.api.OutputFileService.FileType;
 import com.hereastory.service.api.PointOfInterestAddHandler;
 import com.hereastory.service.api.PointOfInterestReadHandler;
-import com.hereastory.service.impl.OutputFileServiceImpl;
 import com.hereastory.shared.LimitedPointOfInterest;
 import com.hereastory.shared.PointLocation;
 import com.hereastory.shared.PointOfInterest;
@@ -61,8 +60,8 @@ public class ParseDatabaseServiceImpl implements DatabaseService {
 
 	private final OutputFileService outputFileService;
 	
-	public ParseDatabaseServiceImpl() {
-		outputFileService = new OutputFileServiceImpl();
+	public ParseDatabaseServiceImpl(OutputFileService outputFileService) {
+		this.outputFileService = outputFileService;
 	}
 	
 	@Override
@@ -75,7 +74,7 @@ public class ParseDatabaseServiceImpl implements DatabaseService {
 		object.put(PUBLISHED_DATE, pointOfInterest.getCreationDate());
 		object.put(LIKE_COUNT, pointOfInterest.getLikeCount());
 		object.put(LOCATION, getParseGeoPoint(pointOfInterest.getLocation()));
-		object.put(THUMBNAIL, new ParseFile(THUMBNAIL_FILENAME+FileType.IMAGE.getSuffix(), thumbnail));
+		//TODO object.put(THUMBNAIL, new ParseFile(THUMBNAIL_FILENAME+FileType.IMAGE.getSuffix(), thumbnail));
 		object.put(AUTHOR, ParseUser.getCurrentUser());
 		try {
 			object.put(AUDIO, getParseFile(AUDIO_FILENAME+FileType.AUDIO.getSuffix(), pointOfInterest.getAudio()));
