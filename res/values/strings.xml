@@ -34,7 +34,6 @@
 	<string name="failed_start_playing">Failed start playing</string>
     <string name="failed_showing_image">Failed showing image</string>
 	<string name="failed_compressing_image">Failed compressing image</string>
-    
-	
+	<string name="title_cant_be_empty">Title can\'t be empty</string>
 	
 </resources>

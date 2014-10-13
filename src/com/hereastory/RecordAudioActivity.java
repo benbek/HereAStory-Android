@@ -64,7 +64,7 @@ public class RecordAudioActivity extends Activity {
 					
 					@Override
 					public void addFailed(PointOfInterest pointOfInterest, Exception e) {
-						ErrorDialogService.showGeneralError(LOG_TAG, R.string.failed_stop_recording, e, getApplicationContext());
+						ErrorDialogService.showGeneralError(LOG_TAG, R.string.failed_stop_recording, e, RecordAudioActivity.this);
 					}
 					
 					@Override
@@ -134,7 +134,7 @@ public class RecordAudioActivity extends Activity {
     	try {
 			audioPlayer.startPlaying(filePath);
 		} catch (IOException e) {
-			ErrorDialogService.showGeneralError(LOG_TAG, R.string.failed_start_playing, e, getApplicationContext());
+			ErrorDialogService.showGeneralError(LOG_TAG, R.string.failed_start_playing, e, this);
 		}
     }
 
@@ -146,7 +146,7 @@ public class RecordAudioActivity extends Activity {
         try {
 			audioRecorder.startRecording(filePath);
 		} catch (IOException e) {
-			ErrorDialogService.showGeneralError(LOG_TAG, R.string.failed_start_recording, e, getApplicationContext());
+			ErrorDialogService.showGeneralError(LOG_TAG, R.string.failed_start_recording, e, this);
 		}
     }
 
@@ -156,7 +156,7 @@ public class RecordAudioActivity extends Activity {
 			story.setDuration(audioPlayer.getDuration(filePath));
 			story.setAudio(filePath);
 		} catch (IOException e) {
-			ErrorDialogService.showGeneralError(LOG_TAG, R.string.failed_stop_recording, e, getApplicationContext());
+			ErrorDialogService.showGeneralError(LOG_TAG, R.string.failed_stop_recording, e, this);
 		}
     }
 

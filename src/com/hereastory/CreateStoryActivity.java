@@ -6,6 +6,8 @@ import java.io.IOException;
 import org.apache.commons.io.FileUtils;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -56,23 +58,24 @@ public class CreateStoryActivity extends Activity {
 
     private void setupCapturePictureButton() {
     	final Button capturePictureButton = (Button) findViewById(R.id.buttonNewStoryDescriptionNext);
-    	capturePictureButton.setEnabled(false);
         
     	capturePictureButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-            	capturePicture();
+            	if (getDescription().isEmpty()) {
+            		errorTitleEmpty();
+            	} else {
+            		capturePicture();
+            	}
             }
-        });
-        
-        getDescriptionEditText().setOnFocusChangeListener(new View.OnFocusChangeListener() {
-			
-			@Override
-			public void onFocusChange(View v, boolean hasFocus) {
-		       if (!hasFocus && !getDescription().isEmpty()) {
-		    	   capturePictureButton.setEnabled(true);
-		        }
+
+			private void errorTitleEmpty() {
+				new AlertDialog.Builder(CreateStoryActivity.this).setMessage(R.string.title_cant_be_empty)
+				.setNeutralButton(R.string.close_exception_dialog, new DialogInterface.OnClickListener() {
+					@Override
+					public void onClick(DialogInterface dialog, int which) {}
+				}).setIcon(android.R.drawable.ic_dialog_alert).show();
 			}
-		});
+        });
 	}
     
 	private String getDescription() {
@@ -122,7 +125,7 @@ public class CreateStoryActivity extends Activity {
 			FileUtils.moveFile(new File(fileUri.getPath()), actualFilePath);
 			bitmapService.compress(actualFilePath.getPath());
 		} catch (IOException e) {
-			ErrorDialogService.showGeneralError(LOG_TAG, R.string.failed_compressing_image, e, getApplicationContext());
+			ErrorDialogService.showGeneralError(LOG_TAG, R.string.failed_compressing_image, e, this);
 		}
 		story.setImage(actualFilePath.getAbsolutePath());
 	}
