@@ -7,6 +7,7 @@ import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
 
+import com.crashlytics.android.Crashlytics;
 import com.hereastory.service.impl.OutputFileServiceImpl;
 import com.hereastory.shared.IntentConsts;
 import com.parse.ParseException;
@@ -17,6 +18,7 @@ public class MainActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+		Crashlytics.start(this);
         setContentView(R.layout.activity_main);
         setupAddStoryButton();
         setupHearStoryButton();
