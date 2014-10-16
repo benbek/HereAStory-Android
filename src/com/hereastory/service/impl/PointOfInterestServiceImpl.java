@@ -4,22 +4,17 @@ import java.util.Date;
 
 import com.hereastory.database.DatabaseServiceFactory;
 import com.hereastory.database.api.DatabaseService;
-import com.hereastory.service.api.BitmapService;
-import com.hereastory.service.api.OutputFileService;
 import com.hereastory.service.api.PointOfInterestAddHandler;
 import com.hereastory.service.api.PointOfInterestReadHandler;
 import com.hereastory.service.api.PointOfInterestService;
 import com.hereastory.shared.PointOfInterest;
 
 public class PointOfInterestServiceImpl implements PointOfInterestService {
-
 	
 	private DatabaseService databaseService;
-	private BitmapService bitmapService;
 	
-	public PointOfInterestServiceImpl(OutputFileService outputFileService) {
-		databaseService = DatabaseServiceFactory.getDatabaseService(outputFileService);
-		bitmapService = new BitmapServiceImpl();
+	public PointOfInterestServiceImpl() {
+		databaseService = DatabaseServiceFactory.getDatabaseService();
 	}
 	
 	@Override

@@ -13,18 +13,23 @@ import android.widget.TextView;
 
 import com.hereastory.service.impl.AudioPlayer;
 import com.hereastory.service.impl.ErrorDialogService;
+import com.hereastory.shared.HereAStoryAnalytics;
 import com.hereastory.shared.IntentConsts;
 import com.hereastory.shared.PointOfInterest;
 
 public class HearStoryActivity extends Activity {
+	
 	private static final String LOG_TAG = "HearStoryActivity";
-
+	
+	private static HereAStoryAnalytics analytics;
     private AudioPlayer audioPlayer;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_hear_story);
+		analytics = HereAStoryAnalytics.getInstanceForContext(this);
+		analytics.track(LOG_TAG);
 		
 		audioPlayer = new AudioPlayer();
 		PointOfInterest story = (PointOfInterest) getIntent().getSerializableExtra(IntentConsts.STORY_OBJECT);
@@ -63,4 +68,11 @@ public class HearStoryActivity extends Activity {
         super.onPause();
         audioPlayer.stopPlaying();
     }
+	
+	@Override
+	protected void onDestroy() {
+		analytics.flush();
+	    super.onDestroy();
+	}
+
 }

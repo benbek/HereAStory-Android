@@ -20,9 +20,10 @@ import android.widget.EditText;
 import com.hereastory.service.api.BitmapService;
 import com.hereastory.service.api.OutputFileService;
 import com.hereastory.service.api.OutputFileService.FileType;
+import com.hereastory.service.api.OutputFileServiceFactory;
 import com.hereastory.service.impl.BitmapServiceImpl;
 import com.hereastory.service.impl.ErrorDialogService;
-import com.hereastory.service.impl.OutputFileServiceImpl;
+import com.hereastory.shared.HereAStoryAnalytics;
 import com.hereastory.shared.IntentConsts;
 import com.hereastory.shared.PointLocation;
 import com.hereastory.shared.PointOfInterest;
@@ -32,7 +33,8 @@ public class CreateStoryActivity extends Activity {
 	private static final String LOG_TAG = "CreateStoryActivity";
 	private static final int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 100;
 	private static Uri fileUri;
-	private static PointOfInterest story;	
+	private static PointOfInterest story;
+	private static HereAStoryAnalytics analytics;
     private OutputFileService outputFileService;
     private BitmapService bitmapService;
     
@@ -40,7 +42,10 @@ public class CreateStoryActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_create_story);
-		outputFileService = new OutputFileServiceImpl(this);
+		analytics = HereAStoryAnalytics.getInstanceForContext(this);
+		analytics.track(LOG_TAG);
+		
+		outputFileService = OutputFileServiceFactory.getOutputFileService();
 		bitmapService = new BitmapServiceImpl();
 		
 		fileUri = getOutputMediaFileUri(); // create a file to save the image
@@ -128,6 +133,12 @@ public class CreateStoryActivity extends Activity {
 			ErrorDialogService.showGeneralError(LOG_TAG, R.string.failed_compressing_image, e, this);
 		}
 		story.setImage(actualFilePath.getAbsolutePath());
+	}
+	
+	@Override
+	protected void onDestroy() {
+		analytics.flush();
+	    super.onDestroy();
 	}
 
 }

@@ -11,12 +11,12 @@ import android.widget.Button;
 
 import com.hereastory.service.api.OutputFileService;
 import com.hereastory.service.api.OutputFileService.FileType;
+import com.hereastory.service.api.OutputFileServiceFactory;
 import com.hereastory.service.api.PointOfInterestAddHandler;
 import com.hereastory.service.api.PointOfInterestService;
 import com.hereastory.service.impl.AudioPlayer;
 import com.hereastory.service.impl.AudioRecorder;
 import com.hereastory.service.impl.ErrorDialogService;
-import com.hereastory.service.impl.OutputFileServiceImpl;
 import com.hereastory.service.impl.PointOfInterestServiceImpl;
 import com.hereastory.shared.IntentConsts;
 import com.hereastory.shared.PointOfInterest;
@@ -41,8 +41,8 @@ public class RecordAudioActivity extends Activity {
 		setContentView(R.layout.activity_record_audio);
 	    getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
-		outputFileService = new OutputFileServiceImpl(this);
-		pointOfInterestService = new PointOfInterestServiceImpl(new OutputFileServiceImpl(this));
+		outputFileService = OutputFileServiceFactory.getOutputFileService();;
+		pointOfInterestService = new PointOfInterestServiceImpl();
 		audioPlayer = new AudioPlayer();
 		audioRecorder = new AudioRecorder();
 		

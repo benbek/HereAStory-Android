@@ -31,7 +31,6 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.hereastory.service.api.PointOfInterestReadHandler;
 import com.hereastory.service.api.PointOfInterestService;
-import com.hereastory.service.impl.OutputFileServiceImpl;
 import com.hereastory.service.impl.PointOfInterestServiceImpl;
 import com.hereastory.shared.IntentConsts;
 import com.hereastory.shared.LimitedPointOfInterest;
@@ -183,7 +182,7 @@ public class MapActivity extends SystemUiHiderActivity implements GooglePlayServ
         super.setupUiHide(findViewById(R.id.map), findViewById(R.id.fullscreen_content_controls), R.id.record_story_button);
         
         // Here-a-Story services and interfaces
-        poiService = new PointOfInterestServiceImpl(new OutputFileServiceImpl(this));
+        poiService = new PointOfInterestServiceImpl();
         
         addMarkersAtLocation(jerusalem);
     }

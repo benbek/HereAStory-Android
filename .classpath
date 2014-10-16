@@ -10,5 +10,6 @@
 	<classpathentry kind="lib" path="libs/commons-collections4-4.0/commons-collections4-4.0.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/google-play-services_lib"/>
 	<classpathentry kind="lib" path="libs/android-maps-extensions-2.1.0.jar"/>
+	<classpathentry kind="src" path="/mixpanel-android"/>
 	<classpathentry kind="output" path="bin/classes"/>
 </classpath>
