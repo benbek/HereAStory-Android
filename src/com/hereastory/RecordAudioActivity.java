@@ -41,7 +41,7 @@ public class RecordAudioActivity extends Activity {
 		setContentView(R.layout.activity_record_audio);
 	    getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
-		outputFileService = OutputFileServiceFactory.getOutputFileService();;
+		outputFileService = OutputFileServiceFactory.init(this);
 		pointOfInterestService = new PointOfInterestServiceImpl();
 		audioPlayer = new AudioPlayer();
 		audioRecorder = new AudioRecorder();
@@ -68,12 +68,12 @@ public class RecordAudioActivity extends Activity {
 					}
 					
 					@Override
-					public void addCompleted(PointOfInterest pointOfInterest) {
-						Intent intent = new Intent(getApplicationContext(), HearStoryActivity.class);
-		    			intent.putExtra(IntentConsts.STORY_OBJECT, story);
-		    			startActivity(intent);
-					}
+					public void addCompleted(PointOfInterest pointOfInterest) {}
 				});
+            	
+				Intent intent = new Intent(getApplicationContext(), HearStoryActivity.class);
+    			intent.putExtra(IntentConsts.STORY_OBJECT, story);
+    			startActivity(intent);
             }
         });
 	}
