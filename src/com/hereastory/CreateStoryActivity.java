@@ -45,7 +45,7 @@ public class CreateStoryActivity extends Activity {
 		analytics = HereAStoryAnalytics.getInstanceForContext(this);
 		analytics.track(LOG_TAG);
 		
-		outputFileService = OutputFileServiceFactory.getOutputFileService();
+		outputFileService = OutputFileServiceFactory.init(this);
 		bitmapService = new BitmapServiceImpl();
 		
 		fileUri = getOutputMediaFileUri(); // create a file to save the image

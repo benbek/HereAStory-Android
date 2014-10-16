@@ -8,6 +8,7 @@
     <string name="title_activity_hear_story">HearStoryActivity</string>
     <string name="add_description_for_the_story">Add a description for the story</string>
     <string name="next">Next</string>
+    <string name="back_to_map">Back to map</string>
     
     <string name="capture_picture">Capture picture</string>
     <string name="start_recording_audio">Start Recording Audio</string>

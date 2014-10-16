@@ -6,8 +6,11 @@ import java.io.IOException;
 import org.apache.commons.io.IOUtils;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -36,9 +39,21 @@ public class HearStoryActivity extends Activity {
 		
 		showTitle(story);
 		showImage(story);
+		setupBackToMapButton();
 		playAudio(story);
 	}
 
+	private void setupBackToMapButton() {
+    	final Button button = (Button) findViewById(R.id.buttonBackToMap);
+        button.setOnClickListener(new View.OnClickListener() {
+        	
+            public void onClick(View v) {
+				Intent intent = new Intent(HearStoryActivity.this, MapActivity.class);
+				startActivity(intent);
+            }
+        });
+	}
+	
 	private void playAudio(PointOfInterest story) {
 		try {
 			audioPlayer.startPlaying(story.getAudio());
