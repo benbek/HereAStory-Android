@@ -76,12 +76,21 @@
             -->
         </activity>
 
+        <!-- GOOGLE MAPS API KEYS -->
+        <!-- tussbaum --><meta-data
+            android:name="com.google.android.maps.v2.API_KEY"
+            android:value="AIzaSyBSD6TgnZ9CMWLjWI-UA-mp3_bi6Jnn6wQ" />
+        <!-- AvitalZipori --><meta-data
+            android:name="com.google.android.maps.v2.API_KEY"
+            android:value="AIzaSyBGxCXF6lOmO6sD1ZWUv2y3L59Ujz-BNYs" />
+        <!-- benbek --><meta-data
+            android:name="com.google.android.maps.v2.API_KEY"
+            android:value="AIzaSyApw-C5zBTLJPxjKMiS3i90AhaL9esCBi4" />
+        <!-- END OF GOOGLE MAPS API KEYS -->
+        
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
-        <meta-data
-            android:name="com.google.android.maps.v2.API_KEY"
-            android:value="AIzaSyApw-C5zBTLJPxjKMiS3i90AhaL9esCBi4" />
         <meta-data
             android:name="com.crashlytics.ApiKey"
             android:value="426c026432f1b0278d21aa690e5e19a282694a61" />
