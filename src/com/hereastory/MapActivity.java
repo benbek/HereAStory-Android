@@ -154,11 +154,6 @@ public class MapActivity extends SystemUiHiderActivity implements GooglePlayServ
     	
         super.onCreate(savedInstanceState);
         
-        if (requestWindowFeature(Window.FEATURE_CUSTOM_TITLE)) {
-        	getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE,
-                    R.layout.activity_map_title_bar);
-        }
-        
         setContentView(R.layout.activity_map);
 
         int gPlayResult = GooglePlayServicesUtil.isGooglePlayServicesAvailable(getApplicationContext());
