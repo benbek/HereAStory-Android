@@ -17,7 +17,6 @@
     <string name="marker_loading_title">Loading&#8230;</string>
     <string name="marker_failed_title">No data available :(</string>
     <string name="marker_failed_snippet">Please try again.</string>
-    <string name="facebook_app_id">760937370632014</string>
 
     <!-- Buttons -->
     <string name="record_story_button">Record a Story</string>
@@ -35,6 +34,9 @@
     <string name="failed_compressing_image">Failed compressing image</string>
     <string name="title_cant_be_empty">Title can\'t be empty</string>
     <string name="title_activity_login">LoginActivity</string>
-    <string name="hello_world">Hello world!</string>
+    
+    <!-- Internal string -->
+    <string name="facebook_app_id">760937370632014</string>
+    <string name="default_map_locale">iw</string>
 
 </resources>

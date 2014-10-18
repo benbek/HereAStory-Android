@@ -2,6 +2,7 @@ package com.hereastory;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import android.app.Activity;
@@ -11,6 +12,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentSender;
+import android.content.res.Configuration;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
@@ -154,14 +156,9 @@ public class MapActivity extends SystemUiHiderActivity implements GooglePlayServ
     	
         super.onCreate(savedInstanceState);
         
-        //boolean isCustomTitleSupported = requestWindowFeature(Window.FEATURE_CUSTOM_TITLE);
+        setLocale();
         
         setContentView(R.layout.activity_map);
-
-		/*if (isCustomTitleSupported) {
-        	getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE,
-                    R.layout.activity_map_title_bar);
-        }*/
         
         int gPlayResult = GooglePlayServicesUtil.isGooglePlayServicesAvailable(getApplicationContext());
         if (gPlayResult != ConnectionResult.SUCCESS) {
@@ -183,11 +180,6 @@ public class MapActivity extends SystemUiHiderActivity implements GooglePlayServ
         map.moveCamera(CameraUpdateFactory.newLatLngZoom(jerusalem, 13));
 
         map.setOnMarkerClickListener(this);
-        
-        addMarker(new MarkerOptions()
-                .title("Givat Ram")
-                .snippet("Where geeks prosper.")
-                .position(jerusalem));
 
         super.setupUiHide(findViewById(R.id.map), findViewById(R.id.fullscreen_content_controls), R.id.record_story_button);
         
@@ -197,6 +189,18 @@ public class MapActivity extends SystemUiHiderActivity implements GooglePlayServ
         
         addMarkersAtLocation(jerusalem);
     }
+
+	/**
+	 * Sets the language of the activity and thus, the map's.
+	 */
+	private void setLocale() {
+		Locale locale = new Locale(this.getString(R.string.default_map_locale));
+        Locale.setDefault(locale);
+        Configuration config = new Configuration();
+        config.locale = locale;
+        getBaseContext().getResources().updateConfiguration(config,
+              getBaseContext().getResources().getDisplayMetrics());
+	}
 
     protected void addMarker(MarkerOptions marker) {
     	map.addMarker(marker.flat(true)
@@ -211,6 +215,7 @@ public class MapActivity extends SystemUiHiderActivity implements GooglePlayServ
     public void onResume() {
     	super.onResume();
     	
+    	setLocale();
         int gPlayResult = GooglePlayServicesUtil.isGooglePlayServicesAvailable(getApplicationContext());
         if (gPlayResult != ConnectionResult.SUCCESS) {
         	GooglePlayServicesUtil.getErrorDialog(gPlayResult, this, 0).show();
