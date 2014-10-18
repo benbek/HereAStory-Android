@@ -37,9 +37,9 @@ public class HearStoryActivity extends Activity {
 		audioPlayer = new AudioPlayer();
 		PointOfInterest story = (PointOfInterest) getIntent().getSerializableExtra(IntentConsts.STORY_OBJECT);
 		
+		setupBackToMapButton();
 		showTitle(story);
 		showImage(story);
-		setupBackToMapButton();
 		playAudio(story);
 	}
 

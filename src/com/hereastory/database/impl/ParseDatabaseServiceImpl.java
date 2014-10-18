@@ -47,6 +47,8 @@ public class ParseDatabaseServiceImpl implements DatabaseService {
 	private static final String PROFILE_PICTURE_SMALL = "profilePictureSmall";
 
 	private static final String POI_TABLE = "PointOfInterest";
+	private static final String POI_EXTERNAL_TABLE = "POIExternalInfo";
+
 	private static final String LOCATION = "location";
 	private static final String AUTHOR = "author";
 	private static final String DELETED = "deleted";
@@ -57,6 +59,7 @@ public class ParseDatabaseServiceImpl implements DatabaseService {
 	private static final String AUDIO = "audio";
 	private static final String IMAGE = "image";
 	private static final String THUMBNAIL = "thumbnail";
+	private static final String POI_KEY = "poi";
 
 	private final OutputFileService outputFileService;
 	
@@ -66,8 +69,21 @@ public class ParseDatabaseServiceImpl implements DatabaseService {
 	
 	@Override
 	public void add(final PointOfInterest pointOfInterest, byte[] thumbnail, final PointOfInterestAddHandler handler) {	
-		ParseObject object = new ParseObject(POI_TABLE);		
-		object.setACL(getPublicACL());
+		final ParseObject object = new ParseObject(POI_TABLE);		
+		object.setACL(getPrivateACL());
+		try {
+			setPointFields(pointOfInterest, object);
+		} catch (IOException e) {
+			Log.e(LOG_TAG, "Failed saving point", e);
+			handler.addFailed(pointOfInterest, e);
+			return;
+		}
+		
+		SaveCallback saveCallback = new PointOfInterestSaveCallback(pointOfInterest, handler, object);
+		object.saveInBackground(saveCallback);
+	}
+
+	private void setPointFields(final PointOfInterest pointOfInterest, ParseObject object) throws IOException {
 		object.put(DELETED, false);
 		object.put(DURATION, pointOfInterest.getDuration());
 		object.put(TITLE, pointOfInterest.getTitle());
@@ -76,25 +92,8 @@ public class ParseDatabaseServiceImpl implements DatabaseService {
 		object.put(LOCATION, getParseGeoPoint(pointOfInterest.getLocation()));
 		//TODO object.put(THUMBNAIL, new ParseFile(THUMBNAIL_FILENAME+FileType.IMAGE.getSuffix(), thumbnail));
 		object.put(AUTHOR, ParseUser.getCurrentUser());
-		try {
-			object.put(AUDIO, getParseFile(AUDIO_FILENAME+FileType.AUDIO.getSuffix(), pointOfInterest.getAudio()));
-			object.put(IMAGE, getParseFile(IMAGE_FILENAME+FileType.IMAGE.getSuffix(), pointOfInterest.getImage()));
-		} catch (IOException e) {
-			Log.e(LOG_TAG, "Failed saving point", e);
-			handler.addFailed(pointOfInterest, e);
-		}
-		
-		object.saveInBackground(new SaveCallback() {
-			@Override
-			public void done(ParseException e) {
-				if (e == null) {
-					handler.addCompleted(pointOfInterest);
-				} else {	
-					Log.e(LOG_TAG, "Failed saving point", e);
-					handler.addFailed(pointOfInterest, e);
-				}
-			}
-		});
+		object.put(AUDIO, getParseFile(AUDIO_FILENAME+FileType.AUDIO.getSuffix(), pointOfInterest.getAudio()));
+		object.put(IMAGE, getParseFile(IMAGE_FILENAME+FileType.IMAGE.getSuffix(), pointOfInterest.getImage()));
 	}
 
 	@Override
@@ -221,7 +220,7 @@ public class ParseDatabaseServiceImpl implements DatabaseService {
 	private ParseGeoPoint getParseGeoPoint(PointLocation location) {
 		return new ParseGeoPoint(location.getLatitude(), location.getLongitude());
 	}
-	
+
 	private User getUser(ParseObject object, String nameField, String pictureField) throws ParseException, IOException {
 		String userId = object.getObjectId();
 		User user = new User();
@@ -247,4 +246,57 @@ public class ParseDatabaseServiceImpl implements DatabaseService {
 		return acl;
 	}
 
+	private ParseACL getPrivateACL() {
+		ParseACL acl = new ParseACL();
+		acl.setPublicReadAccess(false);
+		return acl;
+	}
+	
+	class PointOfInterestSaveCallback extends SaveCallback {
+		
+		private PointOfInterest pointOfInterest;
+		private PointOfInterestAddHandler handler;
+		private ParseObject object;
+		
+		private PointOfInterestSaveCallback(final PointOfInterest pointOfInterest, final PointOfInterestAddHandler handler, ParseObject object ) {
+			super();
+			this.pointOfInterest = pointOfInterest;
+			this.handler = handler;
+			this.object = object;
+		}
+		
+		@Override
+		public void done(ParseException e) {
+			if (e == null) {
+				// save external object
+                ParseObject objectExternal = new ParseObject(POI_EXTERNAL_TABLE);		
+                objectExternal.setACL(getPublicACL());
+                objectExternal.put(POI_KEY, object.getObjectId());
+        		try {
+        			setPointFields(pointOfInterest, objectExternal);
+        		} catch (IOException e1) {
+        			Log.e(LOG_TAG, "Failed saving point", e1);
+        			handler.addFailed(pointOfInterest, e1);
+        			return;
+        		}
+        		
+        		objectExternal.saveInBackground(new SaveCallback() {
+
+					@Override
+					public void done(ParseException e) {
+						if (e == null) {
+							handler.addCompleted(pointOfInterest);
+						} else {	
+							Log.e(LOG_TAG, "Failed saving point", e);
+							handler.addFailed(pointOfInterest, e);
+						}
+					}
+        			
+        		});
+			} else {	
+				Log.e(LOG_TAG, "Failed saving point", e);
+				handler.addFailed(pointOfInterest, e);
+			}
+		}
+	}
 }

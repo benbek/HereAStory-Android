@@ -15,18 +15,19 @@ public class AudioRecorder {
     private static FileOutputStream fileOut;
     
     public void startRecording(String filePath) throws IOException {
-        recorder = new MediaRecorder();
-        recorder.setAudioSource(MediaRecorder.AudioSource.MIC);
-        recorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);        
-        recorder.setAudioEncoder(MediaRecorder.AudioEncoder.AAC);
-        recorder.setAudioChannels(NUM_CHANNELS);
-        recorder.setAudioEncodingBitRate(BIT_RATE);
-        recorder.setAudioSamplingRate(SAMPLING_RATE);
+    	MediaRecorder recorder1 = new MediaRecorder();
+        recorder1.setAudioSource(MediaRecorder.AudioSource.MIC);
+        recorder1.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);        
+        recorder1.setAudioEncoder(MediaRecorder.AudioEncoder.AAC);
+        recorder1.setAudioChannels(NUM_CHANNELS);
+        recorder1.setAudioEncodingBitRate(BIT_RATE);
+        recorder1.setAudioSamplingRate(SAMPLING_RATE);
         
         fileOut = new FileOutputStream(filePath);
-        recorder.setOutputFile(fileOut.getFD());
-        recorder.prepare();
-        recorder.start();
+        recorder1.setOutputFile(fileOut.getFD());
+        recorder1.prepare();
+        recorder1.start();
+        recorder = recorder1;
     }
 
 	public void stopRecording() throws IOException {

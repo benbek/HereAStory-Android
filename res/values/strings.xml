@@ -9,32 +9,32 @@
     <string name="add_description_for_the_story">Add a description for the story</string>
     <string name="next">Next</string>
     <string name="back_to_map">Back to map</string>
-    
     <string name="capture_picture">Capture picture</string>
     <string name="start_recording_audio">Start Recording Audio</string>
     <string name="stop_recording_audio">Stop Recording Audio</string>
     <string name="start_playing_audio">Start Playing Audio</string>
     <string name="stop_playing_audio">Stop Playing Audio</string>
-    
     <string name="marker_loading_title">Loading&#8230;</string>
     <string name="marker_failed_title">No data available :(</string>
     <string name="marker_failed_snippet">Please try again.</string>
+    <string name="facebook_app_id">760937370632014</string>
 
     <!-- Buttons -->
     <string name="record_story_button">Record a Story</string>
     <string name="close_exception_dialog">OK</string>
-    
+
     <!-- Error messages -->
     <string name="gps_unavailable_exception">Please turn on your GPS before continuing.</string>
     <string name="location_unavailable_exception">Can\'t acquire location. Please go outdoors.</string>
-    
     <string name="error_occurred">An error occurred</string>
     <string name="return_to_map">Return to map</string>
     <string name="failed_start_recording">Failed start recording</string>
     <string name="failed_stop_recording">Failed stop recording</string>
-	<string name="failed_start_playing">Failed start playing</string>
+    <string name="failed_start_playing">Failed start playing</string>
     <string name="failed_showing_image">Failed showing image</string>
-	<string name="failed_compressing_image">Failed compressing image</string>
-	<string name="title_cant_be_empty">Title can\'t be empty</string>
-	
+    <string name="failed_compressing_image">Failed compressing image</string>
+    <string name="title_cant_be_empty">Title can\'t be empty</string>
+    <string name="title_activity_login">LoginActivity</string>
+    <string name="hello_world">Hello world!</string>
+
 </resources>

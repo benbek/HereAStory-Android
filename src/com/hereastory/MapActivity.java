@@ -295,7 +295,7 @@ public class MapActivity extends SystemUiHiderActivity implements GooglePlayServ
 			this.recordStoryButton.setEnabled(true);
 		}
 		
-		Intent createStoryIntent = new Intent(this, CreateStoryActivity.class);
+		Intent createStoryIntent = new Intent(this, LoginActivity.class);
 		createStoryIntent.putExtra(IntentConsts.CURRENT_LAT, location.getLatitude());
 		createStoryIntent.putExtra(IntentConsts.CURRENT_LONG, location.getLongitude());
 
