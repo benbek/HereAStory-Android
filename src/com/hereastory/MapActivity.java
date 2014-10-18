@@ -16,6 +16,7 @@ import android.location.LocationManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.Window;
 
 import com.androidmapsextensions.GoogleMap;
 import com.androidmapsextensions.GoogleMap.OnInfoWindowClickListener;
@@ -29,6 +30,7 @@ import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.location.LocationClient;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.hereastory.service.api.OutputFileServiceFactory;
 import com.hereastory.service.api.PointOfInterestReadHandler;
 import com.hereastory.service.api.PointOfInterestService;
 import com.hereastory.service.impl.PointOfInterestServiceImpl;
@@ -151,6 +153,12 @@ public class MapActivity extends SystemUiHiderActivity implements GooglePlayServ
     public void onCreate(Bundle savedInstanceState) {
     	
         super.onCreate(savedInstanceState);
+        
+        if (requestWindowFeature(Window.FEATURE_CUSTOM_TITLE)) {
+        	getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE,
+                    R.layout.activity_map_title_bar);
+        }
+        
         setContentView(R.layout.activity_map);
 
         int gPlayResult = GooglePlayServicesUtil.isGooglePlayServicesAvailable(getApplicationContext());
@@ -168,7 +176,7 @@ public class MapActivity extends SystemUiHiderActivity implements GooglePlayServ
         // Set location to Safra Campus, Jerusalem: (31.774476,35.203543)
         LatLng jerusalem = new LatLng(31.774476, 35.203543);
         
-        //map.setMyLocationEnabled(true);
+        map.setMyLocationEnabled(true);
         
         map.moveCamera(CameraUpdateFactory.newLatLngZoom(jerusalem, 13));
 
@@ -181,6 +189,7 @@ public class MapActivity extends SystemUiHiderActivity implements GooglePlayServ
 
         super.setupUiHide(findViewById(R.id.map), findViewById(R.id.fullscreen_content_controls), R.id.record_story_button);
         
+        OutputFileServiceFactory.init(this);
         // Here-a-Story services and interfaces
         poiService = new PointOfInterestServiceImpl();
         
@@ -189,7 +198,7 @@ public class MapActivity extends SystemUiHiderActivity implements GooglePlayServ
 
     protected void addMarker(MarkerOptions marker) {
     	map.addMarker(marker.flat(true)
-    			.rotation(340));
+    			/*.rotation(340)*/);
     }
     
     protected void addMarkersAtLocation(LatLng location) {
