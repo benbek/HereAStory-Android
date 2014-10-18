@@ -9,10 +9,14 @@ import android.view.Menu;
 import com.facebook.Session;
 import com.facebook.SessionState;
 import com.facebook.UiLifecycleHelper;
+import com.hereastory.shared.IntentConsts;
 
 public class LoginActivity extends Activity {
 
 	private static final String LOG_TAG = "LoginActivity";
+	
+	private static double latitude;
+	private static double longitude;
 	
 	private UiLifecycleHelper uiHelper;
 	
@@ -22,7 +26,7 @@ public class LoginActivity extends Activity {
 	        onSessionStateChange(session, state, exception);
 	    }
 	};
-	
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -30,6 +34,9 @@ public class LoginActivity extends Activity {
 		
 	    uiHelper = new UiLifecycleHelper(this, callback);
 	    uiHelper.onCreate(savedInstanceState);
+	    
+		latitude = (Double) getIntent().getSerializableExtra(IntentConsts.CURRENT_LAT);
+		longitude = (Double) getIntent().getSerializableExtra(IntentConsts.CURRENT_LONG);
 	}
 
 	@Override
@@ -42,8 +49,10 @@ public class LoginActivity extends Activity {
 	private void onSessionStateChange(Session session, SessionState state, Exception exception) {
 	    if (state.isOpened()) {
 	        Log.i(LOG_TAG, "Logged in...");
-	    } else if (state.isClosed()) {
-	        Log.i(LOG_TAG, "Logged out...");
+			Intent intent = new Intent(this, CreateStoryActivity.class);
+			intent.putExtra(IntentConsts.CURRENT_LAT, latitude);
+			intent.putExtra(IntentConsts.CURRENT_LONG, longitude);
+			startActivityForResult(intent, IntentConsts.CREATE_STORY_CODE);
 	    }
 	}
 	
