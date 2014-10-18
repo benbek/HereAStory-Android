@@ -47,7 +47,7 @@ public class ParseDatabaseServiceImpl implements DatabaseService {
 	private static final String PROFILE_PICTURE_SMALL = "profilePictureSmall";
 
 	private static final String POI_TABLE = "PointOfInterest";
-	private static final String POI_EXTERNAL_TABLE = "POIExternalInfo";
+	private static final String POI_EXTERNAL_TABLE = "POIExtraInfo";
 
 	private static final String LOCATION = "location";
 	private static final String AUTHOR = "author";
@@ -70,7 +70,7 @@ public class ParseDatabaseServiceImpl implements DatabaseService {
 	@Override
 	public void add(final PointOfInterest pointOfInterest, byte[] thumbnail, final PointOfInterestAddHandler handler) {	
 		final ParseObject object = new ParseObject(POI_TABLE);		
-		object.setACL(getPrivateACL());
+		object.setACL(getPublicACL());
 		try {
 			setPointFields(pointOfInterest, object);
 		} catch (IOException e) {
@@ -243,12 +243,6 @@ public class ParseDatabaseServiceImpl implements DatabaseService {
 	private ParseACL getPublicACL() {
 		ParseACL acl = new ParseACL();
 		acl.setPublicReadAccess(true);
-		return acl;
-	}
-
-	private ParseACL getPrivateACL() {
-		ParseACL acl = new ParseACL();
-		acl.setPublicReadAccess(false);
 		return acl;
 	}
 	
