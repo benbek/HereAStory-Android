@@ -19,7 +19,7 @@
     <string name="marker_failed_snippet">Please try again.</string>
 
     <!-- Buttons -->
-    <string name="record_story_button">Record a Story</string>
+    <string name="record_story_button_desc">Record a Story</string>
     <string name="close_exception_dialog">OK</string>
 
     <!-- Error messages -->
@@ -39,4 +39,22 @@
     <string name="facebook_app_id">760937370632014</string>
     <string name="default_map_locale">iw</string>
 
+    
+    <!-- Tomer Test zone -->
+    <string name="title_section1">tutorial</string>
+    <string name="title_section2">about</string>
+    <string name="title_section3"/>
+    <string name="title_section4">Give Like :)</string>
+    <string name="title_section5">Share</string>
+    <string name="title_section6">Feedback</string>
+    <string name="title_section7"/>
+    <string name="title_section8">Logout</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="action_example">Example action</string>
+    
+    <string name="random_story_logo">New Story!</string>
+	<string name="logo">ic_nav_bar_logo.png</string>
+
+    
 </resources>
