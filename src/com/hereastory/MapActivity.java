@@ -18,7 +18,6 @@ import android.location.LocationManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.view.Window;
 
 import com.androidmapsextensions.GoogleMap;
 import com.androidmapsextensions.GoogleMap.OnInfoWindowClickListener;
@@ -50,6 +49,7 @@ import com.parse.ParseException;
 public class MapActivity extends SystemUiHiderActivity implements GooglePlayServicesClient.ConnectionCallbacks, OnMarkerClickListener, OnInfoWindowClickListener {
 	
 	private static final String LOG_TAG = MapActivity.class.getSimpleName();
+	private static final String ERROR_INFO_WINDOW = "error_info_window";
 	
 	private final class POIReader implements PointOfInterestReadHandler {
 		@Override
@@ -61,8 +61,7 @@ public class MapActivity extends SystemUiHiderActivity implements GooglePlayServ
 		@Override
 		public void readLimitedCompleted(LimitedPointOfInterest poi) {
 			Marker clickedMarker = map.getMarkerShowingInfoWindow();
-			clickedMarker.setTitle(poi.getTitle());
-			clickedMarker.setSnippet(poi.getAuthor().getName());
+			updateMarkerInfoWindow(clickedMarker, poi.getTitle(), poi.getAuthor().getName(), null);
 			
 			cachedMarkers.put((PointLocation) clickedMarker.getData(), poi);
 		}
@@ -75,12 +74,8 @@ public class MapActivity extends SystemUiHiderActivity implements GooglePlayServ
 
 		private void displayErrorPopup() {
 			Marker clickedMarker = map.getMarkerShowingInfoWindow();
-			if (clickedMarker != null) {
-				clickedMarker.hideInfoWindow();
-				clickedMarker.setTitle(MapActivity.this.getString(R.string.marker_failed_title));
-				clickedMarker.setSnippet(MapActivity.this.getString(R.string.marker_failed_snippet));
-				clickedMarker.showInfoWindow();
-			}
+			updateMarkerInfoWindow(clickedMarker, MapActivity.this.getString(R.string.marker_failed_title), 
+					MapActivity.this.getString(R.string.marker_failed_snippet), ERROR_INFO_WINDOW);
 		}
 
 		@Override
@@ -327,7 +322,19 @@ public class MapActivity extends SystemUiHiderActivity implements GooglePlayServ
 
 	@Override
 	public void onInfoWindowClick(Marker origin) {
-		// TODO Auto-generated method stub
-		
+		if (origin.getData().toString() == ERROR_INFO_WINDOW) {
+			origin.hideInfoWindow();
+		}
+	}
+
+	private void updateMarkerInfoWindow(Marker clickedMarker, String infoWindowTitle, String infoWindowSnippet, String markerData) {
+		if (clickedMarker != null) {
+			clickedMarker.hideInfoWindow();
+			clickedMarker.setTitle(infoWindowTitle);
+			clickedMarker.setSnippet(infoWindowSnippet);
+			clickedMarker.showInfoWindow();
+			
+			clickedMarker.setData(markerData);
+		}
 	}
 }

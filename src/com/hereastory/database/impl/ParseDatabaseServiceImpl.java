@@ -222,6 +222,7 @@ public class ParseDatabaseServiceImpl implements DatabaseService {
 	}
 
 	private User getUser(ParseObject object, String nameField, String pictureField) throws ParseException, IOException {
+		object.fetchIfNeeded();
 		String userId = object.getObjectId();
 		User user = new User();
 		user.setName(object.getString(nameField));
