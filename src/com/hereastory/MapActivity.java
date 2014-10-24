@@ -61,7 +61,7 @@ public class MapActivity extends SystemUiHiderActivity implements GooglePlayServ
 		@Override
 		public void readLimitedCompleted(LimitedPointOfInterest poi) {
 			Marker clickedMarker = map.getMarkerShowingInfoWindow();
-			updateMarkerInfoWindow(clickedMarker, poi.getTitle(), poi.getAuthor().getName(), null);
+			updateMarkerInfoWindow(clickedMarker, poi.getTitle(), poi.getAuthor().getName());
 			
 			cachedMarkers.put((PointLocation) clickedMarker.getData(), poi);
 		}
@@ -75,11 +75,15 @@ public class MapActivity extends SystemUiHiderActivity implements GooglePlayServ
 		private void displayErrorPopup() {
 			Marker clickedMarker = map.getMarkerShowingInfoWindow();
 			updateMarkerInfoWindow(clickedMarker, MapActivity.this.getString(R.string.marker_failed_title), 
-					MapActivity.this.getString(R.string.marker_failed_snippet), ERROR_INFO_WINDOW);
+					MapActivity.this.getString(R.string.marker_failed_snippet));
 		}
 
 		@Override
 		public void readCompleted(PointOfInterest poi) {
+			Intent hearStoryIntent = new Intent(MapActivity.this, HearStoryActivity.class);
+			hearStoryIntent.putExtra(IntentConsts.STORY_OBJECT, poi);
+
+			startActivityForResult(hearStoryIntent, IntentConsts.HEAR_STORY_CODE);
 		}
 
 		@Override
@@ -175,6 +179,7 @@ public class MapActivity extends SystemUiHiderActivity implements GooglePlayServ
         map.moveCamera(CameraUpdateFactory.newLatLngZoom(jerusalem, 13));
 
         map.setOnMarkerClickListener(this);
+        map.setOnInfoWindowClickListener(this);
 
         super.setupUiHide(findViewById(R.id.map), findViewById(R.id.fullscreen_content_controls), R.id.record_story_button);
         
@@ -223,7 +228,11 @@ public class MapActivity extends SystemUiHiderActivity implements GooglePlayServ
 		if (loc != null) {
 			clickedMarker.setTitle(this.getString(R.string.marker_loading_title));
 			clickedMarker.setSnippet(""); // Clear out old values
-			poiService.readLimited(loc.getPointOfInterestId(), markerReader);
+			if (cachedMarkers.containsKey(loc)) {
+				markerReader.readLimitedCompleted(cachedMarkers.get(loc));
+			} else {
+				poiService.readLimited(loc.getPointOfInterestId(), markerReader);
+			}
 		}
 		
 		return false;
@@ -324,17 +333,18 @@ public class MapActivity extends SystemUiHiderActivity implements GooglePlayServ
 	public void onInfoWindowClick(Marker origin) {
 		if (origin.getData().toString() == ERROR_INFO_WINDOW) {
 			origin.hideInfoWindow();
+		} else {
+			PointLocation data = origin.getData();
+			poiService.read(data.getPointOfInterestId(), markerReader);
 		}
 	}
 
-	private void updateMarkerInfoWindow(Marker clickedMarker, String infoWindowTitle, String infoWindowSnippet, String markerData) {
+	private void updateMarkerInfoWindow(Marker clickedMarker, String infoWindowTitle, String infoWindowSnippet) {
 		if (clickedMarker != null) {
 			clickedMarker.hideInfoWindow();
 			clickedMarker.setTitle(infoWindowTitle);
 			clickedMarker.setSnippet(infoWindowSnippet);
 			clickedMarker.showInfoWindow();
-			
-			clickedMarker.setData(markerData);
 		}
 	}
 }

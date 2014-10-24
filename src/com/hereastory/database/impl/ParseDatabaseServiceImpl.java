@@ -227,12 +227,15 @@ public class ParseDatabaseServiceImpl implements DatabaseService {
 		User user = new User();
 		user.setName(object.getString(nameField));
 		user.setId(userId);
-		byte[] bytes = object.getParseFile(PROFILE_PICTURE_SMALL).getData();
-		String filePath = outputFileService.getProfilePictureFile(userId).getAbsolutePath();
-		if (!new File(filePath).exists()) {
-			IOUtils.write(bytes, new FileOutputStream(filePath));
+		final ParseFile profilePicFile = object.getParseFile(PROFILE_PICTURE_SMALL);
+		if (profilePicFile != null) {
+			byte[] bytes = profilePicFile.getData();
+			String filePath = outputFileService.getProfilePictureFile(userId).getAbsolutePath();
+			if (!new File(filePath).exists()) {
+				IOUtils.write(bytes, new FileOutputStream(filePath));
+			}
+			user.setProfilePictureSmall(filePath);
 		}
-		user.setProfilePictureSmall(filePath);
 		return user;
 	}
 
