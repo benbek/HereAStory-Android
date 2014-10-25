@@ -1,0 +1,60 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MapActivityFragment" >
+
+    <!--
+         The primary full-screen view.
+    -->
+
+    <fragment android:id="@+id/map"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:name="com.androidmapsextensions.MapFragment" />
+
+    <!--
+         This FrameLayout insets its children based on system windows using
+         android:fitsSystemWindows.
+    -->
+
+    <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:fitsSystemWindows="true" >
+
+        <LinearLayout
+                android:id="@+id/fullscreen_content_controls"
+                style="?buttonBarStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom|center_horizontal"
+                android:background="@android:color/transparent"
+                android:orientation="horizontal"
+                tools:ignore="UselessParent" >
+
+       <ImageButton
+           android:id="@+id/record_story_button"
+           android:layout_width="wrap_content"
+           android:layout_height="wrap_content"
+           android:adjustViewBounds="false"
+           android:background="@android:color/transparent"
+           android:baselineAlignBottom="true"
+           android:contentDescription="@string/record_story_button_desc"
+           android:cropToPadding="false"
+           android:focusableInTouchMode="false"
+           android:onClick="recordStoryClick"
+           android:paddingBottom="8dp"
+           android:paddingLeft="2dp"
+           android:paddingRight="2dp"
+           android:paddingTop="5dp"
+           android:scrollbarAlwaysDrawVerticalTrack="false"
+           android:src="@drawable/ic_record_button"
+           android:visibility="visible" />
+
+        </LinearLayout>
+
+
+    </FrameLayout>
+
+</RelativeLayout>
