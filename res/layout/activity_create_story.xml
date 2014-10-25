@@ -3,19 +3,19 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
     tools:context=".CreateStoryActivity" >
 
     <ImageView
         android:id="@+id/imageView1"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_marginBottom="-300dp"
+        android:layout_marginLeft="-100dp"
+        android:layout_marginRight="-100dp"
+        android:layout_marginTop="-300dp"
         android:layout_weight="3"
         android:cropToPadding="false"
-        android:src="@android:drawable/gallery_thumb" />
+        android:src="@drawable/empty_gradient" />
 
     <ProgressBar
         android:id="@+id/progressBar1"
@@ -40,35 +40,6 @@
             android:layout_weight="0.1"
             android:gravity="left"
             android:orientation="vertical" >
-			
-            <Button
-                android:id="@+id/imageButton1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="fill_vertical|fill_horizontal|center"
-                android:layout_marginBottom="@dimen/activity_vertical_margin"
-                android:layout_marginLeft="@dimen/activity_horizontal_margin"
-                android:layout_marginRight="@dimen/activity_horizontal_margin"
-                android:layout_marginTop="@dimen/activity_vertical_margin"
-                android:layout_weight="1"
-                android:background="@drawable/ic_btn_heart_empty"
-                android:scaleType="fitStart"
-                android:text="3"
-                android:textColor="@color/APP_TEXT_WHITE" />
-            
-            <ImageButton
-                android:id="@+id/imageButton2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/activity_vertical_margin"
-                android:layout_marginLeft="@dimen/activity_horizontal_margin"
-                android:layout_marginRight="@dimen/activity_horizontal_margin"
-                android:layout_marginTop="@dimen/activity_horizontal_margin"
-                android:layout_weight="0.5"
-                android:background="@null"
-                android:cropToPadding="false"
-                android:scaleType="fitCenter"
-                android:src="@drawable/ic_btn_dots" />
 
         </LinearLayout>
 
@@ -78,41 +49,10 @@
             android:layout_weight="0.8"
             android:orientation="vertical" >
 
-            <TextView
-                android:id="@+id/textView2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="top|center_vertical"
-                android:layout_weight="10"
-                android:gravity="top|fill_vertical|center_horizontal"
-                android:maxWidth="400dp"
-                android:text="&lt;Story Title>"
-                android:textAppearance="?android:attr/textAppearanceLarge"
-                android:textColor="@color/APP_TEXT_WHITE"
-                android:textSize="25sp" />
-
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="10" >
-
-                <TextView
-                    android:id="@+id/textView4"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="TextView"
-                    android:textColor="@color/APP_TEXT_WHITE"
-                    android:textSize="10dp" />
-
-                <TextView
-                    android:id="@+id/textView3"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="10"
-                    android:text="Small Text"
-                    android:textAppearance="?android:attr/textAppearanceSmall"
-                    android:textColor="@color/APP_TEXT_WHITE"
-                    android:textSize="10dp" />
 
             </LinearLayout>
 
@@ -124,35 +64,6 @@
             android:layout_weight="0.2"
             android:gravity="right"
             android:orientation="vertical" >
-
-            <ImageView
-                android:id="@+id/imageView2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/activity_horizontal_margin"
-                android:layout_marginRight="@dimen/activity_horizontal_margin"
-                android:layout_marginTop="@dimen/activity_vertical_margin"
-                android:layout_weight="1"
-                android:baselineAlignBottom="false"
-                android:cropToPadding="false"
-                android:scaleType="fitStart"
-                android:src="@drawable/profile_placeholder" />
-
-            <TextView
-                android:id="@+id/textView1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="bottom|fill_horizontal|end"
-                android:layout_marginBottom="@dimen/activity_vertical_margin"
-                android:layout_marginLeft="@dimen/activity_horizontal_margin"
-                android:layout_marginRight="@dimen/activity_horizontal_margin"
-                android:layout_weight="4"
-                android:gravity="right|fill_vertical"
-                android:maxLines="2"
-                android:maxWidth="90dp"
-                android:text="&lt;User Name>"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:textColor="@color/APP_TEXT_WHITE" />
 
         </LinearLayout>
 

@@ -2,25 +2,29 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/empty_gradient"
     android:clickable="false"
     android:longClickable="false"
     android:orientation="vertical"
     tools:context=".HearStoryActivity" >
-    
     
 <!-- TODO (TOMER) 
 	* make icon ic_heart_full.png when the story is liked
 	* add icons and order the texts beneth the TITLE
 	-->
 	
-
     <ImageView
         android:id="@+id/imageView1"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_marginBottom="0dp"
+        android:layout_marginLeft="0dp"
+        android:layout_marginRight="0dp"
+        android:layout_marginTop="0dp"
         android:layout_weight="3"
-        android:cropToPadding="false"
-        android:src="@android:drawable/gallery_thumb" />
+        android:cropToPadding="true"
+        android:scaleType="centerCrop"
+        android:src="@drawable/share_app_logo" />
 
     <ProgressBar
         android:id="@+id/progressBar1"
@@ -102,22 +106,42 @@
                 android:layout_weight="10" >
 
                 <TextView
-                    android:id="@+id/textView4"
+                    android:id="@+id/story_duration"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="TextView"
+                    android:layout_gravity="center_vertical|start"
+                    android:text="minute"
+                    android:textAlignment="center"
                     android:textColor="@color/APP_TEXT_WHITE"
                     android:textSize="10dp" />
 
-                <TextView
-                    android:id="@+id/textView3"
+                <ImageView
+                    android:id="@+id/imageView3"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical|center"
+                    android:layout_marginRight="@dimen/activity_horizontal_margin"
+                    android:src="@drawable/ic_audio_length" />
+
+                <TextView
+                    android:id="@+id/story_creation_date"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="right|center_vertical"
                     android:layout_weight="10"
-                    android:text="Small Text"
+                    android:clickable="false"
+                    android:longClickable="false"
+                    android:text="5 months ago"
                     android:textAppearance="?android:attr/textAppearanceSmall"
                     android:textColor="@color/APP_TEXT_WHITE"
                     android:textSize="10dp" />
+
+                <ImageView
+                    android:id="@+id/imageView4"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical|center_horizontal"
+                    android:src="@drawable/ic_published_time" />
 
             </LinearLayout>
 
