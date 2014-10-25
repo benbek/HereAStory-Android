@@ -1,9 +1,11 @@
 package com.hereastory;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -19,9 +21,14 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 
+import com.androidmapsextensions.ClusteringSettings;
 import com.androidmapsextensions.GoogleMap;
+import com.androidmapsextensions.GoogleMap.OnCameraChangeListener;
 import com.androidmapsextensions.GoogleMap.OnInfoWindowClickListener;
 import com.androidmapsextensions.GoogleMap.OnMarkerClickListener;
+import com.androidmapsextensions.ClusterOptions;
+import com.androidmapsextensions.ClusterOptionsProvider;
+import com.androidmapsextensions.GoogleMap.OnMyLocationChangeListener;
 import com.androidmapsextensions.MapFragment;
 import com.androidmapsextensions.Marker;
 import com.androidmapsextensions.MarkerOptions;
@@ -29,7 +36,11 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesClient;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.location.LocationClient;
+import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.model.BitmapDescriptor;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.hereastory.service.api.OutputFileServiceFactory;
 import com.hereastory.service.api.PointOfInterestReadHandler;
@@ -40,16 +51,18 @@ import com.hereastory.shared.LimitedPointOfInterest;
 import com.hereastory.shared.LocationUnavailableException;
 import com.hereastory.shared.PointLocation;
 import com.hereastory.shared.PointOfInterest;
+import com.hereastory.ui.MarkerClusteringOptionsProvider;
 import com.hereastory.ui.SystemUiHiderActivity;
 import com.parse.ParseException;
 
 /**
  * The main map activity.
  */
-public class MapActivity extends SystemUiHiderActivity implements GooglePlayServicesClient.ConnectionCallbacks, OnMarkerClickListener, OnInfoWindowClickListener {
+public class MapActivity extends SystemUiHiderActivity implements GooglePlayServicesClient.ConnectionCallbacks, OnMarkerClickListener, OnInfoWindowClickListener, OnCameraChangeListener, LocationListener, OnMyLocationChangeListener {
 	
 	private static final String LOG_TAG = MapActivity.class.getSimpleName();
 	private static final String ERROR_INFO_WINDOW = "error_info_window";
+	private static final int STORIES_COLLECTION = -1;
 	
 	private final class POIReader implements PointOfInterestReadHandler {
 		@Override
@@ -96,9 +109,12 @@ public class MapActivity extends SystemUiHiderActivity implements GooglePlayServ
 		@Override
 		public void readAllInAreaCompleted(List<PointLocation> points) {
 			for (PointLocation loc : points) {
-				addMarker(new MarkerOptions()
-					.position(new LatLng(loc.getLatitude(), loc.getLongitude()))
-					.data(loc));
+				if (!knownPoints.contains(loc)) {
+					addMarker(new MarkerOptions()
+						.position(new LatLng(loc.getLatitude(), loc.getLongitude()))
+						.data(loc));
+					knownPoints.add(loc);
+				}
 			}
 		}
 	} // End of class POIReader
@@ -149,6 +165,7 @@ public class MapActivity extends SystemUiHiderActivity implements GooglePlayServ
 	private PointOfInterestService poiService;
 	
 	protected Map<PointLocation, LimitedPointOfInterest> cachedMarkers = new HashMap<PointLocation, LimitedPointOfInterest>();
+	protected Set<PointLocation> knownPoints = new HashSet<PointLocation>();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -170,16 +187,13 @@ public class MapActivity extends SystemUiHiderActivity implements GooglePlayServ
         // Get a handle to the Map Fragment
         map = ((MapFragment) getFragmentManager()
                 .findFragmentById(R.id.map)).getExtendedMap();
-
-        // Set location to Safra Campus, Jerusalem: (31.774476,35.203543)
-        LatLng jerusalem = new LatLng(31.774476, 35.203543);
         
         map.setMyLocationEnabled(true);
         
-        map.moveCamera(CameraUpdateFactory.newLatLngZoom(jerusalem, 13));
-
         map.setOnMarkerClickListener(this);
         map.setOnInfoWindowClickListener(this);
+        map.setOnCameraChangeListener(this);
+        map.setOnMyLocationChangeListener(this);
 
         super.setupUiHide(findViewById(R.id.map), findViewById(R.id.fullscreen_content_controls), R.id.record_story_button);
         
@@ -187,7 +201,34 @@ public class MapActivity extends SystemUiHiderActivity implements GooglePlayServ
         // Here-a-Story services and interfaces
         poiService = new PointOfInterestServiceImpl();
         
-        addMarkersAtLocation(jerusalem);
+        // Clustering
+        ClusteringSettings clusterSettings = new ClusteringSettings();
+        /*clusterSettings.clusterOptionsProvider(new ClusterOptionsProvider() {
+			
+			@Override
+			public ClusterOptions getClusterOptions(List<Marker> markers) {
+				float hue;
+                if (markers.get(0).getClusterGroup() == STORIES_COLLECTION) {
+                    hue = BitmapDescriptorFactory.HUE_ORANGE;
+                } else {
+                    hue = BitmapDescriptorFactory.HUE_GREEN;
+                }
+                BitmapDescriptor blueIcon = BitmapDescriptorFactory.defaultMarker(hue);
+                return new ClusterOptions().icon(blueIcon);
+			}
+		}).clusterSize(20);*/
+        clusterSettings.clusterOptionsProvider(new MarkerClusteringOptionsProvider(getResources()));
+        map.setClustering(clusterSettings);
+        
+        Location myLocation = map.getMyLocation();
+
+        if (myLocation != null) {
+        	map.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(myLocation.getLatitude(), myLocation.getLongitude()), 13));
+        } else if (savedInstanceState == null) {
+        	// Set location to Safra Campus, Jerusalem: (31.774476,35.203543)
+        	LatLng jerusalem = new LatLng(31.774476, 35.203543);
+        	map.moveCamera(CameraUpdateFactory.newLatLngZoom(jerusalem, 13));
+        }
     }
 
 	/**
@@ -207,8 +248,8 @@ public class MapActivity extends SystemUiHiderActivity implements GooglePlayServ
     			/*.rotation(340)*/);
     }
     
-    protected void addMarkersAtLocation(LatLng location) {
-		poiService.readAllInArea(location.latitude, location.longitude, 1000, markerReader);
+    protected void addMarkersAtLocation(LatLng location, float zoom) {
+		poiService.readAllInArea(location.latitude, location.longitude, Math.max(50, 100 * (11.0 - zoom)), markerReader);
     }
     
     @Override
@@ -220,6 +261,7 @@ public class MapActivity extends SystemUiHiderActivity implements GooglePlayServ
         if (gPlayResult != ConnectionResult.SUCCESS) {
         	GooglePlayServicesUtil.getErrorDialog(gPlayResult, this, 0).show();
         }
+        
     }
 
 	@Override
@@ -346,5 +388,22 @@ public class MapActivity extends SystemUiHiderActivity implements GooglePlayServ
 			clickedMarker.setSnippet(infoWindowSnippet);
 			clickedMarker.showInfoWindow();
 		}
+	}
+
+	@Override
+	public void onCameraChange(CameraPosition position) {
+		addMarkersAtLocation(position.target, position.zoom);
+	}
+
+	@Override
+	public void onLocationChanged(Location location) {
+		map.animateCamera(CameraUpdateFactory.newLatLng(new LatLng(location.getLatitude(), 
+				location.getLongitude())));
+	}
+
+	@Override
+	public void onMyLocationChange(Location location) {
+		map.animateCamera(CameraUpdateFactory.newLatLng(new LatLng(location.getLatitude(), 
+				location.getLongitude())));
 	}
 }
