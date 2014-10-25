@@ -4,6 +4,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.nio.ByteBuffer;
 
 import android.graphics.Bitmap;
@@ -73,5 +75,11 @@ public class BitmapServiceImpl implements BitmapService {
 		}
 		
 		return inSampleSize;
+	}
+	
+	@Override
+	public byte[] downloadBitmap(String url) throws MalformedURLException, IOException {
+		Bitmap bitmap = BitmapFactory.decodeStream(new URL(url).openConnection().getInputStream());
+		return toByteArray(bitmap);
 	}
 }

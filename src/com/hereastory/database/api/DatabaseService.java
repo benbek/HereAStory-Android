@@ -14,5 +14,6 @@ public interface DatabaseService {
 
 	public void add(PointOfInterest pointOfInterest, byte[] thumbnail, PointOfInterestAddHandler handler);
 
+	public void addFacebookUser(String facebookId, String name, byte[] profilePicture);
 
 }

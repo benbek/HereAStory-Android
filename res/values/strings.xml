@@ -34,9 +34,11 @@
     <string name="failed_compressing_image">Failed compressing image</string>
     <string name="title_cant_be_empty">Title can\'t be empty</string>
     <string name="title_activity_login">LoginActivity</string>
-    
+
     <!-- Internal string -->
     <string name="facebook_app_id">760937370632014</string>
     <string name="default_map_locale">iw</string>
+    <string name="title_activity_user_details">UserDetailsActivity</string>
+    <string name="hello_world">Hello world!</string>
 
 </resources>

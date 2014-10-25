@@ -7,8 +7,6 @@ import android.view.Menu;
 
 import com.hereastory.service.api.OutputFileService;
 import com.hereastory.service.api.OutputFileServiceFactory;
-import com.parse.ParseException;
-import com.parse.ParseUser;
 
 public class MainActivity extends Activity {
 	
@@ -22,7 +20,7 @@ public class MainActivity extends Activity {
         OutputFileServiceFactory.init(this);
         outputFileService = OutputFileServiceFactory.getOutputFileService();
         outputFileService.clearDirectory();
-        
+        /*
         ParseUser user = new ParseUser();
         user.setUsername("my name");
         user.setPassword("my pass");
@@ -32,14 +30,15 @@ public class MainActivity extends Activity {
 		} catch (ParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}*/
+		}
         try {
 			ParseUser.logIn(user.getUsername(), "my pass");
+			
 		} catch (ParseException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
-        
+        */
         startActivity(new Intent(this, MapActivity.class));
     }
 

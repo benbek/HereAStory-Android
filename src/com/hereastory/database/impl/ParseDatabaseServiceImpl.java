@@ -14,10 +14,12 @@ import org.apache.commons.io.IOUtils;
 import android.util.Log;
 
 import com.hereastory.database.api.DatabaseService;
+import com.hereastory.service.api.BitmapService;
 import com.hereastory.service.api.OutputFileService;
 import com.hereastory.service.api.OutputFileService.FileType;
 import com.hereastory.service.api.PointOfInterestAddHandler;
 import com.hereastory.service.api.PointOfInterestReadHandler;
+import com.hereastory.service.impl.BitmapServiceImpl;
 import com.hereastory.shared.LimitedPointOfInterest;
 import com.hereastory.shared.PointLocation;
 import com.hereastory.shared.PointOfInterest;
@@ -44,6 +46,7 @@ public class ParseDatabaseServiceImpl implements DatabaseService {
 	
 	private static final String USER_TABLE = "User";
 	private static final String NAME = "name";
+	private static final String FACEBOOK_ID = "facebookId";
 	private static final String PROFILE_PICTURE_SMALL = "profilePictureSmall";
 
 	private static final String POI_TABLE = "PointOfInterest";
@@ -62,9 +65,11 @@ public class ParseDatabaseServiceImpl implements DatabaseService {
 	private static final String POI_KEY = "poi";
 
 	private final OutputFileService outputFileService;
+	private final BitmapService bitmapService;
 	
 	public ParseDatabaseServiceImpl(OutputFileService outputFileService) {
 		this.outputFileService = outputFileService;
+		this.bitmapService = new BitmapServiceImpl();
 	}
 	
 	@Override
@@ -269,7 +274,7 @@ public class ParseDatabaseServiceImpl implements DatabaseService {
 				// save external object
                 ParseObject objectExternal = new ParseObject(POI_EXTERNAL_TABLE);		
                 objectExternal.setACL(getPublicACL());
-                objectExternal.put(POI_KEY, object.getObjectId());
+                objectExternal.put(POI_KEY, object);
         		try {
         			setPointFields(pointOfInterest, objectExternal);
         		} catch (IOException e1) {
@@ -297,4 +302,32 @@ public class ParseDatabaseServiceImpl implements DatabaseService {
 			}
 		}
 	}
+
+	@Override
+	public void addFacebookUser(String facebookId, String name, byte[] profilePicture) {
+		ParseUser parseUser = ParseUser.getCurrentUser();
+		parseUser.put(FACEBOOK_ID, facebookId);
+		parseUser.put(NAME, name);
+		try {
+			if (profilePicture != null) {
+				parseUser.put(PROFILE_PICTURE_SMALL, new ParseFile(profilePicture));
+			}
+		} catch (Exception e) {
+			Log.e(LOG_TAG, "Failed saving profile picture", e);
+		} 
+		parseUser.setUsername(name);
+		String password = "";
+		parseUser.setPassword(password);
+	    try {
+	    	if (parseUser.isNew()) {
+	    		parseUser.signUp();
+	    	} else {
+	    		ParseUser.logIn(parseUser.getUsername(), password);
+	    	}
+		} catch (Exception e) {
+			Log.e(LOG_TAG, "Failed to sigh up user", e);
+		}
+        parseUser.saveInBackground();		
+	}
+
 }
