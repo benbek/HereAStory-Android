@@ -58,7 +58,7 @@ import com.parse.ParseException;
 /**
  * The main map activity.
  */
-public class MapActivity extends SystemUiHiderActivity implements GooglePlayServicesClient.ConnectionCallbacks, OnMarkerClickListener, OnInfoWindowClickListener, OnCameraChangeListener, LocationListener, OnMyLocationChangeListener {
+public class MapActivity extends SystemUiHiderActivity implements GooglePlayServicesClient.ConnectionCallbacks, OnMarkerClickListener, OnInfoWindowClickListener, OnCameraChangeListener, OnMyLocationChangeListener {
 	
 	private static final String LOG_TAG = MapActivity.class.getSimpleName();
 	private static final String ERROR_INFO_WINDOW = "error_info_window";
@@ -160,6 +160,7 @@ public class MapActivity extends SystemUiHiderActivity implements GooglePlayServ
 	
 	LocationFailureHandler failureHandler = new LocationFailureHandler(this);
     LocationClient locationClient;
+    Location myLastLocation = null;
 	
 	final PointOfInterestReadHandler markerReader = new POIReader();
 	private PointOfInterestService poiService;
@@ -224,6 +225,7 @@ public class MapActivity extends SystemUiHiderActivity implements GooglePlayServ
 
         if (myLocation != null) {
         	map.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(myLocation.getLatitude(), myLocation.getLongitude()), 13));
+        	this.myLastLocation = myLocation;
         } else if (savedInstanceState == null) {
         	// Set location to Safra Campus, Jerusalem: (31.774476,35.203543)
         	LatLng jerusalem = new LatLng(31.774476, 35.203543);
@@ -326,8 +328,12 @@ public class MapActivity extends SystemUiHiderActivity implements GooglePlayServ
 	
 	public void recordStoryClick(View view) {
 		this.recordStoryButton = view;
-        locationClient.connect();
         view.setEnabled(false);
+		if (myLastLocation != null) {
+			startCreateStory(myLastLocation);
+		} else {
+			locationClient.connect();
+		}
 	}
 	
 	@Override
@@ -357,6 +363,10 @@ public class MapActivity extends SystemUiHiderActivity implements GooglePlayServ
 			this.recordStoryButton.setEnabled(true);
 		}
 		
+		startCreateStory(location);
+	}
+
+	private void startCreateStory(Location location) {
 		Intent createStoryIntent = new Intent(this, LoginActivity.class);
 		createStoryIntent.putExtra(IntentConsts.CURRENT_LAT, location.getLatitude());
 		createStoryIntent.putExtra(IntentConsts.CURRENT_LONG, location.getLongitude());
@@ -396,14 +406,14 @@ public class MapActivity extends SystemUiHiderActivity implements GooglePlayServ
 	}
 
 	@Override
-	public void onLocationChanged(Location location) {
-		map.animateCamera(CameraUpdateFactory.newLatLng(new LatLng(location.getLatitude(), 
-				location.getLongitude())));
-	}
-
-	@Override
 	public void onMyLocationChange(Location location) {
-		map.animateCamera(CameraUpdateFactory.newLatLng(new LatLng(location.getLatitude(), 
-				location.getLongitude())));
+		if (location == null)
+			return;
+		if (myLastLocation == null || (location.getLatitude() != myLastLocation.getLatitude() 
+				&& location.getLongitude() != myLastLocation.getLongitude())) {
+			map.animateCamera(CameraUpdateFactory.newLatLng(new LatLng(location.getLatitude(), 
+					location.getLongitude())));
+			myLastLocation = location;
+		}
 	}
 }
