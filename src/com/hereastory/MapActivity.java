@@ -293,14 +293,15 @@ public class MapActivity extends SystemUiHiderActivity implements GooglePlayServ
     private void declusterify(Marker cluster) {
         clusterifyMarkers();
         declusterifiedMarkers = cluster.getMarkers();
-        LatLng clusterPosition = cluster.getPosition();
-        double distance = calculateDistanceBetweenMarkers();
-        double currentDistance = -declusterifiedMarkers.size() / 2 * distance;
+        //LatLng clusterPosition = cluster.getPosition();
+        //double distance = calculateDistanceBetweenMarkers();
+        //double currentDistance = -declusterifiedMarkers.size() / 2 * distance;
         for (Marker marker : declusterifiedMarkers) {
             marker.setClusterGroup(ClusterGroup.NOT_CLUSTERED);
-            LatLng newPosition = new LatLng(clusterPosition.latitude, clusterPosition.longitude + currentDistance);
-            marker.animatePosition(newPosition);
-            currentDistance += distance;
+            //LatLng newPosition = new LatLng(clusterPosition.latitude, clusterPosition.longitude + currentDistance);
+            PointLocation originalPosition = (PointLocation)marker.getData();
+            marker.animatePosition(new LatLng(originalPosition.getLatitude(), originalPosition.getLongitude()));
+            //currentDistance += distance;
         }
     }
 	

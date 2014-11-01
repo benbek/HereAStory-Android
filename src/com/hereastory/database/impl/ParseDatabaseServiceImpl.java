@@ -208,7 +208,7 @@ public class ParseDatabaseServiceImpl implements DatabaseService {
 					}
 					handler.readAllInAreaCompleted(points);
 				} else {
-					String errorMessage = String.format(Locale.US, "readAllInArea failed with parameters: (latitude=%d, longitude=%d, maxDistance=%d)", 
+					String errorMessage = String.format(Locale.US, "readAllInArea failed with parameters: (latitude=%f, longitude=%f, maxDistance=%f)", 
 							latitude, longitude, maxDistance);
 					Log.e(LOG_TAG, errorMessage, e);
 					handler.readAllInAreaFailed(latitude, longitude, maxDistance, e);
