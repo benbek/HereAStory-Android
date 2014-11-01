@@ -28,8 +28,6 @@ import com.androidmapsextensions.GoogleMap;
 import com.androidmapsextensions.GoogleMap.OnCameraChangeListener;
 import com.androidmapsextensions.GoogleMap.OnInfoWindowClickListener;
 import com.androidmapsextensions.GoogleMap.OnMarkerClickListener;
-import com.androidmapsextensions.ClusterOptions;
-import com.androidmapsextensions.ClusterOptionsProvider;
 import com.androidmapsextensions.GoogleMap.OnMyLocationChangeListener;
 import com.androidmapsextensions.MapFragment;
 import com.androidmapsextensions.Marker;
@@ -38,11 +36,8 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesClient;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.location.LocationClient;
-import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.Projection;
-import com.google.android.gms.maps.model.BitmapDescriptor;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.hereastory.service.api.OutputFileServiceFactory;
@@ -445,7 +440,7 @@ public class MapActivity extends SystemUiHiderActivity implements GooglePlayServ
 	@Override
 	public void onCameraChange(CameraPosition position) {
 		addMarkersAtLocation(position.target, position.zoom);
-		clusterifyMarkers();
+		//clusterifyMarkers();
 	}
 
 	@Override
