@@ -305,29 +305,23 @@ public class ParseDatabaseServiceImpl implements DatabaseService {
 
 	@Override
 	public void addFacebookUser(String facebookId, String name, byte[] profilePicture) {
-		ParseUser parseUser = ParseUser.getCurrentUser();
-		parseUser.put(FACEBOOK_ID, facebookId);
-		parseUser.put(NAME, name);
 		try {
+			ParseUser parseUser = ParseUser.getCurrentUser();
+			parseUser.put(NAME, name);
+			parseUser.put(FACEBOOK_ID, facebookId);
 			if (profilePicture != null) {
-				parseUser.put(PROFILE_PICTURE_SMALL, new ParseFile(profilePicture));
+
+				ParseFile parseFile = new ParseFile("smallProfile.png", profilePicture);
+				parseFile.save();
+				parseUser.put(PROFILE_PICTURE_SMALL, parseFile);
 			}
+			parseUser.save();
+
 		} catch (Exception e) {
-			Log.e(LOG_TAG, "Failed saving profile picture", e);
+			Log.e(LOG_TAG, "Failed saving user", e);
 		} 
-		parseUser.setUsername(name);
-		String password = "";
-		parseUser.setPassword(password);
-	    try {
-	    	if (parseUser.isNew()) {
-	    		parseUser.signUp();
-	    	} else {
-	    		ParseUser.logIn(parseUser.getUsername(), password);
-	    	}
-		} catch (Exception e) {
-			Log.e(LOG_TAG, "Failed to sigh up user", e);
-		}
-        parseUser.saveInBackground();		
+
+	    
 	}
 
 }
