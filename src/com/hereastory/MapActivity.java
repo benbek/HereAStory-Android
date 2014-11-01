@@ -15,12 +15,14 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.content.res.Configuration;
+import android.graphics.Point;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 
+import com.androidmapsextensions.ClusterGroup;
 import com.androidmapsextensions.ClusteringSettings;
 import com.androidmapsextensions.GoogleMap;
 import com.androidmapsextensions.GoogleMap.OnCameraChangeListener;
@@ -38,6 +40,7 @@ import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.location.LocationClient;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.Projection;
 import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
@@ -58,7 +61,7 @@ import com.parse.ParseException;
 /**
  * The main map activity.
  */
-public class MapActivity extends SystemUiHiderActivity implements GooglePlayServicesClient.ConnectionCallbacks, OnMarkerClickListener, OnInfoWindowClickListener, OnCameraChangeListener, LocationListener, OnMyLocationChangeListener {
+public class MapActivity extends SystemUiHiderActivity implements GooglePlayServicesClient.ConnectionCallbacks, OnMarkerClickListener, OnInfoWindowClickListener, OnCameraChangeListener, OnMyLocationChangeListener {
 	
 	private static final String LOG_TAG = MapActivity.class.getSimpleName();
 	private static final String ERROR_INFO_WINDOW = "error_info_window";
@@ -160,10 +163,12 @@ public class MapActivity extends SystemUiHiderActivity implements GooglePlayServ
 	
 	LocationFailureHandler failureHandler = new LocationFailureHandler(this);
     LocationClient locationClient;
+    Location myLastLocation = null;
 	
 	final PointOfInterestReadHandler markerReader = new POIReader();
 	private PointOfInterestService poiService;
 	
+	private List<Marker> declusterifiedMarkers;
 	protected Map<PointLocation, LimitedPointOfInterest> cachedMarkers = new HashMap<PointLocation, LimitedPointOfInterest>();
 	protected Set<PointLocation> knownPoints = new HashSet<PointLocation>();
 
@@ -224,6 +229,7 @@ public class MapActivity extends SystemUiHiderActivity implements GooglePlayServ
 
         if (myLocation != null) {
         	map.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(myLocation.getLatitude(), myLocation.getLongitude()), 13));
+        	this.myLastLocation = myLocation;
         } else if (savedInstanceState == null) {
         	// Set location to Safra Campus, Jerusalem: (31.774476,35.203543)
         	LatLng jerusalem = new LatLng(31.774476, 35.203543);
@@ -266,6 +272,10 @@ public class MapActivity extends SystemUiHiderActivity implements GooglePlayServ
 
 	@Override
 	public boolean onMarkerClick(final Marker clickedMarker) {
+		if (clickedMarker.isCluster()) {
+			declusterify(clickedMarker);
+            return true;
+		}
 		PointLocation loc = clickedMarker.getData();
 		if (loc != null) {
 			clickedMarker.setTitle(this.getString(R.string.marker_loading_title));
@@ -279,6 +289,40 @@ public class MapActivity extends SystemUiHiderActivity implements GooglePlayServ
 		
 		return false;
 	}
+	
+    private void declusterify(Marker cluster) {
+        clusterifyMarkers();
+        declusterifiedMarkers = cluster.getMarkers();
+        //LatLng clusterPosition = cluster.getPosition();
+        //double distance = calculateDistanceBetweenMarkers();
+        //double currentDistance = -declusterifiedMarkers.size() / 2 * distance;
+        for (Marker marker : declusterifiedMarkers) {
+            marker.setClusterGroup(ClusterGroup.NOT_CLUSTERED);
+            //LatLng newPosition = new LatLng(clusterPosition.latitude, clusterPosition.longitude + currentDistance);
+            PointLocation originalPosition = (PointLocation)marker.getData();
+            marker.animatePosition(new LatLng(originalPosition.getLatitude(), originalPosition.getLongitude()));
+            //currentDistance += distance;
+        }
+    }
+	
+    private double calculateDistanceBetweenMarkers() {
+        Projection projection = map.getProjection();
+        Point point = projection.toScreenLocation(new LatLng(0.0, 0.0));
+        point.x += getResources().getDimensionPixelSize(R.dimen.distance_between_markers);
+        LatLng nextPosition = projection.fromScreenLocation(point);
+        return nextPosition.longitude;
+    }
+	
+    private void clusterifyMarkers() {
+        if (declusterifiedMarkers != null) {
+            for (Marker marker : declusterifiedMarkers) {
+            	PointLocation location = marker.getData();
+                marker.setPosition(new LatLng(location.getLatitude(), location.getLongitude()));
+                marker.setClusterGroup(ClusterGroup.DEFAULT);
+            }
+            declusterifiedMarkers = null;
+        }
+    }
 	
 	protected void showExceptionDialog(Exception e) {
 	     AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -326,8 +370,12 @@ public class MapActivity extends SystemUiHiderActivity implements GooglePlayServ
 	
 	public void recordStoryClick(View view) {
 		this.recordStoryButton = view;
-        locationClient.connect();
         view.setEnabled(false);
+		if (myLastLocation != null) {
+			startCreateStory(myLastLocation);
+		} else {
+			locationClient.connect();
+		}
 	}
 	
 	@Override
@@ -357,6 +405,10 @@ public class MapActivity extends SystemUiHiderActivity implements GooglePlayServ
 			this.recordStoryButton.setEnabled(true);
 		}
 		
+		startCreateStory(location);
+	}
+
+	private void startCreateStory(Location location) {
 		Intent createStoryIntent = new Intent(this, LoginActivity.class);
 		createStoryIntent.putExtra(IntentConsts.CURRENT_LAT, location.getLatitude());
 		createStoryIntent.putExtra(IntentConsts.CURRENT_LONG, location.getLongitude());
@@ -393,17 +445,18 @@ public class MapActivity extends SystemUiHiderActivity implements GooglePlayServ
 	@Override
 	public void onCameraChange(CameraPosition position) {
 		addMarkersAtLocation(position.target, position.zoom);
-	}
-
-	@Override
-	public void onLocationChanged(Location location) {
-		map.animateCamera(CameraUpdateFactory.newLatLng(new LatLng(location.getLatitude(), 
-				location.getLongitude())));
+		clusterifyMarkers();
 	}
 
 	@Override
 	public void onMyLocationChange(Location location) {
-		map.animateCamera(CameraUpdateFactory.newLatLng(new LatLng(location.getLatitude(), 
-				location.getLongitude())));
+		if (location == null)
+			return;
+		if (myLastLocation == null || (location.getLatitude() != myLastLocation.getLatitude() 
+				&& location.getLongitude() != myLastLocation.getLongitude())) {
+			map.animateCamera(CameraUpdateFactory.newLatLng(new LatLng(location.getLatitude(), 
+					location.getLongitude())));
+			myLastLocation = location;
+		}
 	}
 }
