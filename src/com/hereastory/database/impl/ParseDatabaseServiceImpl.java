@@ -38,13 +38,14 @@ import com.parse.SaveCallback;
 
 public class ParseDatabaseServiceImpl implements DatabaseService {
 
-	private static final String THUMBNAIL_FILENAME = "thumbnail.";
+	private static final String THUMBNAIL_FILENAME = "thumb.";
 	private static final String IMAGE_FILENAME = "image.";
 	private static final String AUDIO_FILENAME = "audio.";
 	private static final int POINTS_AMOUNT_LOMIT = 1000;
 	private static final String LOG_TAG = "ParseDatabaseServiceImpl";
 	
 	private static final String USER_TABLE = "User";
+	private static final String USER_FACEBOOK_TABLE = "UserFacebook";
 	private static final String NAME = "name";
 	private static final String FACEBOOK_ID = "facebookId";
 	private static final String PROFILE_PICTURE_SMALL = "profilePictureSmall";
@@ -63,6 +64,7 @@ public class ParseDatabaseServiceImpl implements DatabaseService {
 	private static final String IMAGE = "image";
 	private static final String THUMBNAIL = "thumbnail";
 	private static final String POI_KEY = "poi";
+	private static final String USER = "user";
 
 	private final OutputFileService outputFileService;
 	private final BitmapService bitmapService;
@@ -95,10 +97,19 @@ public class ParseDatabaseServiceImpl implements DatabaseService {
 		object.put(PUBLISHED_DATE, pointOfInterest.getCreationDate());
 		object.put(LIKE_COUNT, pointOfInterest.getLikeCount());
 		object.put(LOCATION, getParseGeoPoint(pointOfInterest.getLocation()));
-		//TODO object.put(THUMBNAIL, new ParseFile(THUMBNAIL_FILENAME+FileType.IMAGE.getSuffix(), thumbnail));
 		object.put(AUTHOR, ParseUser.getCurrentUser());
 		object.put(AUDIO, getParseFile(AUDIO_FILENAME+FileType.AUDIO.getSuffix(), pointOfInterest.getAudio()));
 		object.put(IMAGE, getParseFile(IMAGE_FILENAME+FileType.IMAGE.getSuffix(), pointOfInterest.getImage()));
+		addThumbnail(object, pointOfInterest);
+	}
+
+	private void addThumbnail(ParseObject object, PointOfInterest pointOfInterest) {
+		try {
+			byte[] thumbnail = bitmapService.getThumbnail(pointOfInterest.getImage());
+			object.put(THUMBNAIL, new ParseFile(THUMBNAIL_FILENAME+FileType.IMAGE.getSuffix(), thumbnail));
+		} catch (Exception e) {
+			Log.e(LOG_TAG, "Failed generating thumbnail", e);
+		}
 	}
 
 	@Override
@@ -169,7 +180,7 @@ public class ParseDatabaseServiceImpl implements DatabaseService {
 		pointOfInterest.setDuration(object.getNumber(DURATION));
 		pointOfInterest.setLikeCount(object.getNumber(LIKE_COUNT));
 		pointOfInterest.setTitle(object.getString(TITLE));
-		pointOfInterest.setAuthor(getUser(object.getParseObject(AUTHOR), NAME, PROFILE_PICTURE_SMALL));
+		pointOfInterest.setAuthor(getUser(object.getParseObject(AUTHOR)));
 	}
 	
 	private void fillNonLimitedFields(ParseObject object, PointOfInterest pointOfInterest) throws ParseException, IOException {
@@ -226,22 +237,41 @@ public class ParseDatabaseServiceImpl implements DatabaseService {
 		return new ParseGeoPoint(location.getLatitude(), location.getLongitude());
 	}
 
-	private User getUser(ParseObject object, String nameField, String pictureField) throws ParseException, IOException {
-		object.fetchIfNeeded();
-		String userId = object.getObjectId();
+	private User getUser(ParseObject parseUser) throws ParseException, IOException {
+		parseUser.fetchIfNeeded();
+		String userId = parseUser.getObjectId();
 		User user = new User();
-		user.setName(object.getString(nameField));
 		user.setId(userId);
-		final ParseFile profilePicFile = object.getParseFile(PROFILE_PICTURE_SMALL);
-		if (profilePicFile != null) {
-			byte[] bytes = profilePicFile.getData();
-			String filePath = outputFileService.getProfilePictureFile(userId).getAbsolutePath();
-			if (!new File(filePath).exists()) {
-				IOUtils.write(bytes, new FileOutputStream(filePath));
+		ParseFile profilePicFile;
+		if (parseUser.getString(NAME) == null ){
+			ParseQuery<ParseObject> query = ParseQuery.getQuery(USER_FACEBOOK_TABLE); 
+			query.whereEqualTo(USER, parseUser);
+			List<ParseObject> result = query.find();
+			if (result.isEmpty()) {
+				return user;
+			} else {
+				ParseObject fbInfo = result.iterator().next();
+				user.setName(fbInfo.getString(NAME));
+				profilePicFile = fbInfo.getParseFile(PROFILE_PICTURE_SMALL);
 			}
-			user.setProfilePictureSmall(filePath);
+		} else {
+			user.setName(parseUser.getString(NAME));
+			profilePicFile = parseUser.getParseFile(PROFILE_PICTURE_SMALL);
+		}
+		if (profilePicFile != null) {
+			setProfilePicture(userId, user, profilePicFile);
 		}
 		return user;
+	}
+
+	private void setProfilePicture(String userId, User user, final ParseFile profilePicFile) throws ParseException, IOException,
+			FileNotFoundException {
+		byte[] bytes = profilePicFile.getData();
+		String filePath = outputFileService.getProfilePictureFile(userId).getAbsolutePath();
+		if (!new File(filePath).exists()) {
+			IOUtils.write(bytes, new FileOutputStream(filePath));
+		}
+		user.setProfilePictureSmall(filePath);
 	}
 
 	private ParseFile getParseFile(String name, String filePath) throws FileNotFoundException, IOException {
@@ -306,22 +336,20 @@ public class ParseDatabaseServiceImpl implements DatabaseService {
 	@Override
 	public void addFacebookUser(String facebookId, String name, byte[] profilePicture) {
 		try {
-			ParseUser parseUser = ParseUser.getCurrentUser();
-			parseUser.put(NAME, name);
-			parseUser.put(FACEBOOK_ID, facebookId);
+			final ParseObject object = new ParseObject(USER_FACEBOOK_TABLE);		
+			object.setACL(getPublicACL());
+			object.put(NAME, name);
+			object.put(FACEBOOK_ID, facebookId);
+			object.put(USER, ParseUser.getCurrentUser());
 			if (profilePicture != null) {
-
-				ParseFile parseFile = new ParseFile("smallProfile.png", profilePicture);
+				ParseFile parseFile = new ParseFile("smallProfile.jpg", profilePicture);
 				parseFile.save();
-				parseUser.put(PROFILE_PICTURE_SMALL, parseFile);
+				object.put(PROFILE_PICTURE_SMALL, parseFile);
 			}
-			parseUser.save();
-
+			object.save();
 		} catch (Exception e) {
 			Log.e(LOG_TAG, "Failed saving user", e);
 		} 
-
-	    
 	}
 
 }

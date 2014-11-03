@@ -4,8 +4,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.nio.ByteBuffer;
 
 import android.graphics.Bitmap;
@@ -46,7 +44,9 @@ public class BitmapServiceImpl implements BitmapService {
 	public byte[] getThumbnail(String origFilePath) {
 		Bitmap bitmap = BitmapFactory.decodeFile(origFilePath);
 		Bitmap thumbnail = ThumbnailUtils.extractThumbnail(bitmap , THUMB_IMAGE_WIDTH, THUMB_IMAGE_HEIGHT);
-		return toByteArray(thumbnail);
+		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+		thumbnail.compress(CompressFormat.JPEG, 30, outputStream);
+		return outputStream.toByteArray();
 	}
 	
 	private byte[] toByteArray(Bitmap bitmap) {
@@ -76,10 +76,5 @@ public class BitmapServiceImpl implements BitmapService {
 		
 		return inSampleSize;
 	}
-	
-	@Override
-	public byte[] downloadBitmap(String url) throws MalformedURLException, IOException {
-		Bitmap bitmap = BitmapFactory.decodeStream(new URL(url).openConnection().getInputStream());
-		return toByteArray(bitmap);
-	}
+
 }

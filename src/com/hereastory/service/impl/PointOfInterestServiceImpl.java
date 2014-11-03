@@ -34,7 +34,6 @@ public class PointOfInterestServiceImpl implements PointOfInterestService {
 
 	@Override
 	public void add(PointOfInterest pointOfInterest, PointOfInterestAddHandler handler) {
-		// TODO byte[] thumbnail = bitmapService.getThumbnail(pointOfInterest.getImage());
 		pointOfInterest.setCreationDate(new Date());
 		pointOfInterest.setLikeCount(0);
 		databaseService.add(pointOfInterest, new byte[0] , handler);

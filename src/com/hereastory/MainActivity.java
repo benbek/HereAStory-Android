@@ -20,25 +20,7 @@ public class MainActivity extends Activity {
         OutputFileServiceFactory.init(this);
         outputFileService = OutputFileServiceFactory.getOutputFileService();
         outputFileService.clearDirectory();
-        /*
-        ParseUser user = new ParseUser();
-        user.setUsername("my name");
-        user.setPassword("my pass");
-        user.setEmail("email@example.com");
-        /*try {
-			user.signUp();
-		} catch (ParseException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-        try {
-			ParseUser.logIn(user.getUsername(), "my pass");
-			
-		} catch (ParseException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
-        */
+
         startActivity(new Intent(this, MapActivity.class));
     }
 

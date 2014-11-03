@@ -9,7 +9,6 @@ public class AudioRecorder {
     private static final int SAMPLING_RATE = 22050;
 	private static final int BIT_RATE = 64*1024;
 	private static final int NUM_CHANNELS = 1;
-    //TODO private static final long MAX_DURATION = TimeUnit.MINUTES.toMillis(5);
     
     private static MediaRecorder recorder;
     private static FileOutputStream fileOut;
