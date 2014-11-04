@@ -10,7 +10,6 @@
     
 <!-- TODO (TOMER) 
 	* make icon ic_heart_full.png when the story is liked
-	* add icons and order the texts beneth the TITLE
 	-->
 	
     <ImageView
@@ -41,6 +40,7 @@
         android:layout_weight="0.92"
         android:background="@color/APP_GREEN"
         android:contentDescription="HearStory Panel"
+        android:orientation="horizontal"
         android:showDividers="beginning" >
 
         <LinearLayout

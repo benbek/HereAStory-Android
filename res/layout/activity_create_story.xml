@@ -6,16 +6,17 @@
     tools:context=".CreateStoryActivity" >
 
     <ImageView
-        android:id="@+id/imageView1"
+        android:id="@+id/create_story_logo"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginBottom="-300dp"
-        android:layout_marginLeft="-100dp"
-        android:layout_marginRight="-100dp"
-        android:layout_marginTop="-300dp"
+        android:layout_marginBottom="0dp"
+        android:layout_marginLeft="0dp"
+        android:layout_marginRight="0dp"
+        android:layout_marginTop="0dp"
         android:layout_weight="3"
-        android:cropToPadding="false"
-        android:src="@drawable/empty_gradient" />
+        android:cropToPadding="true"
+        android:scaleType="centerCrop"
+        android:src="@drawable/share_app_logo" />
 
     <ProgressBar
         android:id="@+id/progressBar1"
@@ -26,46 +27,14 @@
         android:background="@color/APP_DARK_GREY" />
 
     <LinearLayout
-        android:id="@+id/LinearLayout1"
+        android:id="@+id/create_story_panel"
         android:layout_width="match_parent"
         android:layout_height="@dimen/panel_hight"
         android:layout_weight="0.92"
         android:background="@color/APP_GREEN"
-        android:contentDescription="HearStory Panel"
+        android:contentDescription="CreateStory Panel"
+        android:orientation="vertical"
         android:showDividers="beginning" >
-
-        <LinearLayout
-            android:layout_width="80dp"
-            android:layout_height="match_parent"
-            android:layout_weight="0.1"
-            android:gravity="left"
-            android:orientation="vertical" >
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="200dp"
-            android:layout_height="match_parent"
-            android:layout_weight="0.8"
-            android:orientation="vertical" >
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="10" >
-
-            </LinearLayout>
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="100dp"
-            android:layout_height="match_parent"
-            android:layout_weight="0.2"
-            android:gravity="right"
-            android:orientation="vertical" >
-
-        </LinearLayout>
 
     </LinearLayout>
     
