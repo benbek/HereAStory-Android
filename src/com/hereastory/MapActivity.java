@@ -15,6 +15,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.content.res.Configuration;
+import android.graphics.BitmapFactory;
 import android.graphics.Point;
 import android.location.Location;
 import android.location.LocationManager;
@@ -38,6 +39,8 @@ import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.location.LocationClient;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.Projection;
+import com.google.android.gms.maps.model.BitmapDescriptor;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.hereastory.service.api.OutputFileServiceFactory;
@@ -245,7 +248,9 @@ public class MapActivity extends SystemUiHiderActivity implements GooglePlayServ
 	}
 
     protected void addMarker(MarkerOptions marker) {
-    	map.addMarker(marker.flat(true)
+    	BitmapDescriptor markerIcon = BitmapDescriptorFactory.fromBitmap(
+    			BitmapFactory.decodeResource(this.getResources(), R.drawable.single_marker));
+		map.addMarker(marker.icon(markerIcon)
     			/*.rotation(340)*/);
     }
     
