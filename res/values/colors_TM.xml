@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <color name="black_overlay">#66000000</color>
+    <color name="APP_GREEN">#36B370</color>
+    <color name="APP_RED">#F35B5A</color>
+    <color name="APP_LIGHT_BLUE">#48A6CA</color>
+    <color name="APP_YELLOW">#F3CE3F</color>
+    <color name="APP_DARK_GREY">#474747</color>
+    <color name="APP_TEXT_WHITE">#FFFFFF</color>
+    
+    
+
+</resources>
