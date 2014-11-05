@@ -180,12 +180,9 @@ public class ParseDatabaseServiceImpl implements DatabaseService {
 		pointOfInterest.setDuration(object.getNumber(DURATION));
 		pointOfInterest.setLikeCount(object.getNumber(LIKE_COUNT));
 		pointOfInterest.setTitle(object.getString(TITLE));
-		
-		ParseObject author = object.getParseObject(AUTHOR);
-		author.fetchIfNeeded();
-		pointOfInterest.setAuthorName(author.getString(NAME));
+		pointOfInterest.setAuthorName(getAuthorName(object.getParseObject(AUTHOR)));
 	}
-	
+
 	private void fillNonLimitedFields(ParseObject object, PointOfInterest pointOfInterest) throws ParseException, IOException {
 		pointOfInterest.setLocation(getLocation(object));
 		
@@ -241,6 +238,23 @@ public class ParseDatabaseServiceImpl implements DatabaseService {
 	
 	private ParseGeoPoint getParseGeoPoint(PointLocation location) {
 		return new ParseGeoPoint(location.getLatitude(), location.getLongitude());
+	}
+	
+	private String getAuthorName(ParseObject parseUser) throws ParseException {
+		parseUser.fetchIfNeeded();
+		if (parseUser.getString(NAME) == null ){
+			ParseQuery<ParseObject> query = ParseQuery.getQuery(USER_FACEBOOK_TABLE); 
+			query.whereEqualTo(USER, parseUser);
+			List<ParseObject> result = query.find();
+			if (result.isEmpty()) {
+				return "";
+			} else {
+				ParseObject fbInfo = result.iterator().next();
+				return fbInfo.getString(NAME);
+			}
+		} else {
+			return parseUser.getString(NAME);
+		}
 	}
 
 	private User getUser(ParseObject parseUser) throws ParseException, IOException {
