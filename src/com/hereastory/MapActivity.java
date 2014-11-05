@@ -1,11 +1,14 @@
 package com.hereastory;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
+
+import org.json.JSONException;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -15,6 +18,8 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.content.res.Configuration;
+import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.graphics.Point;
 import android.location.Location;
 import android.location.LocationManager;
@@ -32,14 +37,19 @@ import com.androidmapsextensions.GoogleMap.OnMyLocationChangeListener;
 import com.androidmapsextensions.MapFragment;
 import com.androidmapsextensions.Marker;
 import com.androidmapsextensions.MarkerOptions;
+import com.androidmapsextensions.Polyline;
+import com.androidmapsextensions.PolylineOptions;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesClient;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.location.LocationClient;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.Projection;
+import com.google.android.gms.maps.model.BitmapDescriptor;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.PolylineOptionsCreator;
 import com.hereastory.service.api.OutputFileServiceFactory;
 import com.hereastory.service.api.PointOfInterestReadHandler;
 import com.hereastory.service.api.PointOfInterestService;
@@ -49,14 +59,17 @@ import com.hereastory.shared.LimitedPointOfInterest;
 import com.hereastory.shared.LocationUnavailableException;
 import com.hereastory.shared.PointLocation;
 import com.hereastory.shared.PointOfInterest;
+import com.hereastory.shared.WebFetcher;
+import com.hereastory.ui.DirectionsFetcher;
 import com.hereastory.ui.MarkerClusteringOptionsProvider;
+import com.hereastory.ui.OnResponseRetrieved;
 import com.hereastory.ui.SystemUiHiderActivity;
 import com.parse.ParseException;
 
 /**
  * The main map activity.
  */
-public class MapActivity extends SystemUiHiderActivity implements GooglePlayServicesClient.ConnectionCallbacks, OnMarkerClickListener, OnInfoWindowClickListener, OnCameraChangeListener, OnMyLocationChangeListener {
+public class MapActivity extends SystemUiHiderActivity implements GooglePlayServicesClient.ConnectionCallbacks, OnMarkerClickListener, OnInfoWindowClickListener, OnCameraChangeListener, OnMyLocationChangeListener, OnResponseRetrieved {
 	
 	private static final String LOG_TAG = MapActivity.class.getSimpleName();
 	private static final String ERROR_INFO_WINDOW = "error_info_window";
@@ -245,7 +258,8 @@ public class MapActivity extends SystemUiHiderActivity implements GooglePlayServ
 	}
 
     protected void addMarker(MarkerOptions marker) {
-    	map.addMarker(marker.flat(true)
+    	BitmapDescriptor markerIcon = BitmapDescriptorFactory.fromResource(R.drawable.single_marker);
+		map.addMarker(marker.icon(markerIcon)
     			/*.rotation(340)*/);
     }
     
@@ -267,12 +281,16 @@ public class MapActivity extends SystemUiHiderActivity implements GooglePlayServ
 
 	@Override
 	public boolean onMarkerClick(final Marker clickedMarker) {
+		for (Polyline polyline : map.getPolylines()) {
+			polyline.remove();
+		}
+		
 		if (clickedMarker.isCluster()) {
 			declusterify(clickedMarker);
             return true;
 		}
 		PointLocation loc = clickedMarker.getData();
-		if (loc != null) {
+		if (loc != null) {			
 			clickedMarker.setTitle(this.getString(R.string.marker_loading_title));
 			clickedMarker.setSnippet(""); // Clear out old values
 			if (cachedMarkers.containsKey(loc)) {
@@ -280,9 +298,41 @@ public class MapActivity extends SystemUiHiderActivity implements GooglePlayServ
 			} else {
 				poiService.readLimited(loc.getPointOfInterestId(), markerReader);
 			}
+		    fetchWalkingPoints(loc);
 		}
 		
 		return false;
+	}
+
+	private void fetchWalkingPoints(PointLocation destination) {
+		if (myLastLocation == null)
+			return;
+		
+		String directionsUrl = DirectionsFetcher.makeUrl(myLastLocation.getLatitude(), 
+				myLastLocation.getLongitude(), destination.getLatitude(), destination.getLongitude());
+		
+		WebFetcher webFetcher = new WebFetcher(this);
+		webFetcher.execute(directionsUrl);
+	}
+	
+	public void onResponseRetrieved(String jsonDirections) {
+		List<LatLng> walkingPoints;
+		PolylineOptions polylineOptions = new PolylineOptions();
+	    try {
+			walkingPoints = DirectionsFetcher.fetchPath(jsonDirections);
+		} catch (JSONException e) {
+			return;
+		}
+	    polylineOptions.addAll(walkingPoints);
+		/*LatLng last = null;
+		for (int i = 0; i < list.size()-1; i++) {
+		    LatLng src = list.get(i);
+		    LatLng dest = list.get(i+1);
+		    last = dest;
+		    Polyline line = googleMap.addPolyline(new PolylineOptions().add( 
+		            new LatLng(src.latitude, src.longitude), new LatLng(dest.latitude, dest.longitude));
+		}*/
+		map.addPolyline(polylineOptions.width(3).color(Color.BLUE));
 	}
 	
     private void declusterify(Marker cluster) {
