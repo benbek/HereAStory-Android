@@ -37,12 +37,12 @@ public class HearStoryActivity extends Activity {
 		audioPlayer = new AudioPlayer();
 		PointOfInterest story = (PointOfInterest) getIntent().getSerializableExtra(IntentConsts.STORY_OBJECT);
 		
-		setupBackToMapButton();
+		// TODO setupBackToMapButton();
 		showTitle(story);
 		showImage(story);
 		playAudio(story);
 	}
-
+/*TODO
 	private void setupBackToMapButton() {
     	final Button button = (Button) findViewById(R.id.buttonBackToMap);
         button.setOnClickListener(new View.OnClickListener() {
@@ -53,7 +53,7 @@ public class HearStoryActivity extends Activity {
             }
         });
 	}
-	
+	*/
 	private void playAudio(PointOfInterest story) {
 		try {
 			audioPlayer.startPlaying(story.getAudio());
@@ -89,5 +89,12 @@ public class HearStoryActivity extends Activity {
 		analytics.flush();
 	    super.onDestroy();
 	}
+	
+	@Override
+    public void onBackPressed() {
+        super.onBackPressed();
+		Intent intent = new Intent(HearStoryActivity.this, MapActivity.class);
+		startActivity(intent);
+    }
 
 }

@@ -3,28 +3,77 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context=".RecordAudioActivity" >
+    tools:context=".CreateStoryActivity" >
 
-    <Button
-        android:id="@+id/buttonRecordAudio"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/start_recording_audio" />
+    <ImageView
+        android:id="@+id/create_story_logo"
+        android:contentDescription="@string/create_story_logo"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="0dp"
+        android:layout_marginLeft="0dp"
+        android:layout_marginRight="0dp"
+        android:layout_marginTop="0dp"
+        android:layout_weight="3"
+        android:cropToPadding="true"
+        android:scaleType="centerCrop"
+        android:src="@drawable/share_app_logo" />
+
+    <ProgressBar
+        android:id="@+id/progressBar1"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="match_parent"
+        android:layout_height="16dp"
+        android:layout_weight="0.1"
+        android:background="@color/APP_DARK_GREY" />
+
+    <LinearLayout
+        android:id="@+id/create_story_panel"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/panel_hight"
+        android:layout_weight="0.92"
+        android:background="@color/APP_GREEN"
+        android:contentDescription="@string/CreateStory_Panel"
+        android:orientation="horizontal"
+        android:showDividers="beginning" >
+
+     <Button
+         android:id="@+id/buttonRecordAudio"
+         android:layout_width="60dp"
+         android:layout_height="70dp"
+         android:layout_gravity="center_vertical"
+         android:layout_marginLeft="@dimen/activity_horizontal_margin"
+         android:layout_marginRight="@dimen/activity_horizontal_margin"
+         android:layout_marginTop="@dimen/activity_vertical_margin"
+         android:layout_weight="1"
+         android:background="@android:drawable/btn_default"
+         android:text="@string/start_recording_audio"
+         android:textColor="@color/APP_TEXT_RED" />
 
     <Button
         android:id="@+id/buttonPlayAudio"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/start_playing_audio" />
+        android:layout_width="60dp"
+        android:layout_height="70dp"
+        android:layout_gravity="center_vertical"
+        android:layout_marginTop="@dimen/activity_vertical_margin"
+        android:layout_weight="1"
+        android:background="@android:drawable/btn_default"
+        android:text="@string/start_playing_audio"
+        android:textColor="@color/APP_TEXT_RED" />
 
     <Button
         android:id="@+id/buttonRecordAudioNext"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/next" />
+        android:layout_width="60dp"
+        android:layout_height="70dp"
+        android:layout_gravity="center_vertical"
+        android:layout_marginLeft="@dimen/activity_horizontal_margin"
+        android:layout_marginRight="@dimen/activity_horizontal_margin"
+        android:layout_marginTop="@dimen/activity_vertical_margin"
+        android:layout_weight="1"
+        android:background="@android:drawable/btn_default"
+        android:text="@string/next"
+        android:textColor="@color/APP_TEXT_RED" />
+
+    </LinearLayout>
 
 </LinearLayout>
