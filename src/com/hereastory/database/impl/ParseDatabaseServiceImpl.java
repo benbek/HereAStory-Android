@@ -180,7 +180,10 @@ public class ParseDatabaseServiceImpl implements DatabaseService {
 		pointOfInterest.setDuration(object.getNumber(DURATION));
 		pointOfInterest.setLikeCount(object.getNumber(LIKE_COUNT));
 		pointOfInterest.setTitle(object.getString(TITLE));
-		pointOfInterest.setAuthor(getUser(object.getParseObject(AUTHOR)));
+		
+		ParseObject author = object.getParseObject(AUTHOR);
+		author.fetchIfNeeded();
+		pointOfInterest.setAuthorName(author.getString(NAME));
 	}
 	
 	private void fillNonLimitedFields(ParseObject object, PointOfInterest pointOfInterest) throws ParseException, IOException {
@@ -191,6 +194,9 @@ public class ParseDatabaseServiceImpl implements DatabaseService {
 		
 		String audioFilePath = saveFile(object, AUDIO, FileType.AUDIO);
 		pointOfInterest.setAudio(audioFilePath);
+
+		pointOfInterest.setAuthor(getUser(object.getParseObject(AUTHOR)));
+
 	}
 
 	private String saveFile(ParseObject object, String field, FileType fileType) throws ParseException, IOException {

@@ -72,7 +72,7 @@ public class MapActivity extends SystemUiHiderActivity implements GooglePlayServ
 		@Override
 		public void readLimitedCompleted(LimitedPointOfInterest poi) {
 			Marker clickedMarker = map.getMarkerShowingInfoWindow();
-			updateMarkerInfoWindow(clickedMarker, poi.getTitle(), poi.getAuthor().getName());
+			updateMarkerInfoWindow(clickedMarker, poi.getTitle(), poi.getAuthorName());
 			
 			cachedMarkers.put((PointLocation) clickedMarker.getData(), poi);
 		}
@@ -454,4 +454,11 @@ public class MapActivity extends SystemUiHiderActivity implements GooglePlayServ
 			myLastLocation = location;
 		}
 	}
+	
+	@Override
+    public void onBackPressed() {
+        super.onBackPressed();
+		Intent intent = new Intent(this, MapActivity.class);
+		startActivity(intent);
+    }
 }

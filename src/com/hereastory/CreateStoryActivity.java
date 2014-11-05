@@ -140,5 +140,11 @@ public class CreateStoryActivity extends Activity {
 		analytics.flush();
 	    super.onDestroy();
 	}
-
+	
+	@Override
+    public void onBackPressed() {
+        super.onBackPressed();
+		Intent intent = new Intent(this, MapActivity.class);
+		startActivity(intent);
+    }
 }

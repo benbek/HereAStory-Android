@@ -2,6 +2,7 @@ package com.hereastory;
 
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 
 import org.apache.commons.io.IOUtils;
 
@@ -9,7 +10,6 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -37,23 +37,47 @@ public class HearStoryActivity extends Activity {
 		audioPlayer = new AudioPlayer();
 		PointOfInterest story = (PointOfInterest) getIntent().getSerializableExtra(IntentConsts.STORY_OBJECT);
 		
-		// TODO setupBackToMapButton();
 		showTitle(story);
+		showCreationDate(story);
+		showDuration(story);
+		showLikes(story);
+		showAuthorName(story);
 		showImage(story);
+		showAuthorPicture(story);
 		playAudio(story);
+		
 	}
-/*TODO
-	private void setupBackToMapButton() {
-    	final Button button = (Button) findViewById(R.id.buttonBackToMap);
-        button.setOnClickListener(new View.OnClickListener() {
-        	
-            public void onClick(View v) {
-				Intent intent = new Intent(HearStoryActivity.this, MapActivity.class);
-				startActivity(intent);
-            }
-        });
+	private void showAuthorPicture(PointOfInterest story) {
+		ImageView image = (ImageView) findViewById(R.id.profile_picture); 
+		
+		try {
+			byte[] bytes = IOUtils.toByteArray(new FileInputStream(story.getAuthor().getProfilePictureSmall()));
+			image.setImageBitmap(BitmapFactory.decodeByteArray(bytes, 0, bytes.length));
+		} catch (IOException e) {
+			ErrorDialogService.showGeneralError(LOG_TAG, R.string.failed_showing_image, e, getApplicationContext());
+		}
 	}
-	*/
+	
+	private void showAuthorName(PointOfInterest story) {
+		TextView title = (TextView) findViewById(R.id.textHearStoryTitle);
+		title.setText(story.getAuthorName());
+	}
+	
+	private void showLikes(PointOfInterest story) {
+		Button likes = (Button) findViewById(R.id.loved_btn);
+		likes.setText(story.getLikeCount().toString());
+	}
+	
+	private void showDuration(PointOfInterest story) {
+		TextView duration = (TextView) findViewById(R.id.story_duration);
+		duration.setText(story.getDuration().toString());
+	}
+	
+	private void showCreationDate(PointOfInterest story) {
+		TextView date = (TextView) findViewById(R.id.story_creation_date);
+		date.setText(new SimpleDateFormat("dd/MM/yy").format(story.getCreationDate())); 
+	}
+
 	private void playAudio(PointOfInterest story) {
 		try {
 			audioPlayer.startPlaying(story.getAudio());
@@ -93,7 +117,7 @@ public class HearStoryActivity extends Activity {
 	@Override
     public void onBackPressed() {
         super.onBackPressed();
-		Intent intent = new Intent(HearStoryActivity.this, MapActivity.class);
+		Intent intent = new Intent(this, MapActivity.class);
 		startActivity(intent);
     }
 
