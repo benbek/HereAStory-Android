@@ -15,7 +15,6 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.hereastory.service.api.PointOfInterestAddHandler;
 import com.hereastory.service.api.PointOfInterestService;
 import com.hereastory.service.impl.AudioPlayer;
 import com.hereastory.service.impl.ErrorDialogService;

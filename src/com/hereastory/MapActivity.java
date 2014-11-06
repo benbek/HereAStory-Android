@@ -1,6 +1,5 @@
 package com.hereastory;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -18,7 +17,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.content.res.Configuration;
-import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Point;
 import android.location.Location;
@@ -49,7 +47,6 @@ import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.PolylineOptionsCreator;
 import com.hereastory.service.api.OutputFileServiceFactory;
 import com.hereastory.service.api.PointOfInterestReadHandler;
 import com.hereastory.service.api.PointOfInterestService;
@@ -73,7 +70,6 @@ public class MapActivity extends SystemUiHiderActivity implements GooglePlayServ
 	
 	private static final String LOG_TAG = MapActivity.class.getSimpleName();
 	private static final String ERROR_INFO_WINDOW = "error_info_window";
-	private static final int STORIES_COLLECTION = -1;
 	
 	private final class POIReader implements PointOfInterestReadHandler {
 		@Override
