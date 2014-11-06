@@ -8,6 +8,7 @@ import com.hereastory.service.api.PointOfInterestAddHandler;
 import com.hereastory.service.api.PointOfInterestReadHandler;
 import com.hereastory.service.api.PointOfInterestService;
 import com.hereastory.shared.PointOfInterest;
+import com.hereastory.shared.User;
 
 public class PointOfInterestServiceImpl implements PointOfInterestService {
 	
@@ -37,6 +38,16 @@ public class PointOfInterestServiceImpl implements PointOfInterestService {
 		pointOfInterest.setCreationDate(new Date());
 		pointOfInterest.setLikeCount(0);
 		databaseService.add(pointOfInterest, new byte[0] , handler);
+	}
+
+	@Override
+	public User getCurrentAuthor() {
+		return databaseService.getCurrentAuthor();
+	}
+
+	@Override
+	public void incrementLikeCount(String id) {
+		databaseService.incrementLikeCount(id);
 	}
 
 }

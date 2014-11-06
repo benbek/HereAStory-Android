@@ -7,11 +7,12 @@
     android:longClickable="false"
     android:orientation="vertical"
     tools:context=".HearStoryActivity" >
-    
-<!-- TODO (TOMER) 
+
+    <!--
+     TODO (TOMER) 
 	* make icon ic_heart_full.png when the story is liked
-	-->
-	
+    -->
+
     <ImageView
         android:id="@+id/imageHearStoryImage"
         android:layout_width="match_parent"
@@ -35,12 +36,12 @@
 
     <LinearLayout
         android:id="@+id/hear_story_panel"
-        android:contentDescription="@string/CreateStory_Panel"
         android:layout_width="match_parent"
         android:layout_height="@dimen/panel_hight"
         android:layout_weight="0.92"
         android:background="@color/APP_GREEN"
         android:baselineAligned="true"
+        android:contentDescription="@string/CreateStory_Panel"
         android:orientation="horizontal"
         android:showDividers="beginning" >
 
@@ -50,10 +51,9 @@
             android:layout_weight="0.1"
             android:gravity="left"
             android:orientation="vertical" >
-			
+
             <Button
                 android:id="@+id/loved_btn"
-                android:contentDescription="Loved_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="fill_vertical|fill_horizontal|center"
@@ -63,13 +63,15 @@
                 android:layout_marginTop="@dimen/activity_vertical_margin"
                 android:layout_weight="1"
                 android:background="@drawable/ic_btn_heart_empty"
+                android:contentDescription="Loved_button"
+                android:minHeight="30dp"
+                android:minWidth="50dp"
                 android:scaleType="fitStart"
                 android:text="3"
                 android:textColor="@color/APP_TEXT_WHITE" />
-            
+
             <ImageButton
                 android:id="@+id/more_btn"
-                android:contentDescription="More_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/activity_vertical_margin"
@@ -78,10 +80,10 @@
                 android:layout_marginTop="@dimen/activity_horizontal_margin"
                 android:layout_weight="0.5"
                 android:background="@null"
+                android:contentDescription="More_button"
                 android:cropToPadding="false"
                 android:scaleType="fitCenter"
                 android:src="@drawable/ic_btn_dots" />
-
         </LinearLayout>
 
         <LinearLayout
@@ -98,7 +100,7 @@
                 android:layout_weight="10"
                 android:gravity="top|fill_vertical|center_horizontal"
                 android:maxWidth="400dp"
-                android:text="&lt;Story Title>"
+                android:text="story title"
                 android:textAppearance="?android:attr/textAppearanceLarge"
                 android:textColor="@color/APP_TEXT_WHITE"
                 android:textSize="25sp" />
@@ -113,17 +115,18 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical|start"
-                    android:text="minute"   
+                    android:text="33 s"
                     android:textColor="@color/APP_TEXT_WHITE"
                     android:textSize="10dp" />
 
                 <ImageView
                     android:id="@+id/duration_ic"
-                    android:contentDescription="duration_icon"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical|center"
                     android:layout_marginRight="@dimen/activity_horizontal_margin"
+                    android:contentDescription="duration_icon"
+                    android:padding="7dp"
                     android:src="@drawable/ic_audio_length" />
 
                 <TextView
@@ -131,24 +134,21 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="right|center_vertical"
-                    android:layout_weight="10"
                     android:clickable="false"
                     android:longClickable="false"
-                    android:text="5 months ago"
-                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:text="22/22/22"
                     android:textColor="@color/APP_TEXT_WHITE"
                     android:textSize="10dp" />
 
                 <ImageView
                     android:id="@+id/published_time_ic"
-                    android:contentDescription="published_time"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical|center_horizontal"
+                    android:contentDescription="published_time"
+                    android:padding="7dp"
                     android:src="@drawable/ic_published_time" />
-
             </LinearLayout>
-
         </LinearLayout>
 
         <LinearLayout
@@ -158,19 +158,27 @@
             android:gravity="right"
             android:orientation="vertical" >
 
-            <ImageView
-                android:id="@+id/profile_picture"
-                android:contentDescription="profile picture"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/activity_horizontal_margin"
-                android:layout_marginRight="@dimen/activity_horizontal_margin"
-                android:layout_marginTop="@dimen/activity_vertical_margin"
-                android:layout_weight="1"
-                android:baselineAlignBottom="false"
-                android:cropToPadding="false"
-                android:scaleType="fitStart"
-                android:src="@drawable/profile_placeholder" />
+            <LinearLayout
+                android:layout_width="90dp"
+                android:layout_height="90dp"
+                android:layout_weight="0.2"
+                android:gravity="right"
+                android:orientation="vertical" >
+
+                <ImageView
+                    android:id="@+id/profile_picture"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="@dimen/activity_horizontal_margin"
+                    android:layout_marginRight="@dimen/activity_horizontal_margin"
+                    android:layout_marginTop="@dimen/activity_vertical_margin"
+                    android:layout_weight="1"
+                    android:baselineAlignBottom="false"
+                    android:contentDescription="profile picture"
+                    android:cropToPadding="false"
+                    android:scaleType="fitStart"
+                    android:src="@drawable/profile_placeholder" />
+            </LinearLayout>
 
             <TextView
                 android:id="@+id/authorName"
@@ -184,12 +192,11 @@
                 android:gravity="right|fill_vertical"
                 android:maxLines="2"
                 android:maxWidth="90dp"
-                android:text="&lt;User Name>"
+                android:text="Firstname Lastname"
+                android:textSize="12dp"
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:textColor="@color/APP_TEXT_WHITE" />
-
         </LinearLayout>
-
     </LinearLayout>
 
 </LinearLayout>

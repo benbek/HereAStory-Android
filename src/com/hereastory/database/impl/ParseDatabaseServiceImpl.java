@@ -372,4 +372,34 @@ public class ParseDatabaseServiceImpl implements DatabaseService {
 		} 
 	}
 
+	@Override
+	public User getCurrentAuthor() {
+		try {
+			return getUser(ParseUser.getCurrentUser());
+		} catch (Exception e) {
+			Log.e(LOG_TAG, "Failed reading user", e);
+			return new User();
+		}
+	}
+
+	@Override
+	public void incrementLikeCount(String storyId) {
+		ParseQuery<ParseObject> query = ParseQuery.getQuery(POI_TABLE);
+		query.getInBackground(storyId, new GetCallback<ParseObject>() {
+			@Override
+			public void done(ParseObject object, ParseException e) {
+				try {
+					if (e == null) {
+						Integer newValue = (Integer) object.getNumber(LIKE_COUNT) + 1;
+						object.put(LIKE_COUNT, newValue);
+						object.save();
+					} else {
+						Log.e(LOG_TAG, "Failed adding like", e);
+					}
+				} catch (Exception ex) {
+					Log.e(LOG_TAG, "Failed adding like", ex);
+				}
+			}
+		});
+	}
 }

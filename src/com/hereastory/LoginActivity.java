@@ -11,7 +11,9 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
+import android.view.View;
 import android.view.Window;
+import android.widget.Button;
 
 import com.facebook.FacebookRequestError;
 import com.facebook.Request;
@@ -79,9 +81,10 @@ public class LoginActivity extends Activity {
 
 	private void onSessionStateChange(Session session, SessionState state, Exception exception) {
 		if (state.isOpened()) {
-			Log.i(LOG_TAG, "Logged in...");
+			Button loginButton = (Button) findViewById(R.id.authButton);
+			loginButton.setVisibility(View.INVISIBLE);
+			
 			if (!loggedIn.getAndSet(true)) {
-				//ParseFacebookUtils.link(ParseUser.getCurrentUser(), LoginActivity.this);
 				ParseFacebookUtils.logIn(LoginActivity.this, new LogInCallback() {
 					
 					@Override
