@@ -160,7 +160,7 @@ public class MapActivity extends SystemUiHiderActivity implements GooglePlayServ
 	             * If no resolution is available, display a dialog to the
 	             * user with the error.
 	             */
-	            //TODO showErrorDialog(connectionResult.getErrorCode());
+
 	        }
 			
 		}
@@ -407,7 +407,6 @@ public class MapActivity extends SystemUiHiderActivity implements GooglePlayServ
             if (errorDialog != null) {
             	errorDialog.show();
             } else {
-            	// TODO
             }
             return false;
         }
@@ -464,7 +463,6 @@ public class MapActivity extends SystemUiHiderActivity implements GooglePlayServ
 
 	@Override
 	public void onDisconnected() {
-		// TODO Auto-generated method stub
 		
 	}
 

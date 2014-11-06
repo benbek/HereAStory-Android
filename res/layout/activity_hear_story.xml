@@ -8,10 +8,7 @@
     android:orientation="vertical"
     tools:context=".HearStoryActivity" >
 
-    <!--
-     TODO (TOMER) 
-	* make icon ic_heart_full.png when the story is liked
-    -->
+
 
     <ImageView
         android:id="@+id/imageHearStoryImage"
