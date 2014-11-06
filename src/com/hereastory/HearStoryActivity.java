@@ -64,8 +64,8 @@ public class HearStoryActivity extends Activity {
 	}
 	
 	private void showAuthorName(PointOfInterest story) {
-		TextView title = (TextView) findViewById(R.id.authorName);
-		title.setText(story.getAuthorName());
+		TextView author = (TextView) findViewById(R.id.authorName);
+		author.setText(story.getAuthor().getName());
 	}
 	
 	private void showLikes(final PointOfInterest story) {

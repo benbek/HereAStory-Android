@@ -236,7 +236,7 @@ public class MapActivity extends SystemUiHiderActivity implements GooglePlayServ
         	this.myLastLocation = myLocation;
         } else if (savedInstanceState == null) {
         	// Set location to Safra Campus, Jerusalem: (31.774476,35.203543)
-        	LatLng jerusalem = new LatLng(31.774476, 35.203543);
+        	LatLng jerusalem = new LatLng(32.0866403, 34.7778583);
         	map.moveCamera(CameraUpdateFactory.newLatLngZoom(jerusalem, 13));
         }
     }
