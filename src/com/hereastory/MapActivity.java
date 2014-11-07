@@ -1,6 +1,5 @@
 package com.hereastory;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -18,7 +17,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.content.res.Configuration;
-import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Point;
 import android.location.Location;
@@ -49,7 +47,6 @@ import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.PolylineOptionsCreator;
 import com.hereastory.service.api.OutputFileServiceFactory;
 import com.hereastory.service.api.PointOfInterestReadHandler;
 import com.hereastory.service.api.PointOfInterestService;
@@ -73,7 +70,6 @@ public class MapActivity extends SystemUiHiderActivity implements GooglePlayServ
 	
 	private static final String LOG_TAG = MapActivity.class.getSimpleName();
 	private static final String ERROR_INFO_WINDOW = "error_info_window";
-	private static final int STORIES_COLLECTION = -1;
 	
 	private final class POIReader implements PointOfInterestReadHandler {
 		@Override
@@ -85,7 +81,7 @@ public class MapActivity extends SystemUiHiderActivity implements GooglePlayServ
 		@Override
 		public void readLimitedCompleted(LimitedPointOfInterest poi) {
 			Marker clickedMarker = map.getMarkerShowingInfoWindow();
-			updateMarkerInfoWindow(clickedMarker, poi.getTitle(), poi.getAuthor().getName());
+			updateMarkerInfoWindow(clickedMarker, poi.getTitle(), poi.getAuthorName());
 			
 			cachedMarkers.put((PointLocation) clickedMarker.getData(), poi);
 		}
@@ -160,7 +156,7 @@ public class MapActivity extends SystemUiHiderActivity implements GooglePlayServ
 	             * If no resolution is available, display a dialog to the
 	             * user with the error.
 	             */
-	            //TODO showErrorDialog(connectionResult.getErrorCode());
+
 	        }
 			
 		}
@@ -240,7 +236,7 @@ public class MapActivity extends SystemUiHiderActivity implements GooglePlayServ
         	this.myLastLocation = myLocation;
         } else if (savedInstanceState == null) {
         	// Set location to Safra Campus, Jerusalem: (31.774476,35.203543)
-        	LatLng jerusalem = new LatLng(31.774476, 35.203543);
+        	LatLng jerusalem = new LatLng(32.0866403, 34.7778583);
         	map.moveCamera(CameraUpdateFactory.newLatLngZoom(jerusalem, 13));
         }
     }
@@ -407,7 +403,6 @@ public class MapActivity extends SystemUiHiderActivity implements GooglePlayServ
             if (errorDialog != null) {
             	errorDialog.show();
             } else {
-            	// TODO
             }
             return false;
         }
@@ -464,7 +459,6 @@ public class MapActivity extends SystemUiHiderActivity implements GooglePlayServ
 
 	@Override
 	public void onDisconnected() {
-		// TODO Auto-generated method stub
 		
 	}
 
@@ -504,4 +498,11 @@ public class MapActivity extends SystemUiHiderActivity implements GooglePlayServ
 			myLastLocation = location;
 		}
 	}
+	
+	@Override
+    public void onBackPressed() {
+        super.onBackPressed();
+		Intent intent = new Intent(this, MapActivity.class);
+		startActivity(intent);
+    }
 }

@@ -9,6 +9,7 @@ public class PointOfInterest extends LimitedPointOfInterest {
 	private PointLocation location;
 	private String image;
 	private String audio;
+	private User user;
 
 	public PointLocation getLocation() {
 		return location;
@@ -34,4 +35,11 @@ public class PointOfInterest extends LimitedPointOfInterest {
 		this.audio = audio;
 	}
 
+	public void setAuthor(User user) {
+		this.user = user;
+	}
+	
+	public User getAuthor() {
+		return user;
+	}
 }

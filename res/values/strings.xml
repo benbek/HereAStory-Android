@@ -10,10 +10,10 @@
     <string name="next">Next</string>
     <string name="back_to_map">Back to map</string>
     <string name="capture_picture">Capture picture</string>
-    <string name="start_recording_audio">Start Recording Audio</string>
-    <string name="stop_recording_audio">Stop Recording Audio</string>
-    <string name="start_playing_audio">Start Playing Audio</string>
-    <string name="stop_playing_audio">Stop Playing Audio</string>
+    <string name="start_recording_audio">Start Record</string>
+    <string name="stop_recording_audio">Stop Record</string>
+    <string name="start_playing_audio">Start Play</string>
+    <string name="stop_playing_audio">Stop Play</string>
     <string name="marker_loading_title">Loading&#8230;</string>
     <string name="marker_failed_title">No data available :(</string>
     <string name="marker_failed_snippet">Please try again.</string>
@@ -41,4 +41,22 @@
     <string name="title_activity_user_details">UserDetailsActivity</string>
     <string name="hello_world">Hello world!</string>
 
+     <string name="title_section1">tutorial</string>
+    <string name="title_section2">about</string>
+    <string name="title_section3"/>
+    <string name="title_section4">Give Like :)</string>
+    <string name="title_section5">Share</string>
+    <string name="title_section6">Feedback</string>
+    <string name="title_section7"/>
+    <string name="title_section8">Logout</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="action_example">Example action</string>
+    
+    <string name="create_story_logo">create_story_logo</string>
+    <string name="random_story_logo">New Story!</string>
+	<string name="logo">ic_nav_bar_logo.png</string>
+	
+	<string name="CreateStory_Panel">CreateStory_Panel</string>
+    
 </resources>

@@ -1,6 +1,7 @@
 package com.hereastory.service.api;
 
 import com.hereastory.shared.PointOfInterest;
+import com.hereastory.shared.User;
 
 
 public interface PointOfInterestService {
@@ -19,6 +20,10 @@ public interface PointOfInterestService {
 	void read(String id, PointOfInterestReadHandler handler);
 
 	void add(PointOfInterest pointOfInterest, PointOfInterestAddHandler handler);
+
+	User getCurrentAuthor();
+
+	void incrementLikeCount(String id);
 
 	
 }

@@ -3,6 +3,7 @@ package com.hereastory.database.api;
 import com.hereastory.service.api.PointOfInterestAddHandler;
 import com.hereastory.service.api.PointOfInterestReadHandler;
 import com.hereastory.shared.PointOfInterest;
+import com.hereastory.shared.User;
 
 public interface DatabaseService {
 	
@@ -15,5 +16,9 @@ public interface DatabaseService {
 	public void add(PointOfInterest pointOfInterest, byte[] thumbnail, PointOfInterestAddHandler handler);
 
 	public void addFacebookUser(String facebookId, String name, byte[] profilePicture);
+
+	public User getCurrentAuthor();
+
+	public void incrementLikeCount(String storyId);
 
 }

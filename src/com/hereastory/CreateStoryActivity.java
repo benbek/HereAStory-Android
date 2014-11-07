@@ -21,8 +21,10 @@ import com.hereastory.service.api.BitmapService;
 import com.hereastory.service.api.OutputFileService;
 import com.hereastory.service.api.OutputFileService.FileType;
 import com.hereastory.service.api.OutputFileServiceFactory;
+import com.hereastory.service.api.PointOfInterestService;
 import com.hereastory.service.impl.BitmapServiceImpl;
 import com.hereastory.service.impl.ErrorDialogService;
+import com.hereastory.service.impl.PointOfInterestServiceImpl;
 import com.hereastory.shared.HereAStoryAnalytics;
 import com.hereastory.shared.IntentConsts;
 import com.hereastory.shared.PointLocation;
@@ -37,6 +39,7 @@ public class CreateStoryActivity extends Activity {
 	private static HereAStoryAnalytics analytics;
     private OutputFileService outputFileService;
     private BitmapService bitmapService;
+    private PointOfInterestService pointOfInterestService;
     
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -47,12 +50,17 @@ public class CreateStoryActivity extends Activity {
 		
 		outputFileService = OutputFileServiceFactory.init(this);
 		bitmapService = new BitmapServiceImpl();
-		
+		pointOfInterestService = new PointOfInterestServiceImpl();
 		fileUri = getOutputMediaFileUri(); // create a file to save the image
 
 		story = new PointOfInterest();
 		setLocation();
+		setAuthor();
 		setupCapturePictureButton();
+	}
+
+	private void setAuthor() {
+		story.setAuthor(pointOfInterestService.getCurrentAuthor());
 	}
 
 	private void setLocation() {
@@ -140,5 +148,11 @@ public class CreateStoryActivity extends Activity {
 		analytics.flush();
 	    super.onDestroy();
 	}
-
+	
+	@Override
+    public void onBackPressed() {
+        super.onBackPressed();
+		Intent intent = new Intent(this, MapActivity.class);
+		startActivity(intent);
+    }
 }

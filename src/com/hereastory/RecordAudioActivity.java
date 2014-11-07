@@ -159,5 +159,12 @@ public class RecordAudioActivity extends Activity {
 			ErrorDialogService.showGeneralError(LOG_TAG, R.string.failed_stop_recording, e, this);
 		}
     }
+    
+	@Override
+    public void onBackPressed() {
+        super.onBackPressed();
+		Intent intent = new Intent(this, MapActivity.class);
+		startActivity(intent);
+    }
 
 }

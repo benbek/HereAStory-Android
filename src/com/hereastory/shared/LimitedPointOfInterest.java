@@ -8,11 +8,12 @@ public class LimitedPointOfInterest  implements Serializable {
 	private static final long serialVersionUID = -4574620519127749204L;
 	
 	private String id;
-	private User author;
 	private Date creationDate;
 	private Number likeCount;
 	private Number duration;
 	private String title;
+
+	private String authorName;
 
 	public String getTitle() {
 		return title;
@@ -29,15 +30,7 @@ public class LimitedPointOfInterest  implements Serializable {
 	public void setId(String id) {
 		this.id = id;
 	}
-	
-	public User getAuthor() {
-		return author;
-	}
-	
-	public void setAuthor(User author) {
-		this.author = author;
-	}
-	
+
 	public Date getCreationDate() {
 		return creationDate;
 	}
@@ -60,6 +53,14 @@ public class LimitedPointOfInterest  implements Serializable {
 	
 	public void setDuration(Number duration) {
 		this.duration = duration;
+	}
+
+	public String getAuthorName() {
+		return authorName;
+	}
+
+	public void setAuthorName(String authorName) {
+		this.authorName = authorName;
 	}
 
 }

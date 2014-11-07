@@ -180,9 +180,9 @@ public class ParseDatabaseServiceImpl implements DatabaseService {
 		pointOfInterest.setDuration(object.getNumber(DURATION));
 		pointOfInterest.setLikeCount(object.getNumber(LIKE_COUNT));
 		pointOfInterest.setTitle(object.getString(TITLE));
-		pointOfInterest.setAuthor(getUser(object.getParseObject(AUTHOR)));
+		pointOfInterest.setAuthorName(getAuthorName(object.getParseObject(AUTHOR)));
 	}
-	
+
 	private void fillNonLimitedFields(ParseObject object, PointOfInterest pointOfInterest) throws ParseException, IOException {
 		pointOfInterest.setLocation(getLocation(object));
 		
@@ -191,6 +191,9 @@ public class ParseDatabaseServiceImpl implements DatabaseService {
 		
 		String audioFilePath = saveFile(object, AUDIO, FileType.AUDIO);
 		pointOfInterest.setAudio(audioFilePath);
+
+		pointOfInterest.setAuthor(getUser(object.getParseObject(AUTHOR)));
+
 	}
 
 	private String saveFile(ParseObject object, String field, FileType fileType) throws ParseException, IOException {
@@ -235,6 +238,23 @@ public class ParseDatabaseServiceImpl implements DatabaseService {
 	
 	private ParseGeoPoint getParseGeoPoint(PointLocation location) {
 		return new ParseGeoPoint(location.getLatitude(), location.getLongitude());
+	}
+	
+	private String getAuthorName(ParseObject parseUser) throws ParseException {
+		parseUser.fetchIfNeeded();
+		if (parseUser.getString(NAME) == null ){
+			ParseQuery<ParseObject> query = ParseQuery.getQuery(USER_FACEBOOK_TABLE); 
+			query.whereEqualTo(USER, parseUser);
+			List<ParseObject> result = query.find();
+			if (result.isEmpty()) {
+				return "";
+			} else {
+				ParseObject fbInfo = result.iterator().next();
+				return fbInfo.getString(NAME);
+			}
+		} else {
+			return parseUser.getString(NAME);
+		}
 	}
 
 	private User getUser(ParseObject parseUser) throws ParseException, IOException {
@@ -352,4 +372,34 @@ public class ParseDatabaseServiceImpl implements DatabaseService {
 		} 
 	}
 
+	@Override
+	public User getCurrentAuthor() {
+		try {
+			return getUser(ParseUser.getCurrentUser());
+		} catch (Exception e) {
+			Log.e(LOG_TAG, "Failed reading user", e);
+			return new User();
+		}
+	}
+
+	@Override
+	public void incrementLikeCount(String storyId) {
+		ParseQuery<ParseObject> query = ParseQuery.getQuery(POI_TABLE);
+		query.getInBackground(storyId, new GetCallback<ParseObject>() {
+			@Override
+			public void done(ParseObject object, ParseException e) {
+				try {
+					if (e == null) {
+						Integer newValue = (Integer) object.getNumber(LIKE_COUNT) + 1;
+						object.put(LIKE_COUNT, newValue);
+						object.save();
+					} else {
+						Log.e(LOG_TAG, "Failed adding like", e);
+					}
+				} catch (Exception ex) {
+					Log.e(LOG_TAG, "Failed adding like", ex);
+				}
+			}
+		});
+	}
 }
