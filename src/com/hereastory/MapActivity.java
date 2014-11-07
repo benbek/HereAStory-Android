@@ -285,11 +285,13 @@ public class MapActivity extends SystemUiHiderActivity implements GooglePlayServ
 			declusterify(clickedMarker);
             return true;
 		}
+		
 		PointLocation loc = clickedMarker.getData();
 		if (loc != null) {			
 			clickedMarker.setTitle(this.getString(R.string.marker_loading_title));
 			clickedMarker.setSnippet(""); // Clear out old values
 			if (cachedMarkers.containsKey(loc)) {
+				clickedMarker.showInfoWindow();
 				markerReader.readLimitedCompleted(cachedMarkers.get(loc));
 			} else {
 				poiService.readLimited(loc.getPointOfInterestId(), markerReader);
