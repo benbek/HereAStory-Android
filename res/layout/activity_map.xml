@@ -26,24 +26,28 @@
             android:layout_height="match_parent"
             android:fitsSystemWindows="true" >
 
+        <!-- TODO (Tomer): Ben, this layout is useless, can we throw it out? -->
         <LinearLayout
-                android:id="@+id/fullscreen_content_controls"
-                style="?buttonBarStyle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+            android:id="@+id/fullscreen_content_controls"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|center_horizontal"
+            android:layout_marginBottom="@dimen/activity_vertical_margin"
+            android:orientation="horizontal"
+            tools:ignore="UselessParent" >
+		
+            <ImageButton
+                android:id="@+id/record_story_button"
+                android:layout_width="70dp"
+                android:layout_height="70dp"
                 android:layout_gravity="bottom|center_horizontal"
-                android:background="@color/black_overlay"
-                android:orientation="horizontal"
-                tools:ignore="UselessParent" >
-
-            <Button
-                    android:id="@+id/record_story_button"
-                    style="?buttonBarButtonStyle"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/record_story_button"
-                    android:onClick="recordStoryClick" />
+                android:background="@drawable/round_button"
+                android:contentDescription="record_story_button"
+                android:gravity="center_vertical|center_horizontal"
+                android:onClick="recordStoryClick"
+                android:scaleType="center"
+                android:src="@drawable/bt_speed_dial_2x_googleinboxapp" />
+            
         </LinearLayout>
     </FrameLayout>
 
