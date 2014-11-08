@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+             xmlns:tools="http://schemas.android.com/tools"
+             android:layout_width="match_parent"
+             android:layout_height="match_parent"
+             android:background="#0099cc"
+             tools:context=".MainMapActivity" >
+
+    <!--
+         The primary full-screen view.
+    -->
+
+    <fragment android:id="@+id/map"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:name="com.androidmapsextensions.MapFragment" />
+
+    <!--
+         This FrameLayout insets its children based on system windows using
+         android:fitsSystemWindows.
+    -->
+
+    <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:fitsSystemWindows="true" >
+
+        <!-- TODO (Tomer): Ben, this layout is useless, can we throw it out? -->
+        <LinearLayout
+            android:id="@+id/fullscreen_content_controls"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|center_horizontal"
+            android:layout_marginBottom="@dimen/activity_vertical_margin"
+            android:orientation="horizontal"
+            tools:ignore="UselessParent" >
+		
+            <ImageButton
+                android:id="@+id/record_story_button"
+                android:layout_width="70dp"
+                android:layout_height="70dp"
+                android:layout_gravity="bottom|center_horizontal"
+                android:background="@drawable/round_button"
+                android:contentDescription="record_story_button"
+                android:gravity="center_vertical|center_horizontal"
+                android:onClick="recordStoryClick"
+                android:scaleType="center"
+                android:src="@drawable/bt_speed_dial_2x_googleinboxapp" />
+            
+        </LinearLayout>
+    </FrameLayout>
+
+</FrameLayout>

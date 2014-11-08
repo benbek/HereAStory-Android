@@ -55,13 +55,13 @@
         <activity
             android:name=".HearStoryActivity"
             android:label="@string/title_activity_hear_story"
-            android:parentActivityName=".MapActivity" >
+            android:parentActivityName=".MapActivity_bo" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.hereastory.MapActivity" />
         </activity>
         <activity
-            android:name=".MapActivity"
+            android:name=".MapActivity_bo"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/app_name"
             android:theme="@style/FullscreenTheme" >

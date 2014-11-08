@@ -163,7 +163,7 @@ public class RecordAudioActivity extends Activity {
 	@Override
     public void onBackPressed() {
         super.onBackPressed();
-		Intent intent = new Intent(this, MapActivity.class);
+		Intent intent = new Intent(this, MapActivity_bo.class);
 		startActivity(intent);
     }
 

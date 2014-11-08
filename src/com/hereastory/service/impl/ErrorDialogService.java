@@ -6,7 +6,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.util.Log;
 
-import com.hereastory.MapActivity;
+import com.hereastory.MapActivity_bo;
 import com.hereastory.R;
 
 public class ErrorDialogService {
@@ -17,7 +17,7 @@ public class ErrorDialogService {
 		.setNeutralButton(R.string.return_to_map, new DialogInterface.OnClickListener() {
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
-				Intent intent = new Intent(context, MapActivity.class);
+				Intent intent = new Intent(context, MapActivity_bo.class);
 				context.startActivity(intent);					
 			}
 		}).setIcon(android.R.drawable.ic_dialog_alert).show();

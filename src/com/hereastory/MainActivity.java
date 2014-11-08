@@ -21,7 +21,7 @@ public class MainActivity extends Activity {
         outputFileService = OutputFileServiceFactory.getOutputFileService();
         outputFileService.clearDirectory();
 
-        startActivity(new Intent(this, MapActivity.class));
+        startActivity(new Intent(this, MapActivity_bo.class));
     }
 
 	@Override

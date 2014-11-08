@@ -126,7 +126,7 @@ public class CreateStoryActivity extends Activity {
     			intent.putExtra(IntentConsts.STORY_OBJECT, story);
     			startActivity(intent);
 			} else {
-				Intent intent = new Intent(getApplicationContext(), MapActivity.class);
+				Intent intent = new Intent(getApplicationContext(), MapActivity_bo.class);
 				startActivity(intent);	
 			}
 		}
@@ -152,7 +152,7 @@ public class CreateStoryActivity extends Activity {
 	@Override
     public void onBackPressed() {
         super.onBackPressed();
-		Intent intent = new Intent(this, MapActivity.class);
+		Intent intent = new Intent(this, MapActivity_bo.class);
 		startActivity(intent);
     }
 }
