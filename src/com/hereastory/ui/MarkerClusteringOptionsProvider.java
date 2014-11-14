@@ -1,7 +1,7 @@
 package com.hereastory.ui;
 
 /*
- * Copyright (C) 2013 Maciej Górski
+ * Copyright (C) 2013 Maciej G��rski
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
