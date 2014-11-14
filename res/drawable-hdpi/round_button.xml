@@ -2,6 +2,7 @@
 
 <shape xmlns:android="http://schemas.android.com/apk/res/android"
     android:shape="oval">
+    
     <solid android:color="@color/APP_RED"/>
     <item name="android:shadowColor">#FFF</item> 
     <item name="android:shadowRadius">5</item> 

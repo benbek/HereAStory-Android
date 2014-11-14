@@ -57,7 +57,13 @@
         
     </style>
     
+    <!-- Buttons: -->
     
+ <!-- Material design
+ 	<style name="Your.Button" parent="android:style/Widget.Material.Button">
+    	<item name="android:background">@drawable/raised_button_background</item>
+	</style>
+ -->
     <style name="ButtonBar">
         <item name="android:paddingLeft">2dp</item>
         <item name="android:paddingTop">5dp</item>
@@ -67,5 +73,7 @@
     </style>
 
     <style name="ButtonBarButton" />
+    
+    
 
 </resources>

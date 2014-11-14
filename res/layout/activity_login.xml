@@ -11,6 +11,9 @@
     <com.facebook.widget.LoginButton
         android:id="@+id/authButton"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
+        android:layout_height="103dp"
+        android:layout_weight="0.38"
+        android:background="@drawable/fb_button_o"
+        android:text="connect" />
 
 </LinearLayout>
