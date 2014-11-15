@@ -58,20 +58,13 @@
             android:parentActivityName=".MapActivity_bo" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.hereastory.MapActivity" />
+                android:value="com.hereastory.MapActivity_bo" />
         </activity>
         <activity
             android:name=".MapActivity_bo"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/app_name"
             android:theme="@style/FullscreenTheme" >
-
-            <!--
-                <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
-                <category android:name="android.intent.category.LAUNCHER"/>
-            </intent-filter>
-            -->
         </activity>
 
         <activity
