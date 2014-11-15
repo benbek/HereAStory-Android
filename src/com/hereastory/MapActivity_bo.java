@@ -66,7 +66,7 @@ import com.parse.ParseException;
 /**
  * The main map activity.
  */
-public class MapActivity_bo extends SystemUiHiderActivity implements GooglePlayServicesClient.ConnectionCallbacks, OnMarkerClickListener, OnInfoWindowClickListener, OnCameraChangeListener, OnMyLocationChangeListener, OnResponseRetrieved {
+public class MapActivity_bo extends Activity implements GooglePlayServicesClient.ConnectionCallbacks, OnMarkerClickListener, OnInfoWindowClickListener, OnCameraChangeListener, OnMyLocationChangeListener, OnResponseRetrieved {
 	
 	private static final String LOG_TAG = MapActivity_bo.class.getSimpleName();
 	private static final String ERROR_INFO_WINDOW = "error_info_window";
@@ -203,10 +203,6 @@ public class MapActivity_bo extends SystemUiHiderActivity implements GooglePlayS
         map.setOnInfoWindowClickListener(this);
         map.setOnCameraChangeListener(this);
         map.setOnMyLocationChangeListener(this);
-
-        //TODO(TOMER): Ben, what is that for? I have to put layout for the create_story_btn, and for what
-        //super.setupUiHide(findViewById(R.id.map), findViewById(R.id.fullscreen_content_controls), R.id.record_story_button);
-        super.setupUiHide(findViewById(R.id.map), findViewById(R.id.fullscreen_content_controls), R.id.record_story_button);
                 
         OutputFileServiceFactory.init(this);
         // Here-a-Story services and interfaces

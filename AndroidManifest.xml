@@ -60,6 +60,7 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.hereastory.MapActivity_bo" />
         </activity>
+        <activity android:name=".MapActivity"></activity>
         <activity
             android:name=".MapActivity_bo"
             android:configChanges="orientation|keyboardHidden|screenSize"
