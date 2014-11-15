@@ -38,7 +38,7 @@ import java.util.List;
 
 public class MarkerClusteringOptionsProvider implements ClusterOptionsProvider {
 
-    private static final int[] res = {R.drawable.m1, R.drawable.m2, R.drawable.m3, R.drawable.m4, R.drawable.m5};
+    private static final int[] res = {R.drawable.ic_poi_clusterd, R.drawable.m2, R.drawable.m3, R.drawable.m4, R.drawable.m5};
 
     private static final int[] forCounts = {10, 100, 1000, 10000, Integer.MAX_VALUE};
 
@@ -79,6 +79,7 @@ public class MarkerClusteringOptionsProvider implements ClusterOptionsProvider {
 
         String text = String.valueOf(markersCount);
         paint.getTextBounds(text, 0, text.length(), bounds);
+        paint.setTextSize(40);
         float x = bitmap.getWidth() / 2.0f;
         float y = (bitmap.getHeight() - bounds.height()) / 2.0f - bounds.top;
 
