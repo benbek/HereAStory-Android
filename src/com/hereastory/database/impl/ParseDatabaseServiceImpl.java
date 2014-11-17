@@ -356,7 +356,7 @@ public class ParseDatabaseServiceImpl implements DatabaseService {
 	@Override
 	public void addFacebookUser(String facebookId, String name, byte[] profilePicture) {
 		try {
-			final ParseObject object = new ParseObject(USER_FACEBOOK_TABLE);		
+			final ParseObject object = new ParseObject(USER);		
 			object.setACL(getPublicACL());
 			object.put(NAME, name);
 			object.put(FACEBOOK_ID, facebookId);

@@ -36,7 +36,7 @@
     <string name="title_activity_login">LoginActivity</string>
 
     <!-- Internal string -->
-    <string name="facebook_app_id">760937370632014</string>
+    <string name="facebook_app_id">459152000844399</string> <!-- 760937370632014  -->       
     <string name="default_map_locale">iw</string>
     <string name="title_activity_user_details">UserDetailsActivity</string>
     <string name="hello_world">Hello world!</string>
