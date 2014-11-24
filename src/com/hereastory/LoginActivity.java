@@ -55,6 +55,7 @@ public class LoginActivity extends Activity {
 		
 		uiHelper = new UiLifecycleHelper(this, callback);
 		uiHelper.onCreate(savedInstanceState);
+		//TODO (TOMER): Avital ?
 		latitude = (Double) getIntent().getSerializableExtra(IntentConsts.CURRENT_LAT);
 		longitude = (Double) getIntent().getSerializableExtra(IntentConsts.CURRENT_LONG);
 	}
@@ -74,6 +75,7 @@ public class LoginActivity extends Activity {
 
 	private void createStoryActivity() {
 		Intent intent = new Intent(this, CreateStoryActivity.class);
+		//TODO (Tomer): Avital ?
 		intent.putExtra(IntentConsts.CURRENT_LAT, latitude);
 		intent.putExtra(IntentConsts.CURRENT_LONG, longitude);
 		startActivity(intent);
@@ -85,7 +87,33 @@ public class LoginActivity extends Activity {
 			loginButton.setVisibility(View.INVISIBLE);
 			
 			if (!loggedIn.getAndSet(true)) {
-				ParseFacebookUtils.logIn(LoginActivity.this, new LogInCallback() {
+				/* Web
+			    LoginActivity.this.progressDialog = ProgressDialog.show(
+			            LoginActivity.this, "", "Logging in...", true);
+			    List<String> permissions = Arrays.asList("public_profile", "user_friends", "user_about_me",
+			            "user_relationships", "user_birthday", "user_location");
+			    ParseFacebookUtils.logIn(permissions, this, new LogInCallback() {
+			        @Override
+			        public void done(ParseUser user, ParseException err) {
+			            LoginActivity.this.progressDialog.dismiss();
+			            if (user == null) {
+			                Log.d(IntegratingFacebookTutorialApplication.TAG,
+			                        "Uh oh. The user cancelled the Facebook login.");
+			            } else if (user.isNew()) {
+			                Log.d(IntegratingFacebookTutorialApplication.TAG,
+			                        "User signed up and logged in through Facebook!");
+			                showUserDetailsActivity();
+			            } else {
+			                Log.d(IntegratingFacebookTutorialApplication.TAG,
+			                        "User logged in through Facebook!");
+			                showUserDetailsActivity();
+			            }
+			        }
+			    });	*/
+				
+				
+/* Original		*/
+				ParseFacebookUtils.logIn(this, new LogInCallback() {
 					
 					@Override
 					public void done(ParseUser user, ParseException e) {
@@ -95,7 +123,7 @@ public class LoginActivity extends Activity {
 							Log.e(LOG_TAG, "error loggin in", e);
 						}
 					}
-				});
+				});/**/
 			}
 			createStoryActivity();
 		}
