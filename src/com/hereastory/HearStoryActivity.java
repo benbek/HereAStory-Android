@@ -10,6 +10,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -59,7 +60,7 @@ public class HearStoryActivity extends Activity {
 			byte[] bytes = IOUtils.toByteArray(new FileInputStream(story.getAuthor().getProfilePictureSmall()));
 			image.setImageBitmap(BitmapFactory.decodeByteArray(bytes, 0, bytes.length));
 		} catch (Exception e) {
-			ErrorDialogService.showGeneralError(LOG_TAG, R.string.failed_showing_image, e, this);
+			Log.e(LOG_TAG, "Failed showing image");
 		}
 	}
 	

@@ -5,6 +5,7 @@ import java.io.IOException;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
@@ -64,7 +65,7 @@ public class RecordAudioActivity extends Activity {
 					
 					@Override
 					public void addFailed(PointOfInterest pointOfInterest, Exception e) {
-						ErrorDialogService.showGeneralError(LOG_TAG, R.string.failed_stop_recording, e, RecordAudioActivity.this);
+						Log.e(LOG_TAG, "failed adding story", e);
 					}
 					
 					@Override

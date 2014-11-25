@@ -75,9 +75,9 @@ public class ParseDatabaseServiceImpl implements DatabaseService {
 	}
 	
 	@Override
-	public void add(final PointOfInterest pointOfInterest, byte[] thumbnail, final PointOfInterestAddHandler handler) {	
+	public void add(final PointOfInterest pointOfInterest, byte[] thumbnail, final PointOfInterestAddHandler handler) {
 		final ParseObject object = new ParseObject(POI_TABLE);		
-		object.setACL(getPublicACL());
+		//object.setACL(getPublicACL());
 		try {
 			setPointFields(pointOfInterest, object);
 		} catch (IOException e) {
@@ -323,7 +323,7 @@ public class ParseDatabaseServiceImpl implements DatabaseService {
 			if (e == null) {
 				// save external object
                 ParseObject objectExternal = new ParseObject(POI_EXTERNAL_TABLE);		
-                objectExternal.setACL(getPublicACL());
+                //objectExternal.setACL(getPublicACL());
                 objectExternal.put(POI_KEY, object);
         		try {
         			setPointFields(pointOfInterest, objectExternal);
@@ -357,7 +357,7 @@ public class ParseDatabaseServiceImpl implements DatabaseService {
 	public void addFacebookUser(String facebookId, String name, byte[] profilePicture) {
 		try {
 			final ParseObject object = new ParseObject(USER_FACEBOOK_TABLE);		
-			object.setACL(getPublicACL());
+			//object.setACL(getPublicACL());
 			object.put(NAME, name);
 			object.put(FACEBOOK_ID, facebookId);
 			object.put(USER, ParseUser.getCurrentUser());

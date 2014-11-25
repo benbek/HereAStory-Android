@@ -30,10 +30,14 @@ public class AudioPlayer {
     }
 
 	public Number getDuration(String filePath) throws IOException {
-        prepare(filePath);
-		long seconds = TimeUnit.MILLISECONDS.toSeconds(player.getDuration());
-		player.release();
-		return seconds;
+		try {
+	        prepare(filePath);
+			long seconds = TimeUnit.MILLISECONDS.toSeconds(player.getDuration());
+			player.release();
+			return seconds;
+		} catch (Exception e) {
+			return 0;
+		}
 	}
 
 }

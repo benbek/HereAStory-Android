@@ -35,9 +35,13 @@ public class PointOfInterestServiceImpl implements PointOfInterestService {
 
 	@Override
 	public void add(PointOfInterest pointOfInterest, PointOfInterestAddHandler handler) {
-		pointOfInterest.setCreationDate(new Date());
-		pointOfInterest.setLikeCount(0);
-		databaseService.add(pointOfInterest, new byte[0] , handler);
+		try {
+			pointOfInterest.setCreationDate(new Date());
+			pointOfInterest.setLikeCount(0);
+			databaseService.add(pointOfInterest, new byte[0] , handler);
+		} catch (Exception e) {
+			handler.addFailed(pointOfInterest, e);
+		}
 	}
 
 	@Override

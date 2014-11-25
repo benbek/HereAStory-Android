@@ -4,6 +4,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 
 import android.media.MediaRecorder;
+import android.util.Log;
 
 public class AudioRecorder {
     private static final int SAMPLING_RATE = 22050;
@@ -31,11 +32,18 @@ public class AudioRecorder {
 
 	public void stopRecording() throws IOException {
 		if (recorder != null) {
-	        recorder.stop();
-	        recorder.reset();
-	        recorder.release();
-	        fileOut.flush();
-	        fileOut.close();
+			try {
+		        recorder.stop();
+		        recorder.reset();
+		        recorder.release();
+			} catch (Exception e) {
+				Log.e("AudioRecorder", "failed stopping recorder", e);
+			} try {
+		        fileOut.flush();
+		        fileOut.close();
+			} catch (Exception e) {
+				Log.e("AudioRecorder", "failed flushing out file", e);
+			} 
 	        recorder = null;	
 	        fileOut = null;
 		}
